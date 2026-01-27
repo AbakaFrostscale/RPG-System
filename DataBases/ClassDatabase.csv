@@ -1,0 +1,10 @@
+ClassName,BaseHealthStr,Dex,Con,Int,Wis,Cha
+Fighter,10,2,0,1,0,0,0
+Paladin,10,1,0,0,0,0,2
+Cleric,8,1,0,0,0,2,0
+Wizard,6,6,0,0,1,2,0,0
+Bard,8,0,0,1,0,0,2
+Sorcerer,6,0,0,1,0,0,2
+Druid,8,0,0,1,0,2,0
+Barbarian,12,2,1,0,0,0,0
+Rogue,8,0,2,0,1,0,0
