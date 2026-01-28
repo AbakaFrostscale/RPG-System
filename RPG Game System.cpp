@@ -9,17 +9,101 @@
 FCharacterCreator Creator;
 FCharacter Character;
 
+EAttributes StringToEAttribute(std::string Attribute)
+{
+    if (Attribute == "Str")
+    {
+        return EAttributes::EStr;
+    }
+    else if (Attribute == "Dex")
+    {
+        return EAttributes::EDex;
+    }
+    else if (Attribute == "Con")
+    {
+        return EAttributes::ECon;
+    }
+    else if (Attribute == "Int")
+    {
+        return EAttributes::EInt;
+    }
+    else if (Attribute == "Wis")
+    {
+        return EAttributes::EWis;
+    }
+    else if (Attribute == "Cha")
+    {
+        return EAttributes::ECha;
+    }
+    else
+    {
+        return EAttributes::EStr;
+    }
+}
+
+EIncreaseOrDecrease StringToMode(std::string Mode)
+{
+    if (Mode == "i")
+    {
+        return EIncreaseOrDecrease::EIIncrease;
+    }
+    else if (Mode == "d")
+    {
+        return EIncreaseOrDecrease::EIDecrease;
+    }
+    else
+    {
+        Mode = "Increase";
+        return EIncreaseOrDecrease::EIIncrease;
+    }
+}
+
+
+
 int main()
 {
 
-    std::string Name = "Steve";
-    int Race = 3;
-    int Class = 4;
-    EAttributes Attribute = EStr;
-    int Amount = 10;
-    EIncreaseOrDecrease mode = EIncreaseOrDecrease::EIIncrease;
+    std::string Name = "";
+    std::string sAttribute;
+    std::string sMode;
+    
+    int Race = 1;
+    int Class = 1;
+    EAttributes Attribute;
+    int Amount;
+    EIncreaseOrDecrease mode;
 
-    Character.CurrentCharacter = Creator.CreateCharacter(Name, Race, Class, Attribute, Amount, mode);
+    std::cout << "What is your name adventurer" << std::endl;
+    std::cin >> Name;
+
+    std::cout << "Pick a race using numbers 1-6" << std::endl;
+    std::cin >> Race;
+
+    std::cout << "Pick a class using numbers 1-9" << std::endl;
+    std::cin >> Class;
+
+   Creator.CreateCharacter(Name, Race, Class);
+
+    while (Creator.GetAttributePoints() > 0)
+    {
+        std::cout << "Which stat would you like to modify?" << std::endl;
+        std::cin >> sAttribute;
+        Attribute = StringToEAttribute(sAttribute);
+
+        std::cout << "Would you like to Increase(i) or Decrease(d) your " << sAttribute << std::endl;
+        std::cin >> sMode;
+        mode = StringToMode(sMode);
+
+        std::cout << "By how much would you like to " << sMode << " your " << sAttribute << std::endl;
+        std::cin >> Amount;
+
+        Creator.AllocateAttributePoints(Attribute, Amount, mode);
+
+        std::cout << sAttribute << " " << sMode << " by " << Amount << std::endl;
+        std::cout << Creator.GetAttributePoints() << " attribute points available" << std::endl;
+    }
+
+    Character.CurrentCharacter = Creator.FinalizeCharacter();
 
     std::cout << Character.CurrentCharacter.CharName << std::endl;
 
@@ -29,12 +113,12 @@ int main()
     std::cout << "HP: " << Character.CurrentCharacter.CurrentHP << "/" << Character.CurrentCharacter.MaxHP << std::endl;
     std::cout << "MP: " << Character.CurrentCharacter.CurrentMP << "/" << Character.CurrentCharacter.MaxMP << std::endl;
 
-    std::cout << "STR:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::EStr] << std::endl;
-    std::cout << "DEX:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::EDex] << std::endl;
-    std::cout << "CON:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::ECon] << std::endl;
-    std::cout << "INT:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::EInt] << std::endl;
-    std::cout << "WIS:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::EWis] << std::endl;
-    std::cout << "CHA:" << Character.CurrentCharacter.BaseStats.Attributes[EAttributes::ECha] << std::endl;
+    std::cout << "STR:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EStr] << std::endl;
+    std::cout << "DEX:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EDex] << std::endl;
+    std::cout << "CON:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECon] << std::endl;
+    std::cout << "INT:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EInt] << std::endl;
+    std::cout << "WIS:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EWis] << std::endl;
+    std::cout << "CHA:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECha] << std::endl;
 
     return 0;
 }

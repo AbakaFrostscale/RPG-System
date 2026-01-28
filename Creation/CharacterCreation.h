@@ -16,16 +16,22 @@ class FCharacterCreator
 {
 public:
 	FCharacterCreator();
-	FCharacterData CreateCharacter(std::string UIName, int UIRace, int UIClass, EAttributes UISkill, int UIAmount, EIncreaseOrDecrease Mode);
+
+	void CreateCharacter(std::string UIName, int UIRace, int UIClass);
+	void AllocateAttributePoints(EAttributes UISkill, int UIAmount, EIncreaseOrDecrease UIMode);
 
 	std::string ERaceToString(ERace Race) const;
 	std::string EClassToString(EClass Class) const;
+
+	bool IsCharacterValid() const;
+	FCharacterData FinalizeCharacter();
+
+	int GetAttributePoints() { return AvailableAttributePoints; }
 
 private:
 	void ChooseRace(int RaceIndex);
 	void ChooseClass(int ClassIndex);
 
-	void AllocateAttributePoints(EAttributes Skill, int Amount, EIncreaseOrDecrease Mode);
 	void ApplyRaceBaseStats();
 	void ApplyClassModifiers();
 
@@ -34,8 +40,6 @@ private:
 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EIncreaseOrDecrease Mode);
 
-	bool IsCharacterValid() const;
-	bool FinalizeCharacter();
 
 private:
 

@@ -25,7 +25,7 @@ UIRace/UIClass - variable received from a dropdown or slider for selecting race/
 UISkill - Determines the skill from FAttributes struct that need to be modified using the Mode enum
 UIAmount - Determines the amount of AttributesPoints to use with upgrading the skill
 */
-FCharacterData FCharacterCreator::CreateCharacter(std::string UIName, int UIRace, int UIClass, EAttributes UISkill, int UIAmount, EIncreaseOrDecrease Mode)
+void FCharacterCreator::CreateCharacter(std::string UIName, int UIRace, int UIClass)
 {
 	for (int i = 0; i <= AvailableRaces.size() - 1; i++)
 	{
@@ -43,12 +43,6 @@ FCharacterData FCharacterCreator::CreateCharacter(std::string UIName, int UIRace
 	ChooseClass(UIClass);
 	
 	Character.BaseStats = Character.CharStats;
-
-	AllocateAttributePoints(UISkill, UIAmount, Mode);
-
-	FinalizeCharacter();
-
-	return Character;
 }
 
 //Chooses the race from AvailableRaces based on an index fed in from the UI
@@ -107,86 +101,86 @@ Amount is the values that a stat should be increased by which also deducts from 
 Mode determines whether the Skill should be increased or decreased, this will be fed in from the UI
 */
 
-void FCharacterCreator::AllocateAttributePoints(EAttributes Skill, int Amount, EIncreaseOrDecrease Mode) 
+void FCharacterCreator::AllocateAttributePoints(EAttributes UISkill, int UIAmount, EIncreaseOrDecrease UIMode) 
 { 
 	if (bIsFinalised) { return; }
-	if (AvailableAttributePoints <= 0 && Mode == EIncreaseOrDecrease::EIIncrease) return;
+	if (AvailableAttributePoints <= 0 && UIMode == EIncreaseOrDecrease::EIIncrease) return;
 		
 	AvailableAttributePoints = std::min(AvailableAttributePoints, MaxAttributePoints);
 	bool bStatChanged = false;
 
-	if (Mode == EIncreaseOrDecrease::EIIncrease)
+	if (UIMode == EIncreaseOrDecrease::EIIncrease)
 	{
-		Amount = std::clamp(Amount, 0, AvailableAttributePoints);
+		UIAmount = std::clamp(UIAmount, 0, AvailableAttributePoints);
 	}
-	else if (Mode == EIncreaseOrDecrease::EIDecrease)
+	else if (UIMode == EIncreaseOrDecrease::EIDecrease)
 	{
-		Amount = std::clamp(Amount, 0, MaxAttributePoints);
+		UIAmount = std::clamp(UIAmount, 0, MaxAttributePoints);
 	}
 
 
-	switch (Skill) 
+	switch (UISkill) 
 	{	 
 		case EAttributes::EStr :
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::EStr],
 					Character.BaseStats.Attributes[EAttributes::EStr],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 			
 		case EAttributes::EDex :
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::EDex],
 					Character.BaseStats.Attributes[EAttributes::EDex],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 
 		case EAttributes::ECon : 
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::ECon],
 					Character.BaseStats.Attributes[EAttributes::ECon],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 
 		case EAttributes::EInt :
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::EInt],
 					Character.BaseStats.Attributes[EAttributes::EInt],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 
 		case EAttributes::EWis : 
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::EWis],
 					Character.BaseStats.Attributes[EAttributes::EWis],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 
 		case EAttributes::ECha :
 			bStatChanged = TryAllocatePoints(
 					Character.CharStats.Attributes[EAttributes::ECha],
 					Character.BaseStats.Attributes[EAttributes::ECha],
-					Amount,
-					Mode);
+					UIAmount,
+					UIMode);
 			break;
 
 		default : 
 			break; 
 	}
-	if (Mode == EIncreaseOrDecrease::EIIncrease && bStatChanged)
+
+	if (UIMode == EIncreaseOrDecrease::EIIncrease && bStatChanged)
 	{ 
-		AvailableAttributePoints -= Amount; 		
+		AvailableAttributePoints -= UIAmount; 		
 	} 
-	else if (Mode == EIncreaseOrDecrease::EIDecrease && bStatChanged)
+	else if (UIMode == EIncreaseOrDecrease::EIDecrease && bStatChanged)
 	{
-		AvailableAttributePoints += Amount; 
+		AvailableAttributePoints += UIAmount; 
 	}
-	
 }
 
 //Applies the stats of Race to the Character
@@ -381,15 +375,15 @@ bool FCharacterCreator::IsCharacterValid() const
 	return true;
 }
 
-bool FCharacterCreator::FinalizeCharacter()
+FCharacterData FCharacterCreator::FinalizeCharacter()
 {
-	if (!IsCharacterValid()) { return false; }
+	if (!IsCharacterValid()) { return {}; }
 
 	SetCharacterHP();
 	SetCharacterMP();
 
 	bIsFinalised = true;
-	return true;
+	return Character;
 }
 
 template<typename T>
