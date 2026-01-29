@@ -25,6 +25,9 @@ public:
 	FItem Items;
 	FInventory Inventory;
 
+	std::vector<FWeapon> GetCraftableWeapons() { return CraftableWeapons; }
+	std::vector<FArmour> GetCraftableArmour() { return CraftableArmour; }
+
 private:
 
 	std::vector<FWeapon> CraftableWeapons;

@@ -27,6 +27,8 @@ public:
 	FCharacterData FinalizeCharacter();
 
 	int GetAttributePoints() { return AvailableAttributePoints; }
+	std::vector<FRaceData> GetAvailableRaces() { return AvailableRaces; }
+	std::vector<FClassData> GetAvailableClasses() { return AvailableClasses; }
 
 private:
 	void ChooseRace(int RaceIndex);

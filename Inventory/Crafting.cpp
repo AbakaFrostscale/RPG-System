@@ -8,8 +8,15 @@
 
 FCrafting::FCrafting()
 {
-	CraftableWeapons = { Items.IronBattleaxe, Items.IronDagger, Items.IronGreatsword, Items.IronSword };
-	CraftableArmour = { Items.LeatherArmour, Items.IronCuirass, Items.ClothRobe };
+	CraftableWeapons.push_back(Items.IronSword);
+	CraftableWeapons.push_back(Items.IronGreatsword);
+	CraftableWeapons.push_back(Items.IronDagger);
+	CraftableWeapons.push_back(Items.IronBattleaxe);
+
+
+	CraftableArmour.push_back(Items.ClothRobe);
+	CraftableArmour.push_back(Items.IronCuirass);
+	CraftableArmour.push_back(Items.LeatherArmour);
 }
 
 FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)
@@ -108,8 +115,3 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 
 	return ECraftingResponse::ECRCanBeCrafted;
 }
-
-
-
-
-

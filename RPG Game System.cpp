@@ -9,6 +9,12 @@
 FCharacterCreator Creator;
 FCharacter Character;
 
+FMaterial Iron{ EMaterial::EMIron };
+FMaterial Stone{ EMaterial::EMStone };
+FMaterial Cloth{ EMaterial::EMCloth };
+FMaterial Leather{ EMaterial::EMLeather };
+FMaterial Wood{ EMaterial::EMWood };
+
 EAttributes StringToEAttribute(std::string Attribute)
 {
     if (Attribute == "Str")
@@ -58,6 +64,24 @@ EIncreaseOrDecrease StringToMode(std::string Mode)
     }
 }
 
+void PrintCharacter()
+{
+    std::cout << Character.CurrentCharacter.CharName << std::endl;
+
+    std::cout << Creator.ERaceToString(Character.CurrentCharacter.CharRace) << std::endl;
+    std::cout << Creator.EClassToString(Character.CurrentCharacter.CharClass) << std::endl;
+
+    std::cout << "HP: " << Character.CurrentCharacter.CurrentHP << "/" << Character.CurrentCharacter.MaxHP << std::endl;
+    std::cout << "MP: " << Character.CurrentCharacter.CurrentMP << "/" << Character.CurrentCharacter.MaxMP << std::endl;
+
+    std::cout << "STR:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EStr] << std::endl;
+    std::cout << "DEX:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EDex] << std::endl;
+    std::cout << "CON:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECon] << std::endl;
+    std::cout << "INT:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EInt] << std::endl;
+    std::cout << "WIS:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EWis] << std::endl;
+    std::cout << "CHA:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECha] << std::endl;
+}
+
 
 
 int main()
@@ -76,10 +100,22 @@ int main()
     std::cout << "What is your name adventurer" << std::endl;
     std::cin >> Name;
 
-    std::cout << "Pick a race using numbers 1-6" << std::endl;
+    std::cout << "Pick a race using numbers" << std::endl;
+    int RaceIndex = 1;
+    for (FRaceData& Race : Creator.GetAvailableRaces())
+    {
+        std::cout << RaceIndex << " : " << Race.RaceName << std::endl;
+        ++RaceIndex;
+    }
     std::cin >> Race;
 
     std::cout << "Pick a class using numbers 1-9" << std::endl;
+    int ClassIndex = 1;
+    for (FClassData& Class : Creator.GetAvailableClasses())
+    {
+        std::cout << ClassIndex << " : " << Class.ClassName << std::endl;
+        ++ClassIndex;
+    }
     std::cin >> Class;
 
    Creator.CreateCharacter(Name, Race, Class);
@@ -105,20 +141,73 @@ int main()
 
     Character.CurrentCharacter = Creator.FinalizeCharacter();
 
-    std::cout << Character.CurrentCharacter.CharName << std::endl;
+    PrintCharacter();
 
-    std::cout << Creator.ERaceToString(Character.CurrentCharacter.CharRace) << std::endl;
-    std::cout << Creator.EClassToString(Character.CurrentCharacter.CharClass) << std::endl;
+    while (Character.CurrentCharacter.IsAlive())
+    {
+        std::string Action;
+        std::cout << "What do you feel like doing? Craft(c), Equip(e) Battle(b), Gather(g)" << std::endl;
+        std::cin >> Action;
 
-    std::cout << "HP: " << Character.CurrentCharacter.CurrentHP << "/" << Character.CurrentCharacter.MaxHP << std::endl;
-    std::cout << "MP: " << Character.CurrentCharacter.CurrentMP << "/" << Character.CurrentCharacter.MaxMP << std::endl;
+        if (Action == "g")
+        {
+            std::string Material;
+            std::cout << "What would you like to gather?" << std::endl;
+            std::cout << "Iron(i), Stone(s), Cloth(c), Leather(l), Wood(w)";
+            std::cin >> Material;
+            if (Material == "i")
+            {
+                Character.GatherMaterials(Iron);
+            }
+            else if (Material == "s")
+            {
+                Character.GatherMaterials(Stone);
+            }
+            else if (Material == "l")
+            {
+                Character.GatherMaterials(Leather);
+            }
+            else if (Material == "w")
+            {
+                Character.GatherMaterials(Wood);
+            }
+        }
 
-    std::cout << "STR:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EStr] << std::endl;
-    std::cout << "DEX:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EDex] << std::endl;
-    std::cout << "CON:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECon] << std::endl;
-    std::cout << "INT:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EInt] << std::endl;
-    std::cout << "WIS:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::EWis] << std::endl;
-    std::cout << "CHA:" << Character.CurrentCharacter.CharStats.Attributes[EAttributes::ECha] << std::endl;
+        if (Action == "c")
+        {
+            std::string Craft;
+            int CraftChoice;
+            std::cout << "Would you like to craft a Weapon(w) or Armour(a)?" << std::endl;
+            
+            std::cin >> Craft;
+            if (Craft == "w")
+            { 
+                int CraftIndex = 1;
+                for (FWeapon& Item : Character.Crafter.GetCraftableWeapons())
+                {
+                    std::cout << CraftIndex << " : " << Item.ItemName << std::endl;
+                    ++CraftIndex;
+                }
+                std::cin >> CraftChoice;
+                Character.CraftWeapon(Character.Crafter.GetCraftableWeapons()[CraftChoice]);
+
+                std::cout << Character.Crafter.GetCraftableWeapons()[CraftChoice].ItemName << " added to the inventory";
+            }
+            else
+            {
+                int CraftIndex = 1;
+                for (FArmour& Item : Character.Crafter.GetCraftableArmour())
+                {
+                    std::cout << CraftIndex << " : " << Item.ItemName << std::endl;
+                    ++CraftIndex;
+                }
+                std::cin >> CraftChoice;
+                Character.CraftArmour(Character.Crafter.GetCraftableArmour()[CraftChoice]);
+
+                std::cout << Character.Crafter.GetCraftableArmour()[CraftChoice].ItemName << " added to the inventory";
+            }
+        }
+    }
 
     return 0;
 }

@@ -48,10 +48,3 @@ void FCharacter::EquipArmour(const FArmour& Armour)
 		EquippedArmour = Armour;
 	}
 }
-
-
-
-
-
-
-

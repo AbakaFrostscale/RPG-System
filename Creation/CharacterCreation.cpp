@@ -54,7 +54,7 @@ void FCharacterCreator::ChooseRace(int RaceIndex)
 	return;
 	
 	
-	Character.CharRace = AvailableRaces[RaceIndex].Race;
+	Character.CharRace = AvailableRaces[RaceIndex - 1].Race;
 	ApplyRaceBaseStats();
 }
 
@@ -67,7 +67,7 @@ void FCharacterCreator::ChooseClass(int ClassIndex)
 	return;
 	
 
-	Character.CharClass = AvailableClasses[ClassIndex].Class;
+	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
 	ApplyClassModifiers();
 }
 

@@ -16,7 +16,7 @@ FItem::FItem()
 		"Iron Greatsword",
 		ERarity::ERCommon,
 		{},
-		12,
+		(6 + 6),
 		{{EMaterial::EMIron, 4}, {EMaterial::EMWood, 2}, {EMaterial::EMLeather, 2}}
 	};
 
