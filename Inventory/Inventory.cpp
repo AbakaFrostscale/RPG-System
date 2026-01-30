@@ -12,11 +12,6 @@ FInventory::FInventory()
 	
 }
 
-void FInventory::CheckInventory()
-{
-   //send inventory items to the UI to be displayed as an interactable item
-}
-
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
 {
 	for (auto It = Inventory.Materials.begin(); It != Inventory.Materials.end();)

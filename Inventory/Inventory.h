@@ -22,9 +22,6 @@ class FInventory
 public:
 	FInventory();
 
-
-	void CheckInventory();
-
 	void RemoveMaterials(FMaterial Material, int AmountToRemove);
 	void AddMaterials(FMaterial Material, int AmountToAdd);
 

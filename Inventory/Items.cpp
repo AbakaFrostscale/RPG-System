@@ -20,7 +20,7 @@ FItem::FItem()
 		{{EMaterial::EMIron, 4}, {EMaterial::EMWood, 2}, {EMaterial::EMLeather, 2}}
 	};
 
-	FWeapon IronBattleaxe =
+	IronBattleaxe =
 	{
 		"Iron Battleaxe",
 		ERarity::ERCommon,
@@ -28,8 +28,8 @@ FItem::FItem()
 		6,
 		{{EMaterial::EMIron, 2}, {EMaterial::EMWood, 2}}
 	};
-
-	FWeapon IronDagger =
+	
+	IronDagger =
 	{
 		"Iron Dagger",
 		ERarity::ERCommon,
@@ -38,7 +38,7 @@ FItem::FItem()
 		{{EMaterial::EMIron, 1}, {EMaterial::EMWood, 1}, {EMaterial::EMLeather, 1}}
 	};
 
-	FArmour IronCuirass =
+	IronCuirass =
 	{
 		"Iron Cuirass",
 		ERarity::ERCommon,
@@ -47,7 +47,7 @@ FItem::FItem()
 		{{EMaterial::EMIron, 6}, {EMaterial::EMCloth, 2}, {EMaterial::EMLeather, 1}}
 	};
 
-	FArmour ClothRobe =
+	ClothRobe =
 	{
 		"Cloth Robe",
 		ERarity::ERCommon,
@@ -56,7 +56,7 @@ FItem::FItem()
 		{{EMaterial::EMCloth, 6}, {EMaterial::EMIron, 1}, {EMaterial::EMLeather, 1}}
 	};
 
-	FArmour LeatherArmour
+	LeatherArmour =
 	{
 		"Leather Armour",
 		ERarity::ERCommon,
