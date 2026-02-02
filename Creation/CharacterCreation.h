@@ -10,38 +10,40 @@
 #include <string>
 #include <vector>
 #include "Core/Types.h"
-#include "Character/CharacterStats.h"
+
+class FCharacterData;
+class FLoadExternalData;
 
 class FCharacterCreator
 {
 public:
 	FCharacterCreator();
 
-	void AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode);
 
-	bool IsCharacterValid() const;
-	FCharacterData FinalizeCharacter();
+	void AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode);
 
 	int GetAttributePoints() { return AvailableAttributePoints; }
 
 private:
-	FRaceData ChooseRace(std::string RaceIndex);
-	void ChooseClass(std::string ClassIndex);
+	FRaceData ChooseRace(int RaceIndex);
+	FClassData ChooseClass(int ClassIndex);
 
-	void ApplyRaceBaseStats();
-	void ApplyClassModifiers();
+	void ApplyRaceBaseStats(FRaceData& Race, FCharacterData& Character);
+	void ApplyClassModifiers(FClassData& Class, FCharacterData& Character);
 
-	void SetCharacterHP();
-	void SetCharacterMP();
+	int SetCharacterMaxHP(FCharacterData& Character);
+	int SetCharacterMaxMP(FCharacterData& Character);
 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);
 
 
 private:
+	FLoadExternalData Loader;
 
 	FCharacterData Character;
 
-
+	std::vector<FRaceData> AvailableRaces;
+	std::vector<FClassData> AvailableClasses;
 
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;

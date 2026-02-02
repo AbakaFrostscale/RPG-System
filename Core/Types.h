@@ -10,6 +10,17 @@
 #include <map>
 #include <vector>
 
+//enum to define stats that exist in the game for the characaters
+enum class EAbility
+{
+	EAStr,
+	EADex,
+	EACon,
+	EAInt,
+	EAWis,
+	EACha
+};
+
 //enum to be used for stat mode, wheter to increase or decrease the stat, mostly for UI input
 enum class EMode
 { 
@@ -70,9 +81,9 @@ struct FItemData
 		ItemName = Columns[0];
 		ItemType = Columns[1];
 
+		int index = 0;
 		for (size_t i = 2; i < ItemID.size(); i++)
 		{
-			int index = 0;
 			if (i < Columns.size())
 			{
 				RequiredMaterials[index].Material->MaterialName = ItemID[i];
@@ -87,7 +98,7 @@ struct FWeapon
 {
 	FItemData WeaponData;
 	int Damage = 0;
-	std::string RequiredStat;
+	EAbility RequiredStat;
 	int RequiredStatAmount = 0;
 };
 
@@ -95,26 +106,25 @@ struct FArmour
 {
 	FItemData ArmourData;
 	int Defence = 0;
-	std::string RequiredStat;
+	EAbility RequiredStat;
 	int RequiredStatAmount;
 };
 
 struct FRaceData
 {
 	std::string RaceName;
-	std::map<std::string, int> BaseStat;
+	std::map<EAbility, int> BaseStat;
 
 	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& StatIDs)
 	{
 		RaceName = Columns[0];
-		
-		for (size_t i = 1; i < StatIDs.size(); i++)
-		{
-			if (i < Columns.size())
-			{
-				BaseStat[StatIDs[i]] = std::stoi(Columns[i]);
-			}
-		}
+
+		BaseStat[EAbility::EAStr] = std::stoi(Columns[1]);
+		BaseStat[EAbility::EADex] = std::stoi(Columns[3]);
+		BaseStat[EAbility::EACon] = std::stoi(Columns[4]);
+		BaseStat[EAbility::EAInt] = std::stoi(Columns[5]);
+		BaseStat[EAbility::EAWis] = std::stoi(Columns[6]);
+		BaseStat[EAbility::EACha] = std::stoi(Columns[7]);
 	}
 };
 
@@ -122,26 +132,21 @@ struct FClassData
 {
 	int BaseHealth = 0;
 	std::string ClassName;
-	std::map<std::string, int> StatModifier;
+	std::map<EAbility, int> StatModifier;
 
 	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& StatIDs)
 	{
 		ClassName = Columns[0];
+
 		BaseHealth = std::stoi(Columns[1]);
 
-		for (size_t i = 2; i < StatIDs.size(); i++)
-		{
-			if (i < Columns.size())
-			{
-				StatModifier[StatIDs[i]] = std::stoi(Columns[i]);
-			}
-		}
+		StatModifier[EAbility::EAStr] = std::stoi(Columns[1]);
+		StatModifier[EAbility::EADex] = std::stoi(Columns[3]);
+		StatModifier[EAbility::EACon] = std::stoi(Columns[4]);
+		StatModifier[EAbility::EAInt] = std::stoi(Columns[5]);
+		StatModifier[EAbility::EAWis] = std::stoi(Columns[6]);
+		StatModifier[EAbility::EACha] = std::stoi(Columns[7]);
 	}
 };
 
-template<typename T>
-void LoadCSV(const std::string& FilePath, std::vector<T>& OutVector);
-
-std::vector<FRaceData> AvailableRaces;
-std::vector<FClassData> AvailableClasses;
 std::vector<FMaterialData> AvailableMaterials;

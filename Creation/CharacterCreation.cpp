@@ -4,17 +4,21 @@
 //Description: Portfolio project demonstrating a full RPG system
 //version 1.00
 
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <algorithm>
+
 #include "CharacterCreation.h"
+#include "Character/CharacterStats.h"
+#include "Core/LoadExternalData.h"
 
 
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
-	LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
-	LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
+	Loader.LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
+	Loader.LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
 }
 
 /** 
@@ -26,15 +30,15 @@ UIAmount - Determines the amount of AttributesPoints to use with upgrading the s
 */
 
 //Chooses the race from AvailableRaces based on an index fed in from the UI
-FRaceData FCharacterCreator::ChooseRace(std::string RaceIndex)
+FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
-	
+	return AvailableRaces[RaceIndex];
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
-void FCharacterCreator::ChooseClass(std::string ClassIndex)
+FClassData FCharacterCreator::ChooseClass(int ClassIndex)
 {
-	ApplyClassModifiers();
+	return AvailableClasses[ClassIndex];
 }
 
 /**
@@ -95,46 +99,29 @@ void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmoun
 }
 
 //Applies the stats of Race to the Character
-void FCharacterCreator::ApplyRaceBaseStats()
+void FCharacterCreator::ApplyRaceBaseStats(FRaceData& Race, FCharacterData& Character)
 {
-	
+	Character.BaseStats = Race.BaseStat;
 }
 
 //Adds the Class Stat modifiers to the Current Character
-void FCharacterCreator::ApplyClassModifiers()
+void FCharacterCreator::ApplyClassModifiers(FClassData& Class, FCharacterData& Character)
 {
-
+	for (auto& key : Class.StatModifier)
+	{
+		Character.BaseStats[key.first] += Class.StatModifier[key.first];
+	}
 }
 
-void FCharacterCreator::SetCharacterHP()
+int FCharacterCreator::SetCharacterMaxHP(FCharacterData& Character)
 {
-	Character.CurrentHP = Character.MaxHP;
+	return Character.CharClass.BaseHealth + Character.CharStats[EAbility::EACon];
 }
 
 //Sets the character MP based on class, according to the ability they use to cast spells
-void FCharacterCreator::SetCharacterMP()
+int FCharacterCreator::SetCharacterMaxMP(FCharacterData& Character)
 {
-	Character.CurrentMP = Character.MaxMP;
-}
-
-bool FCharacterCreator::IsCharacterValid() const
-{
-	if (Character.CharName.empty()) {return false; }
-
-	if (AvailableAttributePoints != 0) { return  false; }
-
-	return true;
-}
-
-FCharacterData FCharacterCreator::FinalizeCharacter()
-{
-	if (!IsCharacterValid()) { return {}; }
-
-	SetCharacterHP();
-	SetCharacterMP();
-
-	bIsFinalised = true;
-	return Character;
+	return 0;
 }
 
 

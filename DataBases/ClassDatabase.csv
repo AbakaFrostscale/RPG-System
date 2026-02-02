@@ -1,4 +1,4 @@
-ClassName,BaseHealthStr,Dex,Con,Int,Wis,Cha
+ClassName,BaseHealth,Str,Dex,Con,Int,Wis,Cha
 Fighter,10,2,0,1,0,0,0
 Paladin,10,1,0,0,0,0,2
 Cleric,8,1,0,0,0,2,0

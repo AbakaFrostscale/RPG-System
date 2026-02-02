@@ -16,10 +16,10 @@ struct FCharacterData
 	int CurrentHP = 0; 
 	int MaxMP = 0;
 	int CurrentMP = 0; 
-	std::string CharRace; 
-	std::string CharClass; 
-	std::map<std::string, int> CharStats;
-	std::map<std::string, int> BaseStats;
+	FRaceData CharRace; 
+	FClassData CharClass; 
+	std::map<EAbility, int> CharStats;
+	std::map<EAbility, int> BaseStats;
 
 	bool IsAlive() const { return CurrentHP > 0; } ; 
 };

@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="Combat\TurnBasedCombat.cpp" />
+    <ClCompile Include="Core\LoadExternalData.cpp" />
     <ClCompile Include="Creation\CharacterCreation.cpp" />
     <ClCompile Include="Inventory\Crafting.cpp" />
     <ClCompile Include="Inventory\Inventory.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="Character\CharacterStats.h" />
     <ClInclude Include="Combat\TurnBasedCombat.h" />
+    <ClInclude Include="Core\LoadExternalData.h" />
     <ClInclude Include="Core\Random.h" />
     <ClInclude Include="Core\Types.h" />
     <ClInclude Include="Creation\CharacterCreation.h" />
