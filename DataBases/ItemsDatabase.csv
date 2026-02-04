@@ -1,5 +1,5 @@
 ItemName,ItemType,ReqMaterial1,ReqMaterial1Amount,ReqMaterial2,ReqMaterila2Amount,ReqMaterial3,ReqMaterial3Amount
-Copper Sword,Weapon,Copper,2,Pine,1,Leather
+Copper Sword,Weapon,Copper,2,Pine,1,Leather,1
 Iron Sword,Weapon,Iron,2,Oak,1,Leather,1
 Steel Sword,Weapon,Steel,2,Yew,1,Leather,1
 Copper Chest Plate,Armour,Copper,4,Leather,2,Linen,2
