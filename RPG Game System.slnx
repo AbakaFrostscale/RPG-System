@@ -3,6 +3,8 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/Solution Items/" />
+  <Folder Name="/Solution Items/">
+    <File Path="DataBases/MaterialDatabase.csv" />
+  </Folder>
   <Project Path="RPG Game System.vcxproj" Id="a8b47105-8607-4b42-88d6-e1c5524e7613" />
 </Solution>

@@ -17,8 +17,8 @@
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
-	Loader.LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
-	Loader.LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
+	Loader->LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
+	Loader->LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
 }
 
 /** 

@@ -53,7 +53,7 @@ struct FMaterialData
 	//new variables can be added later
 	
 	//MaterialID is here if ever a loopable item is needed to connect to a header (see RaceData for reasoning)
-	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& MaterialID)
+	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		MaterialName = Columns[0];
 		Type = Columns[1];
@@ -74,22 +74,16 @@ struct FItemData
 {
 	std::string ItemName;
 	std::string ItemType;
-	std::vector<FMaterial> RequiredMaterials;
+	std::map<std::string, int> RequiredMaterials;
 
-	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& ItemID)
+	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		ItemName = Columns[0];
 		ItemType = Columns[1];
 
-		int index = 0;
-		for (size_t i = 2; i < ItemID.size(); i++)
+		for (size_t i = 2; i < Columns.size(); i += 2)
 		{
-			if (i < Columns.size())
-			{
-				RequiredMaterials[index].Material->MaterialName = ItemID[i];
-				RequiredMaterials[index].MaterialAmount = std::stoi(Columns[i]);
-			}
-			++index;
+			 RequiredMaterials[Columns[i]] = std::stoi(Columns[i + 1]);
 		}
 	}
 };
@@ -115,16 +109,16 @@ struct FRaceData
 	std::string RaceName;
 	std::map<EAbility, int> BaseStat;
 
-	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& StatIDs)
+	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		RaceName = Columns[0];
 
 		BaseStat[EAbility::EAStr] = std::stoi(Columns[1]);
-		BaseStat[EAbility::EADex] = std::stoi(Columns[3]);
-		BaseStat[EAbility::EACon] = std::stoi(Columns[4]);
-		BaseStat[EAbility::EAInt] = std::stoi(Columns[5]);
-		BaseStat[EAbility::EAWis] = std::stoi(Columns[6]);
-		BaseStat[EAbility::EACha] = std::stoi(Columns[7]);
+		BaseStat[EAbility::EADex] = std::stoi(Columns[2]);
+		BaseStat[EAbility::EACon] = std::stoi(Columns[3]);
+		BaseStat[EAbility::EAInt] = std::stoi(Columns[4]);
+		BaseStat[EAbility::EAWis] = std::stoi(Columns[5]);
+		BaseStat[EAbility::EACha] = std::stoi(Columns[6]);
 	}
 };
 
@@ -134,13 +128,13 @@ struct FClassData
 	std::string ClassName;
 	std::map<EAbility, int> StatModifier;
 
-	void FromCSVRow(const std::vector<std::string>& Columns, const std::vector<std::string>& StatIDs)
+	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		ClassName = Columns[0];
 
 		BaseHealth = std::stoi(Columns[1]);
 
-		StatModifier[EAbility::EAStr] = std::stoi(Columns[1]);
+		StatModifier[EAbility::EAStr] = std::stoi(Columns[2]);
 		StatModifier[EAbility::EADex] = std::stoi(Columns[3]);
 		StatModifier[EAbility::EACon] = std::stoi(Columns[4]);
 		StatModifier[EAbility::EAInt] = std::stoi(Columns[5]);
@@ -148,5 +142,3 @@ struct FClassData
 		StatModifier[EAbility::EACha] = std::stoi(Columns[7]);
 	}
 };
-
-std::vector<FMaterialData> AvailableMaterials;

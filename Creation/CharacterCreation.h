@@ -11,8 +11,9 @@
 #include <vector>
 #include "Core/Types.h"
 
-class FCharacterData;
+
 class FLoadExternalData;
+struct FCharacterData;
 
 class FCharacterCreator
 {
@@ -22,9 +23,12 @@ public:
 
 	void AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode);
 
-	int GetAttributePoints() { return AvailableAttributePoints; }
+	const int GetAttributePoints() const { return AvailableAttributePoints; }
+	const std::vector<FRaceData> GetAvailableRaces() const { return AvailableRaces; }
+	const std::vector<FClassData> GetAvailableClasses() const { return AvailableClasses; }
 
 private:
+
 	FRaceData ChooseRace(int RaceIndex);
 	FClassData ChooseClass(int ClassIndex);
 
@@ -37,10 +41,11 @@ private:
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);
 
 
-private:
-	FLoadExternalData Loader;
 
-	FCharacterData Character;
+private:
+	
+	FLoadExternalData* Loader;
+	FCharacterData* Character;
 
 	std::vector<FRaceData> AvailableRaces;
 	std::vector<FClassData> AvailableClasses;

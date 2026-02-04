@@ -24,7 +24,6 @@ public:
 	class FCrafting Crafter;
 	class FInventory Inventory;
 
-	FCharacterData CurrentCharacter;
 
 	void GatherMaterials(const FMaterial& MaterialNeeded);
 
@@ -35,6 +34,8 @@ public:
 	void EquipArmour(const FArmour& Armour);
 
 private:
+	
+	FCharacterData CurrentCharacter;
 	FWeapon EquippedWeapon;
 	FArmour EquippedArmour;
 

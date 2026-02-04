@@ -6,10 +6,11 @@
 
 #include <vector>
 #include "Inventory.h"
+#include "Core/LoadExternalData.h"
 
 FInventory::FInventory()
 {
-	
+	Loader->LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
 }
 
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
@@ -57,7 +58,7 @@ void FInventory::RemoveWeapons(const FWeapon& Weapon)
 
 	for (auto It = Inventory.Weapons.begin(); It != Inventory.Weapons.end(); )
 	{
-		if (It->ItemName == Weapon.ItemName)
+		if (It->WeaponData.ItemName == Weapon.WeaponData.ItemName)
 		{
 			It = Inventory.Weapons.erase(It);
 			break;
@@ -82,7 +83,7 @@ void FInventory::RemoveArmour(const FArmour& Armour)
 
 	for (auto It = Inventory.Armour.begin(); It != Inventory.Armour.end(); )
 	{
-		if (It->ItemName == Armour.ItemName)
+		if (It->ArmourData.ItemName == Armour.ArmourData.ItemName)
 		{
 			It = Inventory.Armour.erase(It);
 			break;
@@ -105,7 +106,7 @@ ECraftingResponse FInventory::HasArmour(const FArmour& Armor)
 {
 	for (const FArmour& ArmourIndex : Inventory.Armour)
 	{
-		if (ArmourIndex.ItemName == Armor.ItemName)
+		if (ArmourIndex.ArmourData.ItemName == Armor.ArmourData.ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}
@@ -117,7 +118,7 @@ ECraftingResponse FInventory::HasWeapon(const FWeapon& Weapon)
 {
 	for (const FWeapon& WeaponIndex : Inventory.Weapons)
 	{
-		if (WeaponIndex.ItemName == Weapon.ItemName)
+		if (WeaponIndex.WeaponData.ItemName == Weapon.WeaponData.ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}
@@ -138,7 +139,7 @@ bool FInventory::HasMaterial(const FMaterial& Material)
 }
 ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 {
-	for (const FMaterial& ItemMaterialIndex : Weapon.RequiredMaterials)
+	/*for (const FMaterial& ItemMaterialIndex : Weapon.WeaponData.RequiredMaterials)
 	{
 		bool bRequirementsMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
@@ -153,27 +154,27 @@ ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 		{
 			return ECraftingResponse::ECRMaterialsMissing;
 		}
-	}
+	}*/
 	return ECraftingResponse::ECRCanBeCrafted;
 }
 
 ECraftingResponse FInventory::HasRequiredMaterialsArmour(const FArmour& Armour)
 {
-	for (const FMaterial& ItemMaterialIndex : Armour.RequiredMaterials)
-	{
-		bool bRequirementMet = false;
-		for (const FMaterial& MaterialIndex : Inventory.Materials)
-		{
-			if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
-			{
-				bRequirementMet = true;
-				break;
-			}
-		}
-		if (!bRequirementMet)
-		{
-			return ECraftingResponse::ECRMaterialsMissing;
-		}
-	}
+	//for (const FMaterial& ItemMaterialIndex : Armour.ArmourData.RequiredMaterials)
+	//{
+	//	bool bRequirementMet = false;
+	//	for (const FMaterial& MaterialIndex : Inventory.Materials)
+	//	{
+	//		if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
+	//		{
+	//			bRequirementMet = true;
+	//			break;
+	//		}
+	//	}
+	//	if (!bRequirementMet)
+	//	{
+	//		return ECraftingResponse::ECRMaterialsMissing;
+	//	}
+	//}
 	return ECraftingResponse::ECRCanBeCrafted;
 }

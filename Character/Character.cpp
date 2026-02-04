@@ -41,10 +41,5 @@ void FCharacter::EquipWeapon(const FWeapon& Weapon)
 
 void FCharacter::EquipArmour(const FArmour& Armour)
 {
-	if (Inventory.HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
-	if (Armour.RequiredModifier.Attributes >= CurrentCharacter.CharStats.Attributes)
-	{
-		EquippedArmour = Armour;
-	}
 }

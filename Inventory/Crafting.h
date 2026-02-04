@@ -10,6 +10,7 @@
 #include "Inventory.h"
 
 
+class FLoadExternalData;
 
 class FCrafting 
 {
@@ -22,14 +23,16 @@ public:
 	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft);
 	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);
 
-	FItem Items;
 	FInventory Inventory;
 
+	const std::vector<FItemData> GetCraftableItems() const { return CraftableItems; }
 	std::vector<FWeapon> GetCraftableWeapons() { return CraftableWeapons; }
 	std::vector<FArmour> GetCraftableArmour() { return CraftableArmour; }
 
 private:
+	FLoadExternalData* Loader;
 
+	std::vector<FItemData> CraftableItems;
 	std::vector<FWeapon> CraftableWeapons;
 	std::vector<FArmour> CraftableArmour;
 };
