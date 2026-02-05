@@ -27,16 +27,14 @@ public:
 	const std::vector<FRaceData> GetAvailableRaces() const { return AvailableRaces; }
 	const std::vector<FClassData> GetAvailableClasses() const { return AvailableClasses; }
 
-private:
-
 	FRaceData ChooseRace(int RaceIndex);
 	FClassData ChooseClass(int ClassIndex);
 
-	void ApplyRaceBaseStats(FRaceData& Race, FCharacterData& Character);
-	void ApplyClassModifiers(FClassData& Class, FCharacterData& Character);
+	void ApplyRaceBaseStats(FCharacterData& Character);
+	void ApplyClassModifiers(FCharacterData& Character);
 
-	int SetCharacterMaxHP(FCharacterData& Character);
-	int SetCharacterMaxMP(FCharacterData& Character);
+	int CalculateCharacterMaxHP(FCharacterData& Character);
+	int CalculateCharacterMaxMP(FCharacterData& Character);
 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);
 
@@ -54,6 +52,8 @@ private:
 	int MaxAttributePoints = 10;
 	
 	bool bIsFinalised;
+
+	const EAbility StringToEAbility(std::string String);
 };
 
 

@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
+#include <cctype>
 #include <algorithm>
 
 #include "CharacterCreation.h"
@@ -65,6 +65,44 @@ bool FCharacterCreator::TryAllocatePoints(int& Current, int Base, int Amount, EM
 	return false;
 }
 
+const EAbility FCharacterCreator::StringToEAbility(std::string String)
+{
+	std::string Ability;
+	int count = std::min(3, static_cast<int>(String.length()));
+
+	for (int i = 0; i < count; i++)
+	{
+		Ability += std::toupper(static_cast<unsigned char>(String[i]));
+	}
+
+	if (Ability == "STR")
+	{
+		return EAbility::EAStr;
+	}
+	if (Ability == "DEX")
+	{
+		return EAbility::EADex;
+	}
+	if (Ability == "CON")
+	{
+		return EAbility::EACon;
+	}
+	if (Ability == "INT")
+	{
+		return EAbility::EAInt;
+	}
+	if (Ability == "WIS")
+	{
+		return EAbility::EAWis;
+	}
+	if (Ability == "Cha")
+	{
+		return EAbility::EACha;
+	}
+
+	return EAbility::EANone;
+}
+
 /**
 Skill refers the the Character.CharStat that needs to be increased
 Amount is the values that a stat should be increased by which also deducts from AvailableAttributePoints
@@ -74,7 +112,8 @@ Mode determines whether the Skill should be increased or decreased, this will be
 void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode) 
 { 
 	if (bIsFinalised) { return; }
-	if (AvailableAttributePoints <= 0 && UIMode == EMode::EMIncrease) return;
+	if (AvailableAttributePoints <= 0 && UIMode == EMode::EMIncrease) { return; }
+	if (StringToEAbility(UISkill) == EAbility::EANone) { return; }
 		
 	AvailableAttributePoints = std::min(AvailableAttributePoints, MaxAttributePoints);
 	bool bStatChanged = false;
@@ -88,6 +127,49 @@ void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmoun
 		UIAmount = std::clamp(UIAmount, 0, MaxAttributePoints);
 	}
 
+	
+	switch (StringToEAbility(UISkill))
+	{
+		case EAbility::EAStr: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EAStr), 
+							Character->BaseStats.at(EAbility::EAStr), 
+							UIAmount, 
+							UIMode);
+			bStatChanged = true;
+		case EAbility::EADex: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EADex),
+							Character->BaseStats.at(EAbility::EADex),
+							UIAmount,
+							UIMode);
+			bStatChanged = true;
+		case EAbility::EACon: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EACon),
+							Character->BaseStats.at(EAbility::EACon),
+							UIAmount,
+							UIMode);
+			bStatChanged = true;
+		case EAbility::EAInt: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EAInt),
+							Character->BaseStats.at(EAbility::EAInt),
+							UIAmount,
+							UIMode);
+			bStatChanged = true;
+		case EAbility::EAWis: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EAWis),
+							Character->BaseStats.at(EAbility::EAWis),
+							UIAmount,
+							UIMode);
+			bStatChanged = true;
+		case EAbility::EACha: 
+			TryAllocatePoints(Character->CharStats.at(EAbility::EACha),
+							Character->BaseStats.at(EAbility::EACha),
+							UIAmount,
+							UIMode);
+			bStatChanged = true;
+		default: 
+			bStatChanged = false;
+	}
+
 	if (UIMode == EMode::EMIncrease && bStatChanged)
 	{ 
 		AvailableAttributePoints -= UIAmount; 		
@@ -99,29 +181,56 @@ void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmoun
 }
 
 //Applies the stats of Race to the Character
-void FCharacterCreator::ApplyRaceBaseStats(FRaceData& Race, FCharacterData& Character)
+void FCharacterCreator::ApplyRaceBaseStats(FCharacterData& Character)
 {
-	Character.BaseStats = Race.BaseStat;
+	Character.BaseStats = Character.CharRace.BaseStat;
 }
 
 //Adds the Class Stat modifiers to the Current Character
-void FCharacterCreator::ApplyClassModifiers(FClassData& Class, FCharacterData& Character)
+void FCharacterCreator::ApplyClassModifiers(FCharacterData& Character)
 {
-	for (auto& key : Class.StatModifier)
+	for (auto& key : Character.CharClass.StatModifier)
 	{
-		Character.BaseStats[key.first] += Class.StatModifier[key.first];
+		Character.BaseStats[key.first] += Character.CharClass.StatModifier[key.first];
 	}
 }
 
-int FCharacterCreator::SetCharacterMaxHP(FCharacterData& Character)
+int FCharacterCreator::CalculateCharacterMaxHP(FCharacterData& Character)
 {
 	return Character.CharClass.BaseHealth + Character.CharStats[EAbility::EACon];
 }
 
 //Sets the character MP based on class, according to the ability they use to cast spells
-int FCharacterCreator::SetCharacterMaxMP(FCharacterData& Character)
+int FCharacterCreator::CalculateCharacterMaxMP(FCharacterData& Character)
 {
-	return 0;
+	if (Character.CharClass.ClassName == "Paladin")
+	{
+		return Character.CharStats[EAbility::EACha] * 2;
+	}
+	else if (Character.CharClass.ClassName == "Cleric")
+	{
+		return Character.CharStats[EAbility::EAWis] * 2;
+	}
+	else if (Character.CharClass.ClassName == "Wizard")
+	{
+		return Character.CharStats[EAbility::EAInt] * 2;
+	}
+	else if (Character.CharClass.ClassName == "Bard")
+	{
+		return Character.CharStats[EAbility::EACha] * 2;
+	}
+	else if (Character.CharClass.ClassName == "Sorcerer")
+	{
+		return Character.CharStats[EAbility::EACha] * 2;
+	}
+	else if (Character.CharClass.ClassName == "Druid")
+	{
+		return Character.CharStats[EAbility::EAWis] * 2;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 

@@ -10,6 +10,7 @@
 #include <vector>
 #include <Core/Types.h>
 
+class FLoadExternalData;
 
 class FItem
 {
@@ -24,6 +25,17 @@ public:
 	FArmour IronCuirass;
 	FArmour ClothRobe;
 	FArmour LeatherArmour;
+
+	const std::vector<FItemData> GetCraftableItems() const { return AvailableItems; }
+	std::vector<FWeapon> GetCraftableWeapons() { return AvailableWeapons; }
+	std::vector<FArmour> GetCraftableArmour() { return AvailableArmour; }
+
+private:
+	FLoadExternalData* Loader;
+
+	std::vector<FItemData> AvailableItems; 	
+	std::vector<FWeapon> AvailableWeapons;
+	std::vector<FArmour> AvailableArmour;
 };
 
 

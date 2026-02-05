@@ -18,7 +18,8 @@ enum class EAbility
 	EACon,
 	EAInt,
 	EAWis,
-	EACha
+	EACha,
+	EANone
 };
 
 //enum to be used for stat mode, wheter to increase or decrease the stat, mostly for UI input

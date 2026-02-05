@@ -12,6 +12,8 @@ FCharacter::FCharacter()
 	Random.RandomGenerator = std::mt19937(Random.rd());
 }
 
+
+
 void FCharacter::GatherMaterials(const FMaterial& MaterialNeeded)
 {
 	std::uniform_int_distribution<int> AmountDist(1, 5);

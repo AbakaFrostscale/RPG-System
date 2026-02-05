@@ -5,11 +5,11 @@
 //version 1.00
 
 #include "Core/LoadExternalData.h"
+#include "Inventory/Items.h"
 #include "Crafting.h"
 
 FCrafting::FCrafting()
 {
-	Loader->LoadCSV("DataBases/ItemsDatabase.csv", CraftableItems);
 }
 
 FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)
@@ -47,7 +47,7 @@ ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
 {
 	bool bWeaponExists = false;
 	//Check if the weapon exists and is craftable
-	for (FWeapon& WeaponIndex : CraftableWeapons)
+	for (const FWeapon& WeaponIndex : Item->GetCraftableWeapons())
 	{
 		if (WeaponIndex.WeaponData.ItemName == WeaponToCraft.WeaponData.ItemName)
 		{
@@ -80,7 +80,7 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 {
 	bool bArmourExists = false;
 	//Check if the weapon exists and is craftable
-	for (FArmour& ArmourIndex : CraftableArmour)
+	for (FArmour& ArmourIndex : Item->GetCraftableArmour())
 	{
 		if (ArmourIndex.ArmourData.ItemName == ArmourToCraft.ArmourData.ItemName)
 		{
