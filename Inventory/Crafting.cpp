@@ -20,11 +20,6 @@ FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)
 		return {};
 	}						  
 
-	//for (const FMaterial& MaterialIndex : WeaponToCraft.WeaponData.RequiredMaterials)
-	//{
-	//	Inventory.RemoveMaterials(MaterialIndex, MaterialIndex.MaterialAmount);
-	//}
-
 	return WeaponToCraft;
 }
 
@@ -34,11 +29,6 @@ FArmour FCrafting::CraftArmour(const FArmour& ArmourToCraft)
 		CanArmourBeCrafted(ArmourToCraft) == ECraftingResponse::ECRMaterialsMissing ||
 		CanArmourBeCrafted(ArmourToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
 		{ return {}; }
-
-	//for (const FMaterial& MaterialIndex : ArmourToCraft.ArmourData.RequiredMaterials)
-	//{
-	//	Inventory.RemoveMaterials(MaterialIndex, MaterialIndex.MaterialAmount);
-	//}
 
 	return ArmourToCraft;
 }

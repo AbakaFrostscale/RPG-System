@@ -32,9 +32,10 @@ public:
 private:
 	FLoadExternalData* Loader;
 
-	FItemData* FindItemData(std::string ItemName);
+	FItemData* FindItemData(const std::string& ItemName);
 
-	std::vector<FItemData> AvailableItems; 	
+	std::vector<FItemData> AvailableItems; 
+
 	std::vector<FWeapon> AvailableWeapons;
 	std::vector<FArmour> AvailableArmour;
 };

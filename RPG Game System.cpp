@@ -11,6 +11,20 @@ FCharacter CurrentCharacter;
 FCharacterCreator Creator;
 FItem Items;
 
+std::string EAbilityToString(EAbility Ability)
+{
+    switch (Ability)
+    {
+    case EAbility::EAStr: return "Strength";
+    case EAbility::EADex: return "Dexterity";
+    case EAbility::EACon: return "Constitution";
+    case EAbility::EAInt: return "Intelligence";
+    case EAbility::EAWis: return "Wisdom";
+    case EAbility::EACha: return "Charisma";
+    default: return "None";
+    }
+}
+
 void PrintAvailableRaces()
 {
     int Index = 1;
@@ -117,6 +131,58 @@ void PrintCraftableItems()
     std::cout << std::endl;
 }
 
+void  PrintAvailableWeapons()
+{
+    int Index = 1;
+
+    for (const FWeapon& Weapon : Items.GetCraftableWeapons())
+    {
+        std::cout << Index << " : Item: " << Weapon.WeaponData.ItemName << std::endl;
+        std::cout << "    Required Materials: " << std::endl;
+        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+        {
+            for (auto& key : Weapon.WeaponData.RequiredMaterials)
+            {
+                if (key.first == Material.MaterialName)
+                {
+                    std::cout << "    " << key.first << " : " << Weapon.WeaponData.RequiredMaterials.at(key.first) << std::endl;
+                }
+            }
+        }
+        std::cout << "    Damage: " << Weapon.Damage << std::endl;
+        std::cout << "    Required Stat: " << Weapon.RequiredStatAmount << " " << EAbilityToString(Weapon.RequiredStat) << std::endl;
+
+        ++Index;
+    }
+    std::cout << std::endl;
+}     
+
+void  PrintAvailableArmour()
+{
+    int Index = 1;
+
+    for (const FArmour& Armour : Items.GetCraftableArmour())
+    {
+        std::cout << Index << " : Item: " << Armour.ArmourData.ItemName << std::endl;
+        std::cout << "    Required Materials: " << std::endl;
+        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+        {
+            for (auto& key : Armour.ArmourData.RequiredMaterials)
+            {
+                if (key.first == Material.MaterialName)
+                {
+                    std::cout << "    " << key.first << " : " << Armour.ArmourData.RequiredMaterials.at(key.first) << std::endl;
+                }
+            }
+        }
+        std::cout << "    Damage: " << Armour.Defence << std::endl;
+        std::cout << "    Required Stat: " << Armour.RequiredStatAmount << " " << EAbilityToString(Armour.RequiredStat) << std::endl;
+
+        ++Index;
+    }
+    std::cout << std::endl;
+}
+
 
 int main()
 {
@@ -127,6 +193,10 @@ int main()
     PrintAvailableMaterials(4);
 
     PrintCraftableItems();
+
+    PrintAvailableWeapons();
+
+    PrintAvailableArmour();
 
 
     return 0;
