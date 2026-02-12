@@ -25,6 +25,8 @@ public:
 
 	FInventory Inventory;
 
+	const FItem* GetItem() const { return Item; }
+
 private:
 	FItem* Item;
 };

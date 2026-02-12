@@ -9,6 +9,7 @@
 
 FCharacter CurrentCharacter;
 FCharacterCreator Creator;
+FItem Items;
 
 void PrintAvailableRaces()
 {
@@ -91,30 +92,30 @@ void PrintAvailableMaterials(int Type)
     std::cout << std::endl;
 }
 
-//void PrintCraftableItems()
-//{
-//    int Index = 1;
-//
-//    for (const FItemData& Item : GetCraftableItems())
-//    {
-//        std::cout << Index << " : Item: " << Item.ItemName << std::endl;
-//        std::cout << "    Item Type: " << Item.ItemType << std::endl;
-//        std::cout << "    Required Materials: " << std::endl;
-//        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
-//        {
-//           for (auto& key : Item.RequiredMaterials)
-//           {
-//               if (key.first == Material.MaterialName)
-//               {
-//                   std::cout << "    " << key.first << " : " << Item.RequiredMaterials.at(key.first) << std::endl;
-//               }
-//           }
-//        }
-//
-//        ++Index;
-//    }
-//    std::cout << std::endl;
-//}
+void PrintCraftableItems()
+{
+    int Index = 1;
+
+    for (const FItemData& Item : Items.GetCraftableItems())
+    {
+        std::cout << Index << " : Item: " << Item.ItemName << std::endl;
+        std::cout << "    Item Type: " << Item.ItemType << std::endl;
+        std::cout << "    Required Materials: " << std::endl;
+        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+        {
+           for (auto& key : Item.RequiredMaterials)
+           {
+               if (key.first == Material.MaterialName)
+               {
+                   std::cout << "    " << key.first << " : " << Item.RequiredMaterials.at(key.first) << std::endl;
+               }
+           }
+        }
+
+        ++Index;
+    }
+    std::cout << std::endl;
+}
 
 
 int main()
@@ -125,7 +126,7 @@ int main()
 
     PrintAvailableMaterials(4);
 
-    //PrintCraftableItems();
+    PrintCraftableItems();
 
 
     return 0;
