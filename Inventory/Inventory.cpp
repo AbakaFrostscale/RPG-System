@@ -10,7 +10,7 @@
 
 FInventory::FInventory()
 {
-	Loader->LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
+	
 }
 
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
@@ -58,7 +58,7 @@ void FInventory::RemoveWeapons(const FWeapon& Weapon)
 
 	for (auto It = Inventory.Weapons.begin(); It != Inventory.Weapons.end(); )
 	{
-		if (It->WeaponData.ItemName == Weapon.WeaponData.ItemName)
+		if (It->WeaponData->ItemName == Weapon.WeaponData->ItemName)
 		{
 			It = Inventory.Weapons.erase(It);
 			break;
@@ -83,7 +83,7 @@ void FInventory::RemoveArmour(const FArmour& Armour)
 
 	for (auto It = Inventory.Armour.begin(); It != Inventory.Armour.end(); )
 	{
-		if (It->ArmourData.ItemName == Armour.ArmourData.ItemName)
+		if (It->ArmourData->ItemName == Armour.ArmourData->ItemName)
 		{
 			It = Inventory.Armour.erase(It);
 			break;
@@ -106,7 +106,7 @@ ECraftingResponse FInventory::HasArmour(const FArmour& Armor)
 {
 	for (const FArmour& ArmourIndex : Inventory.Armour)
 	{
-		if (ArmourIndex.ArmourData.ItemName == Armor.ArmourData.ItemName)
+		if (ArmourIndex.ArmourData->ItemName == Armor.ArmourData->ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}
@@ -118,7 +118,7 @@ ECraftingResponse FInventory::HasWeapon(const FWeapon& Weapon)
 {
 	for (const FWeapon& WeaponIndex : Inventory.Weapons)
 	{
-		if (WeaponIndex.WeaponData.ItemName == Weapon.WeaponData.ItemName)
+		if (WeaponIndex.WeaponData->ItemName == Weapon.WeaponData->ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}

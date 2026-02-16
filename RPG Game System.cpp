@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <string>
+#include "Core/LoadExternalData.h"
 #include "Character/Character.h"
 #include "Creation/CharacterCreation.h"
 #include "Inventory/Inventory.h"
 
 FCharacter CurrentCharacter;
 FCharacterCreator Creator;
-FItem Items;
+FItem MainItem;
 
 std::string EAbilityToString(EAbility Ability)
 {
@@ -68,7 +69,7 @@ void PrintAvailableClasses()
 void PrintAvailableMaterials(int Type)
 {
     int Index = 1;
-    for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+    for (const FMaterialData& Material : MainItem.GetAvailableMaterials())
     {
         switch (Type)
         {
@@ -109,79 +110,64 @@ void PrintAvailableMaterials(int Type)
 void PrintCraftableItems()
 {
     int Index = 1;
+    int ReqIndex = 0;
 
-    for (const FItemData& Item : Items.GetCraftableItems())
+    for (const FItemData& Item : MainItem.GetAvailableItems())
     {
         std::cout << Index << " : Item: " << Item.ItemName << std::endl;
         std::cout << "    Item Type: " << Item.ItemType << std::endl;
         std::cout << "    Required Materials: " << std::endl;
-        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
-        {
-           for (auto& key : Item.RequiredMaterials)
-           {
-               if (key.first == Material.MaterialName)
-               {
-                   std::cout << "    " << key.first << " : " << Item.RequiredMaterials.at(key.first) << std::endl;
-               }
-           }
-        }
-
+     
         ++Index;
+        ++ReqIndex;
+        
     }
     std::cout << std::endl;
 }
 
-void  PrintAvailableWeapons()
-{
-    int Index = 1;
+//void  PrintAvailableWeapons()
+//{
+//    int Index = 1;
+//
+//    for (const FWeapon& Weapon : Items.GetCraftableWeapons())
+//    {
+//        std::cout << Index << " : Item: " << Weapon.WeaponData.ItemName << std::endl;
+//        std::cout << "    Required Materials: " << std::endl;
+//        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+//        {
+//            if (key.first == Material.MaterialName)
+//            {
+//                std::cout << "    " << key.first << " : " << Weapon.WeaponData.RequiredMaterials.at(key.first) << std::endl;
+//            }
+//        }
+//    }
+//    std::cout << "    Damage: " << Weapon.Damage << std::endl;
+//    std::cout << "    Required Stat: " << Weapon.RequiredStatAmount << " " << EAbilityToString(Weapon.RequiredStat) << std::endl;
+//
+//    ++Index;
+//    }
+//    std::cout << std::endl;
+//}     
 
-    for (const FWeapon& Weapon : Items.GetCraftableWeapons())
-    {
-        std::cout << Index << " : Item: " << Weapon.WeaponData.ItemName << std::endl;
-        std::cout << "    Required Materials: " << std::endl;
-        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
-        {
-            for (auto& key : Weapon.WeaponData.RequiredMaterials)
-            {
-                if (key.first == Material.MaterialName)
-                {
-                    std::cout << "    " << key.first << " : " << Weapon.WeaponData.RequiredMaterials.at(key.first) << std::endl;
-                }
-            }
-        }
-        std::cout << "    Damage: " << Weapon.Damage << std::endl;
-        std::cout << "    Required Stat: " << Weapon.RequiredStatAmount << " " << EAbilityToString(Weapon.RequiredStat) << std::endl;
-
-        ++Index;
-    }
-    std::cout << std::endl;
-}     
-
-void  PrintAvailableArmour()
-{
-    int Index = 1;
-
-    for (const FArmour& Armour : Items.GetCraftableArmour())
-    {
-        std::cout << Index << " : Item: " << Armour.ArmourData.ItemName << std::endl;
-        std::cout << "    Required Materials: " << std::endl;
-        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
-        {
-            for (auto& key : Armour.ArmourData.RequiredMaterials)
-            {
-                if (key.first == Material.MaterialName)
-                {
-                    std::cout << "    " << key.first << " : " << Armour.ArmourData.RequiredMaterials.at(key.first) << std::endl;
-                }
-            }
-        }
-        std::cout << "    Damage: " << Armour.Defence << std::endl;
-        std::cout << "    Required Stat: " << Armour.RequiredStatAmount << " " << EAbilityToString(Armour.RequiredStat) << std::endl;
-
-        ++Index;
-    }
-    std::cout << std::endl;
-}
+//void  PrintAvailableArmour()
+//{
+//    int Index = 1;
+//
+//    for (const FArmour& Armour : Items.GetCraftableArmour())
+//    {
+//        std::cout << Index << " : Item: " << Armour.ArmourData.ItemName << std::endl;
+//        std::cout << "    Required Materials: " << std::endl;
+//        for (const FMaterialData& Material : CurrentCharacter.Inventory.GetAvailableMaterials())
+//        {
+//
+//        }
+//        std::cout << "    Damage: " << Armour.Defence << std::endl;
+//        std::cout << "    Required Stat: " << Armour.RequiredStatAmount << " " << EAbilityToString(Armour.RequiredStat) << std::endl;
+//
+//        ++Index;
+//    }
+//    std::cout << std::endl;
+//}
 
 
 int main()
@@ -194,9 +180,9 @@ int main()
 
     PrintCraftableItems();
 
-    PrintAvailableWeapons();
+    //PrintAvailableWeapons();
 
-    PrintAvailableArmour();
+    //PrintAvailableArmour();
 
 
     return 0;

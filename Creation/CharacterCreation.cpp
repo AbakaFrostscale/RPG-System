@@ -17,6 +17,7 @@
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
+	//CharacterCreation
 	Loader->LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
 	Loader->LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
 }
@@ -32,13 +33,13 @@ UIAmount - Determines the amount of AttributesPoints to use with upgrading the s
 //Chooses the race from AvailableRaces based on an index fed in from the UI
 FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
-	return AvailableRaces[RaceIndex];
+	return GetAvailableRaces()[RaceIndex];
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
 FClassData FCharacterCreator::ChooseClass(int ClassIndex)
 {
-	return AvailableClasses[ClassIndex];
+	return GetAvailableClasses()[ClassIndex];
 }
 
 /**
@@ -136,36 +137,42 @@ void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmoun
 							UIAmount, 
 							UIMode);
 			bStatChanged = true;
+			break;
 		case EAbility::EADex: 
 			TryAllocatePoints(Character->CharStats.at(EAbility::EADex),
 							Character->BaseStats.at(EAbility::EADex),
 							UIAmount,
 							UIMode);
 			bStatChanged = true;
+			break;
 		case EAbility::EACon: 
 			TryAllocatePoints(Character->CharStats.at(EAbility::EACon),
 							Character->BaseStats.at(EAbility::EACon),
 							UIAmount,
 							UIMode);
 			bStatChanged = true;
+			break;
 		case EAbility::EAInt: 
 			TryAllocatePoints(Character->CharStats.at(EAbility::EAInt),
 							Character->BaseStats.at(EAbility::EAInt),
 							UIAmount,
 							UIMode);
 			bStatChanged = true;
+			break;
 		case EAbility::EAWis: 
 			TryAllocatePoints(Character->CharStats.at(EAbility::EAWis),
 							Character->BaseStats.at(EAbility::EAWis),
 							UIAmount,
 							UIMode);
 			bStatChanged = true;
+			break;
 		case EAbility::EACha: 
 			TryAllocatePoints(Character->CharStats.at(EAbility::EACha),
 							Character->BaseStats.at(EAbility::EACha),
 							UIAmount,
 							UIMode);
 			bStatChanged = true;
+			break;
 		default: 
 			bStatChanged = false;
 	}

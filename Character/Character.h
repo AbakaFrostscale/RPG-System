@@ -11,6 +11,7 @@
 #include "Core/Random.h"
 #include "CharacterStats.h"
 #include "Inventory/Crafting.h"
+#include "Inventory/Inventory.h"
 #include "Creation/CharacterCreation.h"
 
 
@@ -23,7 +24,6 @@ public:
 	class FRandom Random;
 
 	class FCrafting Crafter;
-	class FInventory Inventory;
 
 	void CreateCharacter(std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
 
@@ -34,6 +34,8 @@ public:
 
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
+
+	FInventory Inventory;
 
 private:
 	

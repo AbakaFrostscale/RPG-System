@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <utility>
 
 //enum to define stats that exist in the game for the characaters
 enum class EAbility
@@ -75,23 +76,25 @@ struct FItemData
 {
 	std::string ItemName;
 	std::string ItemType;
-	std::map<std::string, int> RequiredMaterials;
-
+	std::vector<std::pair<std::string, int>> RawRequiredMaterials;
+	std::vector<FMaterial> RequiredMaterial;
+	
 	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		ItemName = Columns[0];
 		ItemType = Columns[1];
 
+		int Index = 0;
 		for (size_t i = 2; i < Columns.size(); i += 2)
 		{
-			 RequiredMaterials[Columns[i]] = std::stoi(Columns[i + 1]);
+			RawRequiredMaterials.emplace_back(Columns[i], std::stoi(Columns[i + 1]));
 		}
 	}
 };
 
 struct FWeapon
 {
-	FItemData WeaponData;
+	const FItemData* WeaponData;
 	int Damage = 0;
 	EAbility RequiredStat;
 	int RequiredStatAmount = 0;
@@ -99,7 +102,7 @@ struct FWeapon
 
 struct FArmour
 {
-	FItemData ArmourData;
+	const FItemData* ArmourData;
 	int Defence = 0;
 	EAbility RequiredStat;
 	int RequiredStatAmount;

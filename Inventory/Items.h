@@ -7,7 +7,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <vector>	  
 #include "Core/Types.h"
 
 class FLoadExternalData;
@@ -16,6 +16,8 @@ class FItem
 {
 public:
 	FItem();
+	const FItemData* FindItemData(const std::string& ItemName);
+	void ResolveMaterials(std::vector<FItemData>& Items);
 
 	FWeapon CopperSword;
 	FWeapon IronSword;
@@ -25,16 +27,16 @@ public:
 	FArmour IronChestPlate;
 	FArmour SpiderSilkArmour;
 
-	std::vector<FItemData> GetCraftableItems() { return AvailableItems; }
 	std::vector<FWeapon> GetCraftableWeapons() { return AvailableWeapons; }
 	std::vector<FArmour> GetCraftableArmour() { return AvailableArmour; }
+	const std::vector<FItemData>& GetAvailableItems() const { return AvailableItems; }
+	const std::vector<FMaterialData>& GetAvailableMaterials() const { return AvailableMaterials; }
 
 private:
 	FLoadExternalData* Loader;
-
-	FItemData* FindItemData(const std::string& ItemName);
-
-	std::vector<FItemData> AvailableItems; 
+	//Items		
+	std::vector<FMaterialData> AvailableMaterials;
+	std::vector<FItemData> AvailableItems;
 
 	std::vector<FWeapon> AvailableWeapons;
 	std::vector<FArmour> AvailableArmour;

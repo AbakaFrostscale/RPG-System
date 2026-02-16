@@ -1,4 +1,4 @@
-//CharacterStats.h
+//LoadExternalData.h
 //HeaderFile for loading all the external data from files
 //Author: Kaden Mann
 //Description: Portfolio project demonstrating a full RPG system
@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Types.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -70,4 +71,6 @@ public:
 
 		return true;
 	}
+
 };
+	

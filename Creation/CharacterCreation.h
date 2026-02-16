@@ -20,12 +20,9 @@ class FCharacterCreator
 public:
 	FCharacterCreator();
 
-
 	void AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode);
 
 	const int GetAttributePoints() const { return AvailableAttributePoints; }
-	const std::vector<FRaceData> GetAvailableRaces() const { return AvailableRaces; }
-	const std::vector<FClassData> GetAvailableClasses() const { return AvailableClasses; }
 
 	FRaceData ChooseRace(int RaceIndex);
 	FClassData ChooseClass(int ClassIndex);
@@ -37,16 +34,19 @@ public:
 	int CalculateCharacterMaxMP(FCharacterData& Character);
 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);
+	const FLoadExternalData* GetLoader() { return Loader; }	//CharacterCreation
+	const std::vector<FRaceData>& GetAvailableRaces() const { return AvailableRaces; }
+	const std::vector<FClassData>& GetAvailableClasses() const { return AvailableClasses; }
 
 
 
 private:
+	//CharacterCreation
+	std::vector<FRaceData> AvailableRaces;
+	std::vector<FClassData> AvailableClasses;
 	
 	FLoadExternalData* Loader;
 	FCharacterData* Character;
-
-	std::vector<FRaceData> AvailableRaces;
-	std::vector<FClassData> AvailableClasses;
 
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;

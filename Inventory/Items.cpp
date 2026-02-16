@@ -1,29 +1,32 @@
 
 #include <optional>
+#include "Inventory/Inventory.h"
 #include "Core/LoadExternalData.h"
 #include "Items.h"
 
 FItem::FItem()
 {
+	Loader->LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
 	Loader->LoadCSV("DataBases/ItemsDatabase.csv", AvailableItems);
+	ResolveMaterials(AvailableItems);
 
 	CopperSword = 
 	{	
-		*FindItemData("Copper Sword"),
+		FindItemData("Copper Sword"),
 		4,
 		EAbility::EADex, 
 		2 
 	};
 	IronSword =
 	{
-	   *FindItemData("Iron Sword"),
+	   FindItemData("Iron Sword"),
 	   6,
 	   EAbility::EAStr,
 	   4
 	};
 	SteelSword =
 	{
-		*FindItemData("Steel Sword"),
+		FindItemData("Steel Sword"),
 		8,
 		EAbility::EAStr,
 		4
@@ -35,21 +38,21 @@ FItem::FItem()
 
 	CopperChestPlate = 
 	{
-		*FindItemData("Copper Chest Plate"),
+		FindItemData("Copper Chest Plate"),
 		4,
 		EAbility::EAStr,
 		2
 	};
 	IronChestPlate = 
 	{
-		*FindItemData("Iron Chest Plate"),
+		FindItemData("Iron Chest Plate"),
 		6,
 		EAbility::EAStr,
 		4
 	};
 	SpiderSilkArmour = 
 	{
-		*FindItemData("Spider Silk Armour"),
+		FindItemData("Spider Silk Armour"),
 		6,
 		EAbility::EANone,
 		0
@@ -60,9 +63,9 @@ FItem::FItem()
 	AvailableArmour.push_back(SpiderSilkArmour);
 }
 
-FItemData* FItem::FindItemData(const std::string& ItemName)
+const FItemData* FItem::FindItemData(const std::string& ItemName)
 {
-	for (FItemData& Item : AvailableItems)
+	for (const FItemData& Item : GetAvailableItems())
 	{
 		if (Item.ItemName == ItemName)
 		{
@@ -72,7 +75,13 @@ FItemData* FItem::FindItemData(const std::string& ItemName)
 	return nullptr;
 }
 
+void FItem::ResolveMaterials(std::vector<FItemData>& Items)
+{
+
+}
 
 
 
 
+
+											r
