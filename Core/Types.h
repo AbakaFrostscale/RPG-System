@@ -94,18 +94,18 @@ struct FItemData
 
 struct FWeapon
 {
-	const FItemData* WeaponData;
+	const FItemData* WeaponData = {};
 	int Damage = 0;
-	EAbility RequiredStat;
+	EAbility RequiredStat = EAbility::EANone;
 	int RequiredStatAmount = 0;
 };
 
 struct FArmour
 {
-	const FItemData* ArmourData;
+	const FItemData* ArmourData = {};
 	int Defence = 0;
-	EAbility RequiredStat;
-	int RequiredStatAmount;
+	EAbility RequiredStat = EAbility::EANone;
+	int RequiredStatAmount = 0;
 };
 
 struct FRaceData

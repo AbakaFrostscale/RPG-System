@@ -110,9 +110,8 @@ Amount is the values that a stat should be increased by which also deducts from 
 Mode determines whether the Skill should be increased or decreased, this will be fed in from the UI
 */
 
-void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode) 
+void FCharacterCreator::AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode) 
 { 
-	if (bIsFinalised) { return; }
 	if (AvailableAttributePoints <= 0 && UIMode == EMode::EMIncrease) { return; }
 	if (StringToEAbility(UISkill) == EAbility::EANone) { return; }
 		
@@ -132,46 +131,40 @@ void FCharacterCreator::AllocateAttributePoints(std::string UISkill, int UIAmoun
 	switch (StringToEAbility(UISkill))
 	{
 		case EAbility::EAStr: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EAStr), 
-							Character->BaseStats.at(EAbility::EAStr), 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAStr],
+							Character.BaseStats[EAbility::EAStr], 
 							UIAmount, 
 							UIMode);
-			bStatChanged = true;
 			break;
 		case EAbility::EADex: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EADex),
-							Character->BaseStats.at(EAbility::EADex),
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EADex],
+							Character.BaseStats[EAbility::EADex],
 							UIAmount,
 							UIMode);
-			bStatChanged = true;
 			break;
 		case EAbility::EACon: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EACon),
-							Character->BaseStats.at(EAbility::EACon),
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EACon],
+							Character.BaseStats[EAbility::EACon],
 							UIAmount,
 							UIMode);
-			bStatChanged = true;
 			break;
 		case EAbility::EAInt: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EAInt),
-							Character->BaseStats.at(EAbility::EAInt),
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAInt],
+							Character.BaseStats[EAbility::EAInt],
 							UIAmount,
 							UIMode);
-			bStatChanged = true;
 			break;
 		case EAbility::EAWis: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EAWis),
-							Character->BaseStats.at(EAbility::EAWis),
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAWis],
+							Character.BaseStats[EAbility::EAWis],
 							UIAmount,
 							UIMode);
-			bStatChanged = true;
 			break;
 		case EAbility::EACha: 
-			TryAllocatePoints(Character->CharStats.at(EAbility::EACha),
-							Character->BaseStats.at(EAbility::EACha),
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EACha],
+							Character.BaseStats[EAbility::EACha],
 							UIAmount,
 							UIMode);
-			bStatChanged = true;
 			break;
 		default: 
 			bStatChanged = false;

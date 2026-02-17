@@ -11,6 +11,8 @@
 
 FCrafting::FCrafting()
 {
+	Inventory = Inventory;
+	Item = Item;
 }
 
 FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)

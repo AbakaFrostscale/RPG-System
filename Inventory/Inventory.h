@@ -52,7 +52,4 @@ private:
 
 	FLoadExternalData* Loader;
 	FInventoryStorage Inventory;
-
-
-	
 };

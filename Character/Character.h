@@ -37,6 +37,9 @@ public:
 
 	FInventory Inventory;
 
+	const FCharacterData GetCharacter() const { return Character; }
+	FCharacterData& GetCharacterReference() { return Character; }
+
 private:
 	
 	FCharacterCreator Creator;

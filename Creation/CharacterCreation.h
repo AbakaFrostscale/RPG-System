@@ -20,7 +20,7 @@ class FCharacterCreator
 public:
 	FCharacterCreator();
 
-	void AllocateAttributePoints(std::string UISkill, int UIAmount, EMode UIMode);
+	void AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode);
 
 	const int GetAttributePoints() const { return AvailableAttributePoints; }
 
@@ -46,12 +46,9 @@ private:
 	std::vector<FClassData> AvailableClasses;
 	
 	FLoadExternalData* Loader;
-	FCharacterData* Character;
 
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;
-	
-	bool bIsFinalised;
 
 	const EAbility StringToEAbility(std::string String);
 };

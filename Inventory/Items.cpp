@@ -1,5 +1,6 @@
 
 #include <optional>
+#include <iostream>
 #include "Inventory/Inventory.h"
 #include "Core/LoadExternalData.h"
 #include "Items.h"
@@ -77,11 +78,19 @@ const FItemData* FItem::FindItemData(const std::string& ItemName)
 
 void FItem::ResolveMaterials(std::vector<FItemData>& Items)
 {
-
+	for (size_t i = 0; i < Items.size(); i++)
+	{
+		Items[i].RequiredMaterial.clear();
+		for (const auto& key : Items[i].RawRequiredMaterials)
+		{
+			for (FMaterialData& ReqMaterial : AvailableMaterials)
+			{
+				if (ReqMaterial.MaterialName == key.first)
+				{
+					Items[i].RequiredMaterial.push_back({ &ReqMaterial, key.second });
+					break;
+				}
+			}
+		}
+	}
 }
-
-
-
-
-
-											r

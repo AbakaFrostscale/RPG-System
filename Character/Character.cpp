@@ -14,6 +14,25 @@ FCharacter::FCharacter()
 
 
 
+void FCharacter::CreateCharacter(std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode)
+{
+	Character.CharName = UIName;
+	
+	Character.CharRace = Creator.ChooseRace(UIRace);
+	Creator.ApplyRaceBaseStats(Character);
+
+	Character.CharClass = Creator.ChooseClass(UIClass);
+	Creator.ApplyClassModifiers(Character);
+
+	Character.CharStats = Character.BaseStats;
+	
+	Character.MaxHP = Creator.CalculateCharacterMaxHP(Character);
+	Character.MaxMP = Creator.CalculateCharacterMaxMP(Character);
+
+	Character.CurrentHP = Character.MaxHP;
+	Character.CurrentMP = Character.MaxMP;
+}
+
 void FCharacter::GatherMaterials(const FMaterial& MaterialNeeded)
 {
 	std::uniform_int_distribution<int> AmountDist(1, 5);
@@ -43,5 +62,7 @@ void FCharacter::EquipWeapon(const FWeapon& Weapon)
 
 void FCharacter::EquipArmour(const FArmour& Armour)
 {
+	if (Inventory.HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
+	EquippedArmour = Armour;
 }

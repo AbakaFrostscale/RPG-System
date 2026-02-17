@@ -10,7 +10,7 @@
 
 FInventory::FInventory()
 {
-	
+	Loader = Loader;
 }
 
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
@@ -139,7 +139,7 @@ bool FInventory::HasMaterial(const FMaterial& Material)
 }
 ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 {
-	/*for (const FMaterial& ItemMaterialIndex : Weapon.WeaponData.RequiredMaterials)
+	for (const FMaterial& ItemMaterialIndex : Weapon.WeaponData->RequiredMaterial)
 	{
 		bool bRequirementsMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
@@ -154,27 +154,27 @@ ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 		{
 			return ECraftingResponse::ECRMaterialsMissing;
 		}
-	}*/
+	}
 	return ECraftingResponse::ECRCanBeCrafted;
 }
 
 ECraftingResponse FInventory::HasRequiredMaterialsArmour(const FArmour& Armour)
 {
-	//for (const FMaterial& ItemMaterialIndex : Armour.ArmourData.RequiredMaterials)
-	//{
-	//	bool bRequirementMet = false;
-	//	for (const FMaterial& MaterialIndex : Inventory.Materials)
-	//	{
-	//		if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
-	//		{
-	//			bRequirementMet = true;
-	//			break;
-	//		}
-	//	}
-	//	if (!bRequirementMet)
-	//	{
-	//		return ECraftingResponse::ECRMaterialsMissing;
-	//	}
-	//}
+	for (const FMaterial& ItemMaterialIndex : Armour.ArmourData->RequiredMaterial)
+	{
+		bool bRequirementMet = false;
+		for (const FMaterial& MaterialIndex : Inventory.Materials)
+		{
+			if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
+			{
+				bRequirementMet = true;
+				break;
+			}
+		}
+		if (!bRequirementMet)
+		{
+			return ECraftingResponse::ECRMaterialsMissing;
+		}
+	}
 	return ECraftingResponse::ECRCanBeCrafted;
 }
