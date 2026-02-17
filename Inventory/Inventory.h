@@ -10,6 +10,9 @@
 #include "Core/Types.h"
 #include "Items.h"
 
+
+class FLoadExternalData;
+
 struct FInventoryStorage
 {
 	std::vector<FMaterial> Materials;
@@ -22,8 +25,7 @@ class FInventory
 public:
 	FInventory();
 
-
-	void CheckInventory();
+	//Inventory
 
 	void RemoveMaterials(FMaterial Material, int AmountToRemove);
 	void AddMaterials(FMaterial Material, int AmountToAdd);
@@ -46,6 +48,8 @@ public:
 	const std::vector<FArmour>& GetArmour()const { return Inventory.Armour; }
 
 private:
+	//Inventory
+
+	FLoadExternalData* Loader;
 	FInventoryStorage Inventory;
-	
 };

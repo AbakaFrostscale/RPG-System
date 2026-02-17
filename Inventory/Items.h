@@ -7,23 +7,39 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <Core/Types.h>
+#include <vector>	  
+#include "Core/Types.h"
 
+class FLoadExternalData;
 
 class FItem
 {
 public:
 	FItem();
+	const FItemData* FindItemData(const std::string& ItemName);
+	void ResolveMaterials(std::vector<FItemData>& Items);
 
+	FWeapon CopperSword;
 	FWeapon IronSword;
-	FWeapon IronGreatsword;
-	FWeapon IronBattleaxe;
-	FWeapon IronDagger;
+	FWeapon SteelSword;
 
-	FArmour IronCuirass;
-	FArmour ClothRobe;
-	FArmour LeatherArmour;
+	FArmour CopperChestPlate;
+	FArmour IronChestPlate;
+	FArmour SpiderSilkArmour;
+
+	std::vector<FWeapon> GetCraftableWeapons() { return AvailableWeapons; }
+	std::vector<FArmour> GetCraftableArmour() { return AvailableArmour; }
+	const std::vector<FItemData>& GetAvailableItems() const { return AvailableItems; }
+	const std::vector<FMaterialData>& GetAvailableMaterials() const { return AvailableMaterials; }
+
+private:
+	FLoadExternalData* Loader;
+	//Items		
+	std::vector<FMaterialData> AvailableMaterials;
+	std::vector<FItemData> AvailableItems;
+
+	std::vector<FWeapon> AvailableWeapons;
+	std::vector<FArmour> AvailableArmour;
 };
 
 

@@ -1,67 +1,96 @@
+
+#include <optional>
+#include <iostream>
+#include "Inventory/Inventory.h"
+#include "Core/LoadExternalData.h"
 #include "Items.h"
 
 FItem::FItem()
 {
+	Loader->LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
+	Loader->LoadCSV("DataBases/ItemsDatabase.csv", AvailableItems);
+	ResolveMaterials(AvailableItems);
+
+	CopperSword = 
+	{	
+		FindItemData("Copper Sword"),
+		4,
+		EAbility::EADex, 
+		2 
+	};
 	IronSword =
 	{
-		"Iron Sword",
-		ERarity::ERCommon,
-		{},
+	   FindItemData("Iron Sword"),
+	   6,
+	   EAbility::EAStr,
+	   4
+	};
+	SteelSword =
+	{
+		FindItemData("Steel Sword"),
 		8,
-		{{ EMaterial::EMIron, 2}, {EMaterial::EMWood, 1}, {EMaterial::EMLeather, 1}}
+		EAbility::EAStr,
+		4
 	};
+	
+	AvailableWeapons.push_back(CopperSword);
+	AvailableWeapons.push_back(IronSword);
+	AvailableWeapons.push_back(SteelSword);
 
-	IronGreatsword =
+	CopperChestPlate = 
 	{
-		"Iron Greatsword",
-		ERarity::ERCommon,
-		{},
-		(6 + 6),
-		{{EMaterial::EMIron, 4}, {EMaterial::EMWood, 2}, {EMaterial::EMLeather, 2}}
-	};
-
-	FWeapon IronBattleaxe =
-	{
-		"Iron Battleaxe",
-		ERarity::ERCommon,
-		{},
-		6,
-		{{EMaterial::EMIron, 2}, {EMaterial::EMWood, 2}}
-	};
-
-	FWeapon IronDagger =
-	{
-		"Iron Dagger",
-		ERarity::ERCommon,
-		{},
+		FindItemData("Copper Chest Plate"),
 		4,
-		{{EMaterial::EMIron, 1}, {EMaterial::EMWood, 1}, {EMaterial::EMLeather, 1}}
+		EAbility::EAStr,
+		2
+	};
+	IronChestPlate = 
+	{
+		FindItemData("Iron Chest Plate"),
+		6,
+		EAbility::EAStr,
+		4
+	};
+	SpiderSilkArmour = 
+	{
+		FindItemData("Spider Silk Armour"),
+		6,
+		EAbility::EANone,
+		0
 	};
 
-	FArmour IronCuirass =
-	{
-		"Iron Cuirass",
-		ERarity::ERCommon,
-		{},
-		10,
-		{{EMaterial::EMIron, 6}, {EMaterial::EMCloth, 2}, {EMaterial::EMLeather, 1}}
-	};
+	AvailableArmour.push_back(CopperChestPlate);
+	AvailableArmour.push_back(IronChestPlate);
+	AvailableArmour.push_back(SpiderSilkArmour);
+}
 
-	FArmour ClothRobe =
+const FItemData* FItem::FindItemData(const std::string& ItemName)
+{
+	for (const FItemData& Item : GetAvailableItems())
 	{
-		"Cloth Robe",
-		ERarity::ERCommon,
-		{},
-		5,
-		{{EMaterial::EMCloth, 6}, {EMaterial::EMIron, 1}, {EMaterial::EMLeather, 1}}
-	};
+		if (Item.ItemName == ItemName)
+		{
+			return &Item;
+		}
+	}
+	return nullptr;
+}
 
-	FArmour LeatherArmour
+void FItem::ResolveMaterials(std::vector<FItemData>& Items)
+{
+	for (size_t i = 0; i < Items.size(); i++)
 	{
-		"Leather Armour",
-		ERarity::ERCommon,
-		{},
-		8,
-		{{EMaterial::EMLeather, 6}, {EMaterial::EMCloth, 2}, {EMaterial::EMIron, 1} }
-	};
+		Items[i].RequiredMaterial.clear();
+		for (const auto& key : Items[i].RawRequiredMaterials)
+		{
+			for (FMaterialData& ReqMaterial : AvailableMaterials)
+			{
+				if (ReqMaterial.MaterialName == key.first)
+				{
+					Items[i].RequiredMaterial.push_back({ &ReqMaterial, key.second });
+					break;
+				}
+			}
+		}
+	}
 }

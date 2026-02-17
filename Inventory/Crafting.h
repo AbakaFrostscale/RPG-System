@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <vector>
-#include "Inventory.h"
+#include <vector> 
 
-
+class FItem;
+class FInventory;
 
 class FCrafting 
 {
@@ -22,14 +22,9 @@ public:
 	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft);
 	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);
 
-	FItem Items;
-	FInventory Inventory;
-
-	std::vector<FWeapon> GetCraftableWeapons() { return CraftableWeapons; }
-	std::vector<FArmour> GetCraftableArmour() { return CraftableArmour; }
+	const FItem* GetItem() const { return Item; }
 
 private:
-
-	std::vector<FWeapon> CraftableWeapons;
-	std::vector<FArmour> CraftableArmour;
+	FInventory* Inventory;
+	FItem* Item;
 };

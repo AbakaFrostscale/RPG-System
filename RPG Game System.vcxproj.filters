@@ -36,6 +36,9 @@
     <ClCompile Include="Inventory\Items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\LoadExternalData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inventory\Crafting.h">
@@ -65,9 +68,14 @@
     <ClInclude Include="Character\CharacterStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\LoadExternalData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DataBases\RaceDatabase.csv" />
     <None Include="DataBases\ClassDatabase.csv" />
+    <None Include="DataBases\MaterialDatabase.csv" />
+    <None Include="DataBases\ItemsDatabase.csv" />
   </ItemGroup>
 </Project>

@@ -16,10 +16,10 @@ struct FCharacterData
 	int CurrentHP = 0; 
 	int MaxMP = 0;
 	int CurrentMP = 0; 
-	ERace CharRace = ERace::ERHuman; 
-	EClass CharClass = EClass::ECFighter; 
-	FAttributes CharStats;
-	FAttributes BaseStats;
+	FRaceData CharRace; 
+	FClassData CharClass; 
+	std::map<EAbility, int> CharStats;
+	std::map<EAbility, int> BaseStats;
 
 	bool IsAlive() const { return CurrentHP > 0; } ; 
 };
