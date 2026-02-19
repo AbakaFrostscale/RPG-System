@@ -24,9 +24,13 @@ public:
 	class FCrafting Crafter;
 	class FInventory Inventory;
 
+<<<<<<< Updated upstream
 	FCharacterData CurrentCharacter;
 
 	void GatherMaterials(const FMaterial& MaterialNeeded);
+=======
+	void GatherMaterials(const FMaterialData* MaterialNeeded);
+>>>>>>> Stashed changes
 
 	void CraftWeapon(const FWeapon& Weapon);
 	void CraftArmour(const FArmour& Armour);
@@ -34,6 +38,16 @@ public:
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
 
+<<<<<<< Updated upstream
+=======
+	void SetHPandMP();
+
+	FInventory Inventory;
+
+	const FCharacterData GetCharacter() const { return Character; }
+	FCharacterData& GetCharacterReference() { return Character; }
+
+>>>>>>> Stashed changes
 private:
 	FWeapon EquippedWeapon;
 	FArmour EquippedArmour;

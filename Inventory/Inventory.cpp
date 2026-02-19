@@ -5,16 +5,20 @@
 //version 1.00
 
 #include <vector>
+#include <iostream>
 #include "Inventory.h"
 
 FInventory::FInventory()
 {
+<<<<<<< Updated upstream
 	
 }
 
 void FInventory::CheckInventory()
 {
    //send inventory items to the UI to be displayed as an interactable item
+=======
+>>>>>>> Stashed changes
 }
 
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
@@ -41,19 +45,17 @@ void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
 	}
 }
 
-void FInventory::AddMaterials(FMaterial Material, int AmountToAdd)
+void FInventory::AddMaterials(const FMaterialData* Material, int AmountToAdd)
 {
 	for (FMaterial& MaterialIndex : Inventory.Materials)
 	{
-		if (MaterialIndex.Material == Material.Material)
+		if (MaterialIndex.Material->MaterialName == Material->MaterialName)
 		{
 			MaterialIndex.MaterialAmount += AmountToAdd;
 			return;
-		}
-		
+		}	
 	}
-	Material.MaterialAmount = AmountToAdd;
-	Inventory.Materials.push_back(Material);
+	Inventory.Materials.push_back({Material, AmountToAdd});
 }
 
 void FInventory::RemoveWeapons(const FWeapon& Weapon)
@@ -78,6 +80,7 @@ void FInventory::AddWeapons(const FWeapon& Weapon)
 {
 	if (HasWeapon(Weapon) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
+	std::cout << Weapon.WeaponData->ItemName << " created!" << std::endl;
 	Inventory.Weapons.push_back(Weapon);
 }
 

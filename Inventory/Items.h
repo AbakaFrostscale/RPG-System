@@ -21,9 +21,26 @@ public:
 	FWeapon IronBattleaxe;
 	FWeapon IronDagger;
 
+<<<<<<< Updated upstream
 	FArmour IronCuirass;
 	FArmour ClothRobe;
 	FArmour LeatherArmour;
+=======
+	FArmour CopperChestPlate;
+	FArmour IronChestPlate;
+	FArmour SpiderSilkArmour;
+
+	const std::vector<FWeapon>& GetCraftableWeapons() const { return AvailableWeapons; }
+	const std::vector<FArmour>& GetCraftableArmour() const{ return AvailableArmour; }
+
+	const std::shared_ptr<FLoadExternalData> GetLoader() const { return Loader; }
+
+private:
+	std::shared_ptr<FLoadExternalData> Loader;
+
+	std::vector<FWeapon> AvailableWeapons;
+	std::vector<FArmour> AvailableArmour;
+>>>>>>> Stashed changes
 };
 
 

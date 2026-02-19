@@ -13,9 +13,28 @@
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
+<<<<<<< Updated upstream
 	LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
 	LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
 
+=======
+	Loader = std::make_shared<FLoadExternalData>();
+}
+
+void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode)
+{
+	Character.CharName = UIName;
+
+	Character.CharRace = ChooseRace(UIRace);
+	ApplyRaceBaseStats(Character);
+
+	Character.CharClass = ChooseClass(UIClass);
+	ApplyClassModifiers(Character);
+
+	Character.CharStats = Character.BaseStats;
+
+	
+>>>>>>> Stashed changes
 }
 
 /** 
@@ -46,6 +65,7 @@ void FCharacterCreator::CreateCharacter(std::string UIName, int UIRace, int UICl
 }
 
 //Chooses the race from AvailableRaces based on an index fed in from the UI
+<<<<<<< Updated upstream
 void FCharacterCreator::ChooseRace(int RaceIndex)
 {	
 	if(bIsFinalised) { return; }	
@@ -56,11 +76,17 @@ void FCharacterCreator::ChooseRace(int RaceIndex)
 	
 	Character.CharRace = AvailableRaces[RaceIndex - 1].Race;
 	ApplyRaceBaseStats();
+=======
+FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
+{
+	return Loader->GetAvailableRaces()[RaceIndex];
+>>>>>>> Stashed changes
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
 void FCharacterCreator::ChooseClass(int ClassIndex)
 {
+<<<<<<< Updated upstream
 	if (bIsFinalised) { return; }
 
 	if (ClassIndex < 0 || ClassIndex >= AvailableClasses.size())
@@ -69,6 +95,9 @@ void FCharacterCreator::ChooseClass(int ClassIndex)
 
 	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
 	ApplyClassModifiers();
+=======
+	return Loader->GetAvailableClasses()[ClassIndex];
+>>>>>>> Stashed changes
 }
 
 /**
