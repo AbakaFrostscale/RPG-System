@@ -17,9 +17,20 @@
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
-	//CharacterCreation
-	Loader->LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
-	Loader->LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
+	Loader = std::make_shared<FLoadExternalData>();
+}
+
+void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode)
+{
+	Character.CharName = UIName;
+
+	Character.CharRace = ChooseRace(UIRace);
+	ApplyRaceBaseStats(Character);
+
+	Character.CharClass = ChooseClass(UIClass);
+	ApplyClassModifiers(Character);
+
+	Character.CharStats = Character.BaseStats;
 }
 
 /** 
@@ -31,14 +42,37 @@ UIAmount - Determines the amount of AttributesPoints to use with upgrading the s
 */
 
 //Chooses the race from AvailableRaces based on an index fed in from the UI
+void FCharacterCreator::ChooseRace(int RaceIndex)
+{	
+	if(bIsFinalised) { return; }	
+
+	if (RaceIndex < 0 || RaceIndex >= AvailableRaces.size())
+	return;
+	
+	
+	Character.CharRace = AvailableRaces[RaceIndex - 1].Race;
+	ApplyRaceBaseStats();
+
 FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
 	return GetAvailableRaces()[RaceIndex];
+
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
 FClassData FCharacterCreator::ChooseClass(int ClassIndex)
 {
+	if (bIsFinalised) { return; }
+
+	if (ClassIndex < 0 || ClassIndex >= AvailableClasses.size())
+	return;
+	
+
+	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
+	ApplyClassModifiers();
+
+	return Loader->GetAvailableClasses()[ClassIndex];
+
 	return GetAvailableClasses()[ClassIndex];
 }
 

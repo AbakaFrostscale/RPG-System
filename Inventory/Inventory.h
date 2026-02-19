@@ -28,7 +28,7 @@ public:
 	//Inventory
 
 	void RemoveMaterials(FMaterial Material, int AmountToRemove);
-	void AddMaterials(FMaterial Material, int AmountToAdd);
+	void AddMaterials(const FMaterialData* Material, int AmountToAdd);
 
 	void RemoveWeapons(const FWeapon& Weapon);
 	void AddWeapons(const FWeapon& Weapon);
@@ -43,13 +43,12 @@ public:
 	ECraftingResponse HasRequiredMaterialsWeapon(const FWeapon& Weapon);
 	ECraftingResponse HasRequiredMaterialsArmour(const FArmour& Armour);
 
-	const std::vector<FMaterial>& GetMaterials() const { return Inventory.Materials; }
+	std::vector<FMaterial>& GetMaterials() { return Inventory.Materials; }
 	const std::vector<FWeapon>& GetWeapons() const { return Inventory.Weapons; }
 	const std::vector<FArmour>& GetArmour()const { return Inventory.Armour; }
 
 private:
-	//Inventory
 
-	FLoadExternalData* Loader;
+	//Inventory
 	FInventoryStorage Inventory;
 };

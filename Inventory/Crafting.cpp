@@ -11,8 +11,9 @@
 
 FCrafting::FCrafting()
 {
-	Inventory = Inventory;
-	Item = Item;
+
+	Item = std::make_unique<FItem>();
+	Inventory = std::make_unique<FInventory>();
 }
 
 FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)
@@ -39,7 +40,11 @@ FArmour FCrafting::CraftArmour(const FArmour& ArmourToCraft)
 ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
 {
 	bool bWeaponExists = false;
+
+	std::vector<FWeapon> Weapons = Item->GetCraftableWeapons();
 	//Check if the weapon exists and is craftable
+	for (FWeapon& WeaponIndex : CraftableWeapons)
+	for (const FWeapon& WeaponIndex : Weapons)
 	for (const FWeapon& WeaponIndex : Item->GetCraftableWeapons())
 	{
 		if (WeaponIndex.WeaponData->ItemName == WeaponToCraft.WeaponData->ItemName)
@@ -73,6 +78,8 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 {
 	bool bArmourExists = false;
 	//Check if the weapon exists and is craftable
+	for (FArmour& ArmourIndex : CraftableArmour)
+	for (const FArmour& ArmourIndex : Item->GetCraftableArmour())
 	for (FArmour& ArmourIndex : Item->GetCraftableArmour())
 	{
 		if (ArmourIndex.ArmourData->ItemName == ArmourToCraft.ArmourData->ItemName)

@@ -68,6 +68,7 @@ struct FMaterialData
 // Used to hold a specific metrial in an inventory or crafting requirement
 struct FMaterial
 {
+	const FMaterialData* Material;
 	FMaterialData* Material;
 	int MaterialAmount;
 };

@@ -25,15 +25,17 @@ public:
 
 	class FCrafting Crafter;
 
-	void CreateCharacter(std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
+	FCharacterData CurrentCharacter;
 
-	void GatherMaterials(const FMaterial& MaterialNeeded);
+	void GatherMaterials(const FMaterialData* MaterialNeeded);
 
 	void CraftWeapon(const FWeapon& Weapon);
 	void CraftArmour(const FArmour& Armour);
 
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
+
+	void SetHPandMP();
 
 	FInventory Inventory;
 

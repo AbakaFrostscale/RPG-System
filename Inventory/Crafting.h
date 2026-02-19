@@ -22,9 +22,14 @@ public:
 	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft);
 	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);
 
-	const FItem* GetItem() const { return Item; }
+	FItem Items;
+	FInventory Inventory;
+
+	std::vector<FWeapon> GetCraftableWeapons() { return CraftableWeapons; }
+	std::vector<FArmour> GetCraftableArmour() { return CraftableArmour; }
 
 private:
-	FInventory* Inventory;
-	FItem* Item;
+
+	std::vector<FWeapon> CraftableWeapons;
+	std::vector<FArmour> CraftableArmour;
 };

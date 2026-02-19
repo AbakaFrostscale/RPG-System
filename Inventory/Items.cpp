@@ -7,9 +7,7 @@
 
 FItem::FItem()
 {
-	Loader->LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
-	Loader->LoadCSV("DataBases/ItemsDatabase.csv", AvailableItems);
-	ResolveMaterials(AvailableItems);
+	Loader = std::make_shared<FLoadExternalData>();
 
 	CopperSword = 
 	{	
@@ -39,30 +37,31 @@ FItem::FItem()
 
 	CopperChestPlate = 
 	{
-		FindItemData("Copper Chest Plate"),
+		Loader->FindItemData("Copper Chest Plate"),
 		4,
 		EAbility::EAStr,
 		2
 	};
 	IronChestPlate = 
 	{
-		FindItemData("Iron Chest Plate"),
+		Loader->FindItemData("Iron Chest Plate"),
 		6,
 		EAbility::EAStr,
 		4
 	};
 	SpiderSilkArmour = 
 	{
-		FindItemData("Spider Silk Armour"),
+		Loader->FindItemData("Spider Silk Armour"),
 		6,
 		EAbility::EANone,
 		0
 	};
 
-	AvailableArmour.push_back(CopperChestPlate);
+  AvailableArmour.push_back(CopperChestPlate);
 	AvailableArmour.push_back(IronChestPlate);
 	AvailableArmour.push_back(SpiderSilkArmour);
 }
+  
 
 const FItemData* FItem::FindItemData(const std::string& ItemName)
 {
@@ -79,7 +78,7 @@ const FItemData* FItem::FindItemData(const std::string& ItemName)
 void FItem::ResolveMaterials(std::vector<FItemData>& Items)
 {
 	for (size_t i = 0; i < Items.size(); i++)
-	{
+  {
 		Items[i].RequiredMaterial.clear();
 		for (const auto& key : Items[i].RawRequiredMaterials)
 		{

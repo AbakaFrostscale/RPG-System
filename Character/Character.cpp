@@ -12,28 +12,7 @@ FCharacter::FCharacter()
 	Random.RandomGenerator = std::mt19937(Random.rd());
 }
 
-
-
-void FCharacter::CreateCharacter(std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode)
-{
-	Character.CharName = UIName;
-	
-	Character.CharRace = Creator.ChooseRace(UIRace);
-	Creator.ApplyRaceBaseStats(Character);
-
-	Character.CharClass = Creator.ChooseClass(UIClass);
-	Creator.ApplyClassModifiers(Character);
-
-	Character.CharStats = Character.BaseStats;
-	
-	Character.MaxHP = Creator.CalculateCharacterMaxHP(Character);
-	Character.MaxMP = Creator.CalculateCharacterMaxMP(Character);
-
-	Character.CurrentHP = Character.MaxHP;
-	Character.CurrentMP = Character.MaxMP;
-}
-
-void FCharacter::GatherMaterials(const FMaterial& MaterialNeeded)
+void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
 {
 	std::uniform_int_distribution<int> AmountDist(1, 5);
 	int RandomAmount = AmountDist(Random.RandomGenerator);
@@ -63,6 +42,12 @@ void FCharacter::EquipWeapon(const FWeapon& Weapon)
 void FCharacter::EquipArmour(const FArmour& Armour)
 {
 	if (Inventory.HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
+
+	if (Armour.RequiredModifier.Attributes >= CurrentCharacter.CharStats.Attributes)
+	{
+		EquippedArmour = Armour;
+	}
+}
 
 	EquippedArmour = Armour;
 }

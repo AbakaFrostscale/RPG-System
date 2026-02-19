@@ -33,10 +33,8 @@ public:
 	int CalculateCharacterMaxHP(FCharacterData& Character);
 	int CalculateCharacterMaxMP(FCharacterData& Character);
 
-	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);
-	const FLoadExternalData* GetLoader() { return Loader; }	//CharacterCreation
-	const std::vector<FRaceData>& GetAvailableRaces() const { return AvailableRaces; }
-	const std::vector<FClassData>& GetAvailableClasses() const { return AvailableClasses; }
+	void ApplyRaceBaseStats();
+	void ApplyClassModifiers();
 
 
 
@@ -44,8 +42,17 @@ private:
 	//CharacterCreation
 	std::vector<FRaceData> AvailableRaces;
 	std::vector<FClassData> AvailableClasses;
-	
-	FLoadExternalData* Loader;
+  
+	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
+
+	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);	
+
+	std::shared_ptr<FLoadExternalData> GetLoader() { return Loader; }
+
+
+private:
+	std::shared_ptr<FLoadExternalData> Loader;
+
 
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;

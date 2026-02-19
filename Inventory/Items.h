@@ -27,19 +27,17 @@ public:
 	FArmour IronChestPlate;
 	FArmour SpiderSilkArmour;
 
-	std::vector<FWeapon> GetCraftableWeapons() { return AvailableWeapons; }
-	std::vector<FArmour> GetCraftableArmour() { return AvailableArmour; }
-	const std::vector<FItemData>& GetAvailableItems() const { return AvailableItems; }
-	const std::vector<FMaterialData>& GetAvailableMaterials() const { return AvailableMaterials; }
+	const std::vector<FWeapon>& GetCraftableWeapons() const { return AvailableWeapons; }
+	const std::vector<FArmour>& GetCraftableArmour() const{ return AvailableArmour; }
+
+	const std::shared_ptr<FLoadExternalData> GetLoader() const { return Loader; }
 
 private:
-	FLoadExternalData* Loader;
-	//Items		
-	std::vector<FMaterialData> AvailableMaterials;
-	std::vector<FItemData> AvailableItems;
+	std::shared_ptr<FLoadExternalData> Loader;
 
 	std::vector<FWeapon> AvailableWeapons;
 	std::vector<FArmour> AvailableArmour;
+
 };
 
 

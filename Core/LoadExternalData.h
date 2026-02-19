@@ -16,6 +16,31 @@
 class FLoadExternalData
 {
 public:
+	FLoadExternalData();
+
+	//CharacterCreation
+	const std::vector<FRaceData>& GetAvailableRaces() const { return AvailableRaces; }
+	const std::vector<FClassData>& GetAvailableClasses() const { return AvailableClasses; }
+
+	//Items
+	const std::vector<FItemData>& GetAvailableItems() const { return AvailableItems; }
+	const std::vector<FMaterialData>& GetAvailableMaterials() const { return AvailableMaterials; }
+
+	const FItemData* FindItemData(const std::string& ItemName);
+	void ResolveMaterials(std::vector<FItemData>& Items);
+	
+
+private: 
+	
+	//CharacterCreation
+	std::vector<FRaceData> AvailableRaces;
+	std::vector<FClassData> AvailableClasses; 
+
+	//Items		
+	std::vector<FMaterialData> AvailableMaterials;
+	std::vector<FItemData> AvailableItems;
+
+
 	template<typename T>
 	bool LoadCSV(const std::string& FilePath, std::vector<T>& OutVector)
 	{
@@ -72,5 +97,6 @@ public:
 		return true;
 	}
 
+
 };
-	
+
