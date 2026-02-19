@@ -12,15 +12,7 @@ FCharacter::FCharacter()
 	Random.RandomGenerator = std::mt19937(Random.rd());
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-void FCharacter::GatherMaterials(const FMaterial& MaterialNeeded)
-=======
 void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
->>>>>>> Stashed changes
-=======
-void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
->>>>>>> Stashed changes
 {
 	std::uniform_int_distribution<int> AmountDist(1, 5);
 	int RandomAmount = AmountDist(Random.RandomGenerator);
@@ -51,25 +43,11 @@ void FCharacter::EquipArmour(const FArmour& Armour)
 {
 	if (Inventory.HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
-<<<<<<< Updated upstream
 	if (Armour.RequiredModifier.Attributes >= CurrentCharacter.CharStats.Attributes)
 	{
 		EquippedArmour = Armour;
 	}
 }
-=======
+
 	EquippedArmour = Armour;
 }
-
-void FCharacter::SetHPandMP()
-{
-	Character.MaxHP = Creator.CalculateCharacterMaxHP(Character);
-	Character.MaxMP = Creator.CalculateCharacterMaxMP(Character);
-
-	Character.CurrentHP = Character.MaxHP;
-	Character.CurrentMP = Character.MaxMP;
-}
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

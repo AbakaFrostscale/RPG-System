@@ -11,6 +11,8 @@
 #include "Core/Random.h"
 #include "CharacterStats.h"
 #include "Inventory/Crafting.h"
+#include "Inventory/Inventory.h"
+#include "Creation/CharacterCreation.h"
 
 
 
@@ -22,19 +24,10 @@ public:
 	class FRandom Random;
 
 	class FCrafting Crafter;
-	class FInventory Inventory;
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 	FCharacterData CurrentCharacter;
 
-	void GatherMaterials(const FMaterial& MaterialNeeded);
-=======
 	void GatherMaterials(const FMaterialData* MaterialNeeded);
->>>>>>> Stashed changes
-=======
-	void GatherMaterials(const FMaterialData* MaterialNeeded);
->>>>>>> Stashed changes
 
 	void CraftWeapon(const FWeapon& Weapon);
 	void CraftArmour(const FArmour& Armour);
@@ -42,11 +35,6 @@ public:
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 	void SetHPandMP();
 
 	FInventory Inventory;
@@ -54,8 +42,10 @@ public:
 	const FCharacterData GetCharacter() const { return Character; }
 	FCharacterData& GetCharacterReference() { return Character; }
 
->>>>>>> Stashed changes
 private:
+	
+	FCharacterCreator Creator;
+	FCharacterData Character;
 	FWeapon EquippedWeapon;
 	FArmour EquippedArmour;
 

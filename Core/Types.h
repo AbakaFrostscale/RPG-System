@@ -9,22 +9,34 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <utility>
 
-enum EAttributes
+//enum to define stats that exist in the game for the characaters
+enum class EAbility
 {
-	EStr,
-	EDex,
-	ECon,
-	EInt,
-	EWis,
-	ECha
+	EAStr,
+	EADex,
+	EACon,
+	EAInt,
+	EAWis,
+	EACha,
+	EANone
 };
 
-struct FAttributes
-{
-	std::map<EAttributes, int> Attributes;
+//enum to be used for stat mode, wheter to increase or decrease the stat, mostly for UI input
+enum class EMode
+{ 
+	EMIncrease, 
+	EMDecrease 
 };
 
+enum class ETeam
+{
+	ETPlayers,
+	ETEnemies
+};
+
+// This is to check what the response would be for a craftable Item, for error logging
 enum class ECraftingResponse
 {
 	ECRItemDoesNotExist,
@@ -33,131 +45,105 @@ enum class ECraftingResponse
 	ECRCanBeCrafted
 };
 
-enum class ERarity
+//Information on materials to be referneced by the FMaterial struct, always initialized in GatherableMaterials
+struct FMaterialData
 {
-	ERCommon,
-	ERUncommon,
-	ERRare,
-	ERVeryRare,
-	ERLegendary
+	std::string MaterialName;
+	std::string Type;
+	int Weight = 0;
+
+	//new variables can be added later
+	
+	//MaterialID is here if ever a loopable item is needed to connect to a header (see RaceData for reasoning)
+	void FromCSVRow(const std::vector<std::string>& Columns)
+	{
+		MaterialName = Columns[0];
+		Type = Columns[1];
+		Weight = std::stoi(Columns[2]);
+	}
+
+
 };
 
-enum class EMaterial
-{
-	EMWood,
-	EMStone,
-	EMIron,
-	EMCloth,
-	EMLeather
-};
-
+// Used to hold a specific metrial in an inventory or crafting requirement
 struct FMaterial
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-	EMaterial Material;
-=======
 	const FMaterialData* Material;
->>>>>>> Stashed changes
-=======
-	const FMaterialData* Material;
->>>>>>> Stashed changes
+	FMaterialData* Material;
 	int MaterialAmount;
+};
+
+struct FItemData
+{
+	std::string ItemName;
+	std::string ItemType;
+	std::vector<std::pair<std::string, int>> RawRequiredMaterials;
+	std::vector<FMaterial> RequiredMaterial;
+	
+	void FromCSVRow(const std::vector<std::string>& Columns)
+	{
+		ItemName = Columns[0];
+		ItemType = Columns[1];
+
+		int Index = 0;
+		for (size_t i = 2; i < Columns.size(); i += 2)
+		{
+			RawRequiredMaterials.emplace_back(Columns[i], std::stoi(Columns[i + 1]));
+		}
+	}
 };
 
 struct FWeapon
 {
-	std::string ItemName;
-	ERarity Rarity;
-	FAttributes RequiredModifier;
-	int Damage;
-	std::vector<FMaterial> RequiredMaterials;
+	const FItemData* WeaponData = {};
+	int Damage = 0;
+	EAbility RequiredStat = EAbility::EANone;
+	int RequiredStatAmount = 0;
 };
 
 struct FArmour
 {
-	std::string ItemName;
-	ERarity Rarity;
-	FAttributes RequiredModifier;
-	int Defence;
-	std::vector<FMaterial> RequiredMaterials;
-};
-
-enum class EIncreaseOrDecrease
-{ 
-	EIIncrease, 
-	EIDecrease 
-};
-
-
-
-enum class ETeam
-{
-	ETPlayers,
-	ETEnemies
-};
-
-enum class ERace 
-{
-	ERHuman,
-	ERElf,
-	EROrc,
-	ERDwarf,
-	ERGnome,
-	ERTiefling
-};
-
-enum class EClass 
-{
-	ECFighter,
-	ECMonk,
-	ECPaladin,
-	ECWizard,
-	ECCleric,
-	ECSorcerer,
-	ECBard,
-	ECDruid,
-	ECBarabarian,
-	ECRogue
+	const FItemData* ArmourData = {};
+	int Defence = 0;
+	EAbility RequiredStat = EAbility::EANone;
+	int RequiredStatAmount = 0;
 };
 
 struct FRaceData
 {
-	ERace Race;
 	std::string RaceName;
-	FAttributes BaseStat;
+	std::map<EAbility, int> BaseStat;
 
 	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		RaceName = Columns[0];
 
-		BaseStat.Attributes[EAttributes::EStr] = std::stoi(Columns[1]);
-		BaseStat.Attributes[EAttributes::EDex] = std::stoi(Columns[2]);
-		BaseStat.Attributes[EAttributes::ECon] = std::stoi(Columns[3]);
-		BaseStat.Attributes[EAttributes::EInt] = std::stoi(Columns[4]);
-		BaseStat.Attributes[EAttributes::EWis] = std::stoi(Columns[5]);
-		BaseStat.Attributes[EAttributes::ECha] = std::stoi(Columns[6]);
+		BaseStat[EAbility::EAStr] = std::stoi(Columns[1]);
+		BaseStat[EAbility::EADex] = std::stoi(Columns[2]);
+		BaseStat[EAbility::EACon] = std::stoi(Columns[3]);
+		BaseStat[EAbility::EAInt] = std::stoi(Columns[4]);
+		BaseStat[EAbility::EAWis] = std::stoi(Columns[5]);
+		BaseStat[EAbility::EACha] = std::stoi(Columns[6]);
 	}
 };
 
 struct FClassData
 {
-	EClass Class;
 	int BaseHealth = 0;
 	std::string ClassName;
-	FAttributes StatModifier;
+	std::map<EAbility, int> StatModifier;
 
 	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
 		ClassName = Columns[0];
 
-		BaseHealth = std::stoi(Columns[1]),
+		BaseHealth = std::stoi(Columns[1]);
 
-		StatModifier.Attributes[EAttributes::EStr] = std::stoi(Columns[2]);
-		StatModifier.Attributes[EAttributes::EDex] = std::stoi(Columns[3]);
-		StatModifier.Attributes[EAttributes::ECon] = std::stoi(Columns[4]);
-		StatModifier.Attributes[EAttributes::EInt] = std::stoi(Columns[5]);
-		StatModifier.Attributes[EAttributes::EWis] = std::stoi(Columns[6]);
-		StatModifier.Attributes[EAttributes::ECha] = std::stoi(Columns[7]);
+		StatModifier[EAbility::EAStr] = std::stoi(Columns[2]);
+		StatModifier[EAbility::EADex] = std::stoi(Columns[3]);
+		StatModifier[EAbility::EACon] = std::stoi(Columns[4]);
+		StatModifier[EAbility::EAInt] = std::stoi(Columns[5]);
+		StatModifier[EAbility::EAWis] = std::stoi(Columns[6]);
+		StatModifier[EAbility::EACha] = std::stoi(Columns[7]);
 	}
 };

@@ -10,53 +10,39 @@
 #include <string>
 #include <vector>
 #include "Core/Types.h"
-#include "Character/CharacterStats.h"
+
+
+class FLoadExternalData;
+struct FCharacterData;
 
 class FCharacterCreator
 {
 public:
 	FCharacterCreator();
 
-	void CreateCharacter(std::string UIName, int UIRace, int UIClass);
-	void AllocateAttributePoints(EAttributes UISkill, int UIAmount, EIncreaseOrDecrease UIMode);
+	void AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode);
 
-	std::string ERaceToString(ERace Race) const;
-	std::string EClassToString(EClass Class) const;
+	const int GetAttributePoints() const { return AvailableAttributePoints; }
 
-	bool IsCharacterValid() const;
-	FCharacterData FinalizeCharacter();
+	FRaceData ChooseRace(int RaceIndex);
+	FClassData ChooseClass(int ClassIndex);
 
-	int GetAttributePoints() { return AvailableAttributePoints; }
-	std::vector<FRaceData> GetAvailableRaces() { return AvailableRaces; }
-	std::vector<FClassData> GetAvailableClasses() { return AvailableClasses; }
+	void ApplyRaceBaseStats(FCharacterData& Character);
+	void ApplyClassModifiers(FCharacterData& Character);
 
-private:
-	void ChooseRace(int RaceIndex);
-	void ChooseClass(int ClassIndex);
+	int CalculateCharacterMaxHP(FCharacterData& Character);
+	int CalculateCharacterMaxMP(FCharacterData& Character);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 	void ApplyRaceBaseStats();
 	void ApplyClassModifiers();
 
-	void SetCharacterHP();
-	void SetCharacterMP();
-
-	bool TryAllocatePoints(int& Current, int Base, int Amount, EIncreaseOrDecrease Mode);
 
 
 private:
-
-	FCharacterData Character;
-	template<typename T>
-	void LoadCSV(const std::string& FilePath, std::vector<T>& OutVector);
-
+	//CharacterCreation
 	std::vector<FRaceData> AvailableRaces;
 	std::vector<FClassData> AvailableClasses;
-
-	ERace StringToERace(std::string Race) const;
-	EClass	StringToEClass(std::string Class) const;
-=======
+  
 	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);	
@@ -66,23 +52,12 @@ private:
 
 private:
 	std::shared_ptr<FLoadExternalData> Loader;
->>>>>>> Stashed changes
-=======
-	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
 
-	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);	
-
-	std::shared_ptr<FLoadExternalData> GetLoader() { return Loader; }
-
-
-private:
-	std::shared_ptr<FLoadExternalData> Loader;
->>>>>>> Stashed changes
 
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;
-	
-	bool bIsFinalised;
+
+	const EAbility StringToEAbility(std::string String);
 };
 
 

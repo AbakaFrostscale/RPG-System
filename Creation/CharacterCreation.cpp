@@ -4,23 +4,19 @@
 //Description: Portfolio project demonstrating a full RPG system
 //version 1.00
 
+#include <iostream>
 #include <string>
-#include <sstream>
+#include <cctype>
 #include <algorithm>
+
 #include "CharacterCreation.h"
+#include "Character/CharacterStats.h"
+#include "Core/LoadExternalData.h"
 
 
 //Constructor for CharacterCreator to set default values for vectors and CurretnCharacter
 FCharacterCreator::FCharacterCreator()
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-	LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
-	LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
-
-=======
-=======
->>>>>>> Stashed changes
 	Loader = std::make_shared<FLoadExternalData>();
 }
 
@@ -35,12 +31,6 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	ApplyClassModifiers(Character);
 
 	Character.CharStats = Character.BaseStats;
-
-	
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }
 
 /** 
@@ -50,28 +40,8 @@ UIRace/UIClass - variable received from a dropdown or slider for selecting race/
 UISkill - Determines the skill from FAttributes struct that need to be modified using the Mode enum
 UIAmount - Determines the amount of AttributesPoints to use with upgrading the skill
 */
-void FCharacterCreator::CreateCharacter(std::string UIName, int UIRace, int UIClass)
-{
-	for (int i = 0; i <= AvailableRaces.size() - 1; i++)
-	{
-		AvailableRaces[i].Race = StringToERace(AvailableRaces[i].RaceName);
-	}
-	
-	for (int i = 0; i <= AvailableClasses.size() - 1; i++)
-	{
-		AvailableClasses[i].Class = StringToEClass(AvailableClasses[i].ClassName);
-	}
-	
-	Character.CharName = UIName;
-
-	ChooseRace(UIRace);
-	ChooseClass(UIClass);
-	
-	Character.BaseStats = Character.CharStats;
-}
 
 //Chooses the race from AvailableRaces based on an index fed in from the UI
-<<<<<<< Updated upstream
 void FCharacterCreator::ChooseRace(int RaceIndex)
 {	
 	if(bIsFinalised) { return; }	
@@ -82,21 +52,16 @@ void FCharacterCreator::ChooseRace(int RaceIndex)
 	
 	Character.CharRace = AvailableRaces[RaceIndex - 1].Race;
 	ApplyRaceBaseStats();
-=======
+
 FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
-	return Loader->GetAvailableRaces()[RaceIndex];
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+	return GetAvailableRaces()[RaceIndex];
+
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
-void FCharacterCreator::ChooseClass(int ClassIndex)
+FClassData FCharacterCreator::ChooseClass(int ClassIndex)
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 	if (bIsFinalised) { return; }
 
 	if (ClassIndex < 0 || ClassIndex >= AvailableClasses.size())
@@ -105,12 +70,10 @@ void FCharacterCreator::ChooseClass(int ClassIndex)
 
 	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
 	ApplyClassModifiers();
-=======
+
 	return Loader->GetAvailableClasses()[ClassIndex];
->>>>>>> Stashed changes
-=======
-	return Loader->GetAvailableClasses()[ClassIndex];
->>>>>>> Stashed changes
+
+	return GetAvailableClasses()[ClassIndex];
 }
 
 /**
@@ -121,14 +84,14 @@ Mode determines whether a stat should be increased or decreases
 
 Assumes Amount has been validatd by the caller
 */
-bool FCharacterCreator::TryAllocatePoints(int& Current, int Base, int Amount, EIncreaseOrDecrease Mode)
+bool FCharacterCreator::TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode)
 {
-	if (Mode == EIncreaseOrDecrease::EIIncrease)
+	if (Mode == EMode::EMIncrease)
 			{ 
 				Current += Amount;
 				return true;	
 			} 
-			else if (Mode == EIncreaseOrDecrease::EIDecrease 
+			else if (Mode == EMode::EMDecrease 
 					&& (Current - Amount) >= Base)
 			{
 				Current -= Amount;
@@ -137,344 +100,174 @@ bool FCharacterCreator::TryAllocatePoints(int& Current, int Base, int Amount, EI
 	return false;
 }
 
+const EAbility FCharacterCreator::StringToEAbility(std::string String)
+{
+	std::string Ability;
+	int count = std::min(3, static_cast<int>(String.length()));
+
+	for (int i = 0; i < count; i++)
+	{
+		Ability += std::toupper(static_cast<unsigned char>(String[i]));
+	}
+
+	if (Ability == "STR")
+	{
+		return EAbility::EAStr;
+	}
+	if (Ability == "DEX")
+	{
+		return EAbility::EADex;
+	}
+	if (Ability == "CON")
+	{
+		return EAbility::EACon;
+	}
+	if (Ability == "INT")
+	{
+		return EAbility::EAInt;
+	}
+	if (Ability == "WIS")
+	{
+		return EAbility::EAWis;
+	}
+	if (Ability == "Cha")
+	{
+		return EAbility::EACha;
+	}
+
+	return EAbility::EANone;
+}
+
 /**
 Skill refers the the Character.CharStat that needs to be increased
 Amount is the values that a stat should be increased by which also deducts from AvailableAttributePoints
 Mode determines whether the Skill should be increased or decreased, this will be fed in from the UI
 */
 
-void FCharacterCreator::AllocateAttributePoints(EAttributes UISkill, int UIAmount, EIncreaseOrDecrease UIMode) 
+void FCharacterCreator::AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode) 
 { 
-	if (bIsFinalised) { return; }
-	if (AvailableAttributePoints <= 0 && UIMode == EIncreaseOrDecrease::EIIncrease) return;
+	if (AvailableAttributePoints <= 0 && UIMode == EMode::EMIncrease) { return; }
+	if (StringToEAbility(UISkill) == EAbility::EANone) { return; }
 		
 	AvailableAttributePoints = std::min(AvailableAttributePoints, MaxAttributePoints);
 	bool bStatChanged = false;
 
-	if (UIMode == EIncreaseOrDecrease::EIIncrease)
+	if (UIMode == EMode::EMIncrease)
 	{
 		UIAmount = std::clamp(UIAmount, 0, AvailableAttributePoints);
 	}
-	else if (UIMode == EIncreaseOrDecrease::EIDecrease)
+	else if (UIMode == EMode::EMDecrease)
 	{
 		UIAmount = std::clamp(UIAmount, 0, MaxAttributePoints);
 	}
 
-
-	switch (UISkill) 
-	{	 
-		case EAttributes::EStr :
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::EStr],
-					Character.BaseStats.Attributes[EAttributes::EStr],
-					UIAmount,
-					UIMode);
+	
+	switch (StringToEAbility(UISkill))
+	{
+		case EAbility::EAStr: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAStr],
+							Character.BaseStats[EAbility::EAStr], 
+							UIAmount, 
+							UIMode);
 			break;
-			
-		case EAttributes::EDex :
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::EDex],
-					Character.BaseStats.Attributes[EAttributes::EDex],
-					UIAmount,
-					UIMode);
+		case EAbility::EADex: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EADex],
+							Character.BaseStats[EAbility::EADex],
+							UIAmount,
+							UIMode);
 			break;
-
-		case EAttributes::ECon : 
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::ECon],
-					Character.BaseStats.Attributes[EAttributes::ECon],
-					UIAmount,
-					UIMode);
+		case EAbility::EACon: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EACon],
+							Character.BaseStats[EAbility::EACon],
+							UIAmount,
+							UIMode);
 			break;
-
-		case EAttributes::EInt :
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::EInt],
-					Character.BaseStats.Attributes[EAttributes::EInt],
-					UIAmount,
-					UIMode);
+		case EAbility::EAInt: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAInt],
+							Character.BaseStats[EAbility::EAInt],
+							UIAmount,
+							UIMode);
 			break;
-
-		case EAttributes::EWis : 
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::EWis],
-					Character.BaseStats.Attributes[EAttributes::EWis],
-					UIAmount,
-					UIMode);
+		case EAbility::EAWis: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EAWis],
+							Character.BaseStats[EAbility::EAWis],
+							UIAmount,
+							UIMode);
 			break;
-
-		case EAttributes::ECha :
-			bStatChanged = TryAllocatePoints(
-					Character.CharStats.Attributes[EAttributes::ECha],
-					Character.BaseStats.Attributes[EAttributes::ECha],
-					UIAmount,
-					UIMode);
+		case EAbility::EACha: 
+			bStatChanged =  TryAllocatePoints(Character.CharStats[EAbility::EACha],
+							Character.BaseStats[EAbility::EACha],
+							UIAmount,
+							UIMode);
 			break;
-
-		default : 
-			break; 
+		default: 
+			bStatChanged = false;
 	}
 
-	if (UIMode == EIncreaseOrDecrease::EIIncrease && bStatChanged)
+	if (UIMode == EMode::EMIncrease && bStatChanged)
 	{ 
 		AvailableAttributePoints -= UIAmount; 		
 	} 
-	else if (UIMode == EIncreaseOrDecrease::EIDecrease && bStatChanged)
+	else if (UIMode == EMode::EMDecrease && bStatChanged)
 	{
 		AvailableAttributePoints += UIAmount; 
 	}
 }
 
 //Applies the stats of Race to the Character
-void FCharacterCreator::ApplyRaceBaseStats()
+void FCharacterCreator::ApplyRaceBaseStats(FCharacterData& Character)
 {
-	for (const FRaceData& Race : AvailableRaces)
-	{
-		if (Race.Race == Character.CharRace)
-		{
-			Character.CharStats.Attributes = Race.BaseStat.Attributes;
-			return;
-		}
-	}
+	Character.BaseStats = Character.CharRace.BaseStat;
 }
 
 //Adds the Class Stat modifiers to the Current Character
-void FCharacterCreator::ApplyClassModifiers()
+void FCharacterCreator::ApplyClassModifiers(FCharacterData& Character)
 {
-	for (FClassData& ClassData : AvailableClasses)
+	for (auto& key : Character.CharClass.StatModifier)
 	{
-		if (Character.CharClass == ClassData.Class)
-		{
-			Character.CharStats.Attributes[EAttributes::EStr] += ClassData.StatModifier.Attributes[EAttributes::EStr];
-			Character.CharStats.Attributes[EAttributes::EDex] += ClassData.StatModifier.Attributes[EAttributes::EDex];
-			Character.CharStats.Attributes[EAttributes::ECon] += ClassData.StatModifier.Attributes[EAttributes::ECon];
-			Character.CharStats.Attributes[EAttributes::EInt] += ClassData.StatModifier.Attributes[EAttributes::EInt];
-			Character.CharStats.Attributes[EAttributes::EWis] += ClassData.StatModifier.Attributes[EAttributes::EWis];
-			Character.CharStats.Attributes[EAttributes::ECha] += ClassData.StatModifier.Attributes[EAttributes::ECha];
-			return;
-		}
+		Character.BaseStats[key.first] += Character.CharClass.StatModifier[key.first];
 	}
 }
 
-void FCharacterCreator::SetCharacterHP()
+int FCharacterCreator::CalculateCharacterMaxHP(FCharacterData& Character)
 {
-	for (FClassData& ClassData :AvailableClasses)
-	{
-		if (Character.CharClass == ClassData.Class)
-		{
-			Character.MaxHP = ClassData.BaseHealth + Character.CharStats.Attributes[EAttributes::ECon] * 2;
-		}
-	}
-
-	Character.CurrentHP = Character.MaxHP;
+	return Character.CharClass.BaseHealth + Character.CharStats[EAbility::EACon];
 }
 
 //Sets the character MP based on class, according to the ability they use to cast spells
-void FCharacterCreator::SetCharacterMP()
+int FCharacterCreator::CalculateCharacterMaxMP(FCharacterData& Character)
 {
-	switch (Character.CharClass)
+	if (Character.CharClass.ClassName == "Paladin")
 	{
-		case EClass::ECWizard : 
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::EInt] * 2;
-			break;
-		case EClass::ECPaladin :
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::ECha] * 2;
-			break;
-		case EClass::ECCleric :
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::EWis] * 2;
-			break;
-		case EClass::ECSorcerer :
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::ECha] * 2;
-			break;
-		case EClass::ECBard :
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::ECha] * 2;
-			break;
-		case EClass::ECDruid : 	
-			Character.MaxMP = Character.CharStats.Attributes[EAttributes::EWis] * 2;
-			break;
-		default :
-			Character.MaxMP = 0;
+		return Character.CharStats[EAbility::EACha] * 2;
 	}
-
-	Character.CurrentMP = Character.MaxMP;
-
-}
-
-//Changes ERace to string for any form of printing to console (redundant, but for debugging)
-std::string FCharacterCreator::ERaceToString(ERace Race) const
-{
-	switch (Race)
+	else if (Character.CharClass.ClassName == "Cleric")
 	{
-		case ERace::ERHuman : return "Human";
-		case ERace::ERElf : return "Elf";
-		case ERace::EROrc : return "Orc";
-		case ERace::ERDwarf : return "Dwarf";
-		case ERace::ERGnome : return "Gnome";
-		case ERace::ERTiefling : return "Tiefling";
-		default : return "No Race Selected!";
+		return Character.CharStats[EAbility::EAWis] * 2;
 	}
-}
-
-//Changes EClass to string for any form of printing to console (redundant, but for debugging)
-std::string FCharacterCreator::EClassToString(EClass Class) const
-{
-	switch (Class)
+	else if (Character.CharClass.ClassName == "Wizard")
 	{
-		case EClass::ECFighter : return "Fighter";
-		case EClass::ECMonk : return "Monk";
-		case EClass::ECPaladin : return "Paladin";
-		case EClass::ECWizard : return "Wizard";
-		case EClass::ECCleric : return "Cleric";
-		case EClass::ECSorcerer : return "Sorcerer";
-		case EClass::ECBard : return "Bard";
-		case EClass::ECDruid : return "Druid";
-		case EClass::ECBarabarian: return "Barbarian";
-		case EClass::ECRogue: return "Rogue";
-		default : return "No Class Selected!";
+		return Character.CharStats[EAbility::EAInt] * 2;
 	}
-}
-
-ERace FCharacterCreator::StringToERace(std::string Race) const
-{
-	if (Race == "Human")
+	else if (Character.CharClass.ClassName == "Bard")
 	{
-		return ERace::ERHuman;
+		return Character.CharStats[EAbility::EACha] * 2;
 	}
-	else if (Race == "Elf")
+	else if (Character.CharClass.ClassName == "Sorcerer")
 	{
-		return ERace::ERElf;
+		return Character.CharStats[EAbility::EACha] * 2;
 	}
-	else if (Race == "Orc")
+	else if (Character.CharClass.ClassName == "Druid")
 	{
-		return ERace::EROrc;
-	}
-	else if (Race == "Dwarf")
-	{
-		return ERace::ERDwarf;
-	}
-	else if (Race == "Gnome")
-	{
-		return ERace::ERGnome;
+		return Character.CharStats[EAbility::EAWis] * 2;
 	}
 	else
 	{
-		return ERace::ERTiefling;
-	}
-}
-
-//Changes EClass to string for any form of printing to console (redundant, but for debugging)
-EClass FCharacterCreator::StringToEClass(std::string Class) const
-{
-	if (Class == "Fighter")
-	{
-		return EClass::ECFighter;
-	}
-	else if (Class == "Monk")
-	{
-		return EClass::ECMonk;
-	}
-	else if (Class == "Paladin")
-	{
-		return EClass::ECPaladin;
-	}
-	else if (Class == "Wizard")
-	{
-		return EClass::ECWizard;
-	}
-	else if (Class == "Cleric")
-	{
-		return EClass::ECCleric;
-	}
-	else if (Class == "Sorcerer")
-	{
-		return EClass::ECSorcerer;
-	}
-	else if (Class == "Bard")
-	{
-		return EClass::ECBard;
-	}
-	else if (Class == "Druid")
-	{
-		return EClass::ECDruid;
-	}
-	else if (Class == "Barbarian")
-	{
-		return EClass::ECBarabarian;
-	}
-	else
-	{
-		return EClass::ECRogue;
+		return 0;
 	}
 }
 
 
-bool FCharacterCreator::IsCharacterValid() const
-{
-	if (Character.CharName.empty()) {return false; }
-
-	if (AvailableAttributePoints != 0) { return  false; }
-
-	return true;
-}
-
-FCharacterData FCharacterCreator::FinalizeCharacter()
-{
-	if (!IsCharacterValid()) { return {}; }
-
-	SetCharacterHP();
-	SetCharacterMP();
-
-	bIsFinalised = true;
-	return Character;
-}
-
-template<typename T>
-inline void FCharacterCreator::LoadCSV(const std::string& FilePath, std::vector<T>& OutVector)
-{
-	std::ifstream File(FilePath);
-
-	if (!File.is_open())
-	{
-		//TODO, notify the UI that the file is not open
-		return;
-	}
-
-	std::string Line;
-	bool bSkipHeader = true;
-
-	while (std::getline(File, Line))
-	{
-		if (bSkipHeader) { bSkipHeader = false; continue; }
-
-		if (Line.empty()) continue;
-
-		std::vector<std::string> Columns;
-		std::stringstream ss(Line);
-		std::string Cell;
-
-		while (std::getline(ss, Cell, ','))
-		{
-			Cell.erase(Cell.find_last_not_of("\r\n") + 1);
-			Columns.push_back(Cell);
-		}
-
-		if (Columns.size() < 7)
-		{
-			continue;
-		}
-
-		try
-		{
-			T Row;
-			Row.FromCSVRow(Columns);
-			OutVector.push_back(Row);
-		}
-		catch (const std::exception& e)
-		{
-			return;
-		}
-	}
-}
 
 
 

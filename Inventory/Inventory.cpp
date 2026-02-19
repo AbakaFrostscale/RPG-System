@@ -7,21 +7,16 @@
 #include <vector>
 #include <iostream>
 #include "Inventory.h"
+#include "Core/LoadExternalData.h"
 
 FInventory::FInventory()
 {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 	
 }
 
 void FInventory::CheckInventory()
 {
-   //send inventory items to the UI to be displayed as an interactable item
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 }
 
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
@@ -67,7 +62,7 @@ void FInventory::RemoveWeapons(const FWeapon& Weapon)
 
 	for (auto It = Inventory.Weapons.begin(); It != Inventory.Weapons.end(); )
 	{
-		if (It->ItemName == Weapon.ItemName)
+		if (It->WeaponData->ItemName == Weapon.WeaponData->ItemName)
 		{
 			It = Inventory.Weapons.erase(It);
 			break;
@@ -93,7 +88,7 @@ void FInventory::RemoveArmour(const FArmour& Armour)
 
 	for (auto It = Inventory.Armour.begin(); It != Inventory.Armour.end(); )
 	{
-		if (It->ItemName == Armour.ItemName)
+		if (It->ArmourData->ItemName == Armour.ArmourData->ItemName)
 		{
 			It = Inventory.Armour.erase(It);
 			break;
@@ -116,7 +111,7 @@ ECraftingResponse FInventory::HasArmour(const FArmour& Armor)
 {
 	for (const FArmour& ArmourIndex : Inventory.Armour)
 	{
-		if (ArmourIndex.ItemName == Armor.ItemName)
+		if (ArmourIndex.ArmourData->ItemName == Armor.ArmourData->ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}
@@ -128,7 +123,7 @@ ECraftingResponse FInventory::HasWeapon(const FWeapon& Weapon)
 {
 	for (const FWeapon& WeaponIndex : Inventory.Weapons)
 	{
-		if (WeaponIndex.ItemName == Weapon.ItemName)
+		if (WeaponIndex.WeaponData->ItemName == Weapon.WeaponData->ItemName)
 		{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 		}
@@ -149,7 +144,7 @@ bool FInventory::HasMaterial(const FMaterial& Material)
 }
 ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 {
-	for (const FMaterial& ItemMaterialIndex : Weapon.RequiredMaterials)
+	for (const FMaterial& ItemMaterialIndex : Weapon.WeaponData->RequiredMaterial)
 	{
 		bool bRequirementsMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
@@ -170,7 +165,7 @@ ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 
 ECraftingResponse FInventory::HasRequiredMaterialsArmour(const FArmour& Armour)
 {
-	for (const FMaterial& ItemMaterialIndex : Armour.RequiredMaterials)
+	for (const FMaterial& ItemMaterialIndex : Armour.ArmourData->RequiredMaterial)
 	{
 		bool bRequirementMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
