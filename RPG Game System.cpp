@@ -4,8 +4,19 @@
 #include <iostream>
 #include <string>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #include "Character/Character.h"
 #include "Creation/CharacterCreation.h"
+=======
+
+#include "Core/LoadExternalData.h"
+#include "Core/Random.h"
+
+#include "Character/Character.h"
+#include "Creation/CharacterCreation.h"
+
+#include "Inventory/Inventory.h"  
+>>>>>>> Stashed changes
 =======
 
 #include "Core/LoadExternalData.h"
@@ -23,6 +34,9 @@ FCharacter Character;
 =======
 FItem MainItem;
 FRandom Random;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 FMaterial Iron{ EMaterial::EMIron };
@@ -34,6 +48,7 @@ FMaterial Wood{ EMaterial::EMWood };
 <<<<<<< Updated upstream
 EAttributes StringToEAttribute(std::string Attribute)
 =======
+
 
 std::string EAbilityToString(EAbility Ability)
 >>>>>>> Stashed changes
@@ -51,6 +66,9 @@ void PrintAvailableRaces()
 {
     int Index = 1;
     for (const FRaceData& Race : Creator.GetLoader()->GetAvailableRaces())
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     {
         return EAttributes::EDex;
@@ -65,6 +83,9 @@ void PrintAvailableClasses()
 {
     int Index = 1;
     for (const FClassData& Class : Creator.GetLoader()->GetAvailableClasses())
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     {
         return EAttributes::ECon;
@@ -79,6 +100,9 @@ void PrintAvailableMaterials(int Type)
 {
     int Index = 1;
     for (const FMaterialData& Material : MainItem.GetLoader()->GetAvailableMaterials())
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     {
         return EAttributes::EInt;
@@ -94,6 +118,9 @@ void PrintCraftableItems()
     int Index = 1;
 
     for (const FItemData& Item : MainItem.GetLoader()->GetAvailableItems())
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     {
         return EAttributes::EWis;
@@ -512,6 +539,7 @@ int main()
         std::cout << Creator.GetAttributePoints() << " attribute points available" << std::endl;
     }
 
+<<<<<<< Updated upstream
     Character.CurrentCharacter = Creator.FinalizeCharacter();
 
     PrintCharacter();
@@ -580,11 +608,122 @@ int main()
                 std::cout << Character.Crafter.GetCraftableArmour()[CraftChoice].ItemName << " added to the inventory";
             }
         }
+=======
+    int ActionIndex = 0;
+
+    while (CurrentCharacter.GetCharacter().IsAlive())
+    {
+        std::cout << "What would you like to do?" << std::endl;
+        std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
+        std::cin >> ActionIndex;
+
+
+        switch (ActionIndex)
+        {
+        case 1:
+            {
+                int MaterialIndex = 0;
+                int MaterialTypeIndex = 0;
+
+                std::cout << "What material type are you looking for Wood(1), Metal(2), Cloth(3), All(4)" << std::endl;
+                std::cin >> MaterialTypeIndex;
+                PrintAvailableMaterials(MaterialTypeIndex);
+
+                std::cout << "What material would you like to gather?" << std::endl;
+                std::cin >> MaterialIndex;
+
+                const FMaterialData& Material = MainItem.GetLoader()->GetAvailableMaterials()[MaterialIndex - 1];
+                CurrentCharacter.GatherMaterials(&Material);
+
+                for (const FMaterial& Materials : CurrentCharacter.Inventory.GetMaterials())
+                {
+                    if (Materials.Material->MaterialName == Material.MaterialName)
+                    {
+                        std::cout << "You now have " << Materials.MaterialAmount << " " << Materials.Material->MaterialName << std::endl;
+                    }
+                }
+                break;
+            }
+        case 2:
+            {
+                int ItemTypeIndex = 0;
+                int ItemIndex = 0;
+                
+                std::cout << "You currently have: ";
+                PrintInventory(CurrentCharacter);
+
+                if (CurrentCharacter.Inventory.GetMaterials().empty())
+                {
+                    std::cout << "You have no materials, go gather some!" << std::endl << std::endl;
+                    break;
+                }
+
+                std::cout << "Would you like to craft Weapons(1) or Armour(2)" << std::endl;
+                std::cin >> ItemTypeIndex;
+                std::cout << std::endl << "Which item would you like to craft?" << std::endl;
+                
+                switch (ItemTypeIndex)
+                {
+                    case 1:
+                        PrintAvailableWeapons();
+                        std::cin >> ItemIndex;
+                        CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons().at(ItemIndex - 1));
+
+                        for (const FWeapon & Weapon : CurrentCharacter.Inventory.GetWeapons())
+                        {
+                           if (!CurrentCharacter.Inventory.GetWeapons().empty())
+                           {
+                                std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
+                           }
+                           else
+                           {
+                               std::cout << "The item was not crafted" << std::endl;
+                           }
+                       }
+
+                        break;
+                    case 2: 
+                        PrintAvailableArmour();
+                        std::cin >> ItemIndex;
+                        CurrentCharacter.CraftArmour(MainItem.GetCraftableArmour().at(ItemIndex - 1));
+
+                        for (const FArmour& Armour : CurrentCharacter.Inventory.GetArmour())
+                        {
+                            std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
+                        }
+                        break;
+                    default:
+                        std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
+                        break;
+                }
+                break;
+            }
+        case 3:
+            {
+
+                break;
+            }
+        case 4:
+            {
+
+                break;
+            }
+        default:
+            {
+
+                break;
+            }
+        }
+
+>>>>>>> Stashed changes
     }
 
     return 0;
 }
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

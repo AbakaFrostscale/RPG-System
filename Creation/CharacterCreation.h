@@ -35,6 +35,7 @@ private:
 	void ChooseClass(int ClassIndex);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	void ApplyRaceBaseStats();
 	void ApplyClassModifiers();
 
@@ -55,6 +56,17 @@ private:
 
 	ERace StringToERace(std::string Race) const;
 	EClass	StringToEClass(std::string Class) const;
+=======
+	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
+
+	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);	
+
+	std::shared_ptr<FLoadExternalData> GetLoader() { return Loader; }
+
+
+private:
+	std::shared_ptr<FLoadExternalData> Loader;
+>>>>>>> Stashed changes
 =======
 	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
 

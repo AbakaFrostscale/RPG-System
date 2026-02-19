@@ -11,12 +11,15 @@
 FInventory::FInventory()
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	
 }
 
 void FInventory::CheckInventory()
 {
    //send inventory items to the UI to be displayed as an interactable item
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }

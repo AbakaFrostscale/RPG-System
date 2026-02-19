@@ -14,10 +14,13 @@
 FCharacterCreator::FCharacterCreator()
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	LoadCSV("DataBases/RaceDatabase.csv", AvailableRaces);
 	LoadCSV("DataBases/ClassDatabase.csv", AvailableClasses);
 
 =======
+=======
+>>>>>>> Stashed changes
 	Loader = std::make_shared<FLoadExternalData>();
 }
 
@@ -34,6 +37,9 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	Character.CharStats = Character.BaseStats;
 
 	
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
@@ -80,12 +86,16 @@ void FCharacterCreator::ChooseRace(int RaceIndex)
 FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
 	return Loader->GetAvailableRaces()[RaceIndex];
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
 void FCharacterCreator::ChooseClass(int ClassIndex)
 {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 	if (bIsFinalised) { return; }
 
@@ -95,6 +105,9 @@ void FCharacterCreator::ChooseClass(int ClassIndex)
 
 	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
 	ApplyClassModifiers();
+=======
+	return Loader->GetAvailableClasses()[ClassIndex];
+>>>>>>> Stashed changes
 =======
 	return Loader->GetAvailableClasses()[ClassIndex];
 >>>>>>> Stashed changes

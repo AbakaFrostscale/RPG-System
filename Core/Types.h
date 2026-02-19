@@ -54,7 +54,11 @@ enum class EMaterial
 struct FMaterial
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	EMaterial Material;
+=======
+	const FMaterialData* Material;
+>>>>>>> Stashed changes
 =======
 	const FMaterialData* Material;
 >>>>>>> Stashed changes

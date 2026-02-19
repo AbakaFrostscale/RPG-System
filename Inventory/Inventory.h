@@ -49,6 +49,9 @@ private:
 <<<<<<< Updated upstream
 =======
 	//Inventory
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 	FInventoryStorage Inventory;
 	

@@ -3,12 +3,15 @@
 FItem::FItem()
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	IronSword =
 	{
 		"Iron Sword",
 		ERarity::ERCommon,
 		{},
 =======
+=======
+>>>>>>> Stashed changes
 	Loader = std::make_shared<FLoadExternalData>();
 
 	CopperSword = 
@@ -28,6 +31,9 @@ FItem::FItem()
 	SteelSword =
 	{
 		Loader->FindItemData("Steel Sword"),
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 		8,
 		{{ EMaterial::EMIron, 2}, {EMaterial::EMWood, 1}, {EMaterial::EMLeather, 1}}
@@ -35,6 +41,7 @@ FItem::FItem()
 
 	IronGreatsword =
 	{
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 		"Iron Greatsword",
 		ERarity::ERCommon,
@@ -60,6 +67,8 @@ FItem::FItem()
 		4,
 		{{EMaterial::EMIron, 1}, {EMaterial::EMWood, 1}, {EMaterial::EMLeather, 1}}
 =======
+=======
+>>>>>>> Stashed changes
 		Loader->FindItemData("Copper Chest Plate"),
 		4,
 		EAbility::EAStr,
@@ -81,6 +90,7 @@ FItem::FItem()
 >>>>>>> Stashed changes
 	};
 
+<<<<<<< Updated upstream
 	FArmour IronCuirass =
 	{
 		"Iron Cuirass",
@@ -110,5 +120,12 @@ FItem::FItem()
 }
 <<<<<<< Updated upstream
 =======
+
+>>>>>>> Stashed changes
+=======
+	AvailableArmour.push_back(CopperChestPlate);
+	AvailableArmour.push_back(IronChestPlate);
+	AvailableArmour.push_back(SpiderSilkArmour);
+}
 
 >>>>>>> Stashed changes

@@ -9,6 +9,7 @@
 FCrafting::FCrafting()
 {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	CraftableWeapons.push_back(Items.IronSword);
 	CraftableWeapons.push_back(Items.IronGreatsword);
 	CraftableWeapons.push_back(Items.IronDagger);
@@ -18,6 +19,10 @@ FCrafting::FCrafting()
 	CraftableArmour.push_back(Items.ClothRobe);
 	CraftableArmour.push_back(Items.IronCuirass);
 	CraftableArmour.push_back(Items.LeatherArmour);
+=======
+	Item = std::make_unique<FItem>();
+	Inventory = std::make_unique<FInventory>();
+>>>>>>> Stashed changes
 =======
 	Item = std::make_unique<FItem>();
 	Inventory = std::make_unique<FInventory>();
@@ -62,7 +67,11 @@ ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
 	std::vector<FWeapon> Weapons = Item->GetCraftableWeapons();
 	//Check if the weapon exists and is craftable
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	for (FWeapon& WeaponIndex : CraftableWeapons)
+=======
+	for (const FWeapon& WeaponIndex : Weapons)
+>>>>>>> Stashed changes
 =======
 	for (const FWeapon& WeaponIndex : Weapons)
 >>>>>>> Stashed changes
@@ -99,7 +108,11 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 	bool bArmourExists = false;
 	//Check if the weapon exists and is craftable
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	for (FArmour& ArmourIndex : CraftableArmour)
+=======
+	for (const FArmour& ArmourIndex : Item->GetCraftableArmour())
+>>>>>>> Stashed changes
 =======
 	for (const FArmour& ArmourIndex : Item->GetCraftableArmour())
 >>>>>>> Stashed changes

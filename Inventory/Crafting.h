@@ -23,6 +23,7 @@ public:
 	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	FItem Items;
 	FInventory Inventory;
 
@@ -33,6 +34,11 @@ private:
 
 	std::vector<FWeapon> CraftableWeapons;
 	std::vector<FArmour> CraftableArmour;
+=======
+private:
+	std::unique_ptr<FInventory> Inventory;
+	std::unique_ptr<FItem> Item;
+>>>>>>> Stashed changes
 =======
 private:
 	std::unique_ptr<FInventory> Inventory;

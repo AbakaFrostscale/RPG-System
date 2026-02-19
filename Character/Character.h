@@ -25,9 +25,13 @@ public:
 	class FInventory Inventory;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	FCharacterData CurrentCharacter;
 
 	void GatherMaterials(const FMaterial& MaterialNeeded);
+=======
+	void GatherMaterials(const FMaterialData* MaterialNeeded);
+>>>>>>> Stashed changes
 =======
 	void GatherMaterials(const FMaterialData* MaterialNeeded);
 >>>>>>> Stashed changes
@@ -39,7 +43,10 @@ public:
 	void EquipArmour(const FArmour& Armour);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 	void SetHPandMP();
 
 	FInventory Inventory;

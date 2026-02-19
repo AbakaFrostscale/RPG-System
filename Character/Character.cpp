@@ -13,7 +13,11 @@ FCharacter::FCharacter()
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 void FCharacter::GatherMaterials(const FMaterial& MaterialNeeded)
+=======
+void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
+>>>>>>> Stashed changes
 =======
 void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
 >>>>>>> Stashed changes
@@ -65,4 +69,7 @@ void FCharacter::SetHPandMP()
 	Character.CurrentHP = Character.MaxHP;
 	Character.CurrentMP = Character.MaxMP;
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
