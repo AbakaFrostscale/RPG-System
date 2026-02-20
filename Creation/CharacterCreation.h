@@ -20,8 +20,9 @@ class FCharacterCreator
 public:
 	FCharacterCreator();
 
-	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode);
+	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass);
 	void AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode);
+	void SetHPandMP(FCharacterData& Character);
 
 	FRaceData ChooseRace(int RaceIndex);
 	FClassData ChooseClass(int ClassIndex);

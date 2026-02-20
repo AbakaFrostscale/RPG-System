@@ -10,8 +10,8 @@
 #include "Core/Types.h"
 #include "Items.h"
 
-
 class FLoadExternalData;
+class FCharacter;
 
 struct FInventoryStorage
 {

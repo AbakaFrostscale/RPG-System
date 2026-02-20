@@ -20,7 +20,7 @@ FCharacterCreator::FCharacterCreator()
 	Loader = std::make_shared<FLoadExternalData>();
 }
 
-void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass, std::string UISkill, int UIAmount, EMode UIMode)
+void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass)
 {
 	Character.CharName = UIName;
 
@@ -31,12 +31,6 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	ApplyClassModifiers(Character);
 
 	Character.CharStats = Character.BaseStats;
-
-	Character.MaxHP = CalculateCharacterMaxHP(Character);
-	Character.MaxMP = CalculateCharacterMaxMP(Character);
-
-	Character.CurrentHP = Character.MaxHP;
-	Character.CurrentMP = Character.MaxMP;
 }
 
 /** 
@@ -194,6 +188,15 @@ void FCharacterCreator::AllocateAttributePoints(FCharacterData& Character, std::
 	{
 		AvailableAttributePoints += UIAmount; 
 	}
+}
+
+void FCharacterCreator::SetHPandMP(FCharacterData& Character)
+{
+	Character.MaxHP = CalculateCharacterMaxHP(Character);
+	Character.MaxMP = CalculateCharacterMaxMP(Character);
+
+	Character.CurrentHP = Character.MaxHP;
+	Character.CurrentMP = Character.MaxMP;
 }
 
 //Applies the stats of Race to the Character
