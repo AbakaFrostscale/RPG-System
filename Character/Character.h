@@ -10,11 +10,10 @@
 #include <array>
 #include "Core/Random.h"
 #include "CharacterStats.h"
-#include "Inventory/Crafting.h"
-#include "Inventory/Inventory.h"
 #include "Creation/CharacterCreation.h"
 
-
+class FCrafting;
+class FInventory;
 
 class FCharacter
 {
@@ -23,7 +22,7 @@ public:
 
 	class FRandom Random;
 
-	class FCrafting Crafter;
+		
 
 	FCharacterData CurrentCharacter;
 
@@ -35,12 +34,14 @@ public:
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
 
-	FInventory Inventory;
 
 	const FCharacterData GetCharacter() const { return Character; }
 	FCharacterData& GetCharacterReference() { return Character; }
+	const std::unique_ptr<FInventory>& GetInventory() const { return Inventory; }
 
 private:
+	std::shared_ptr<FCrafting> Crafter;
+	std::unique_ptr<FInventory> Inventory;
 	
 	FCharacterCreator Creator;
 	FCharacterData Character;

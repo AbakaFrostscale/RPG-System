@@ -9,8 +9,7 @@
 
 #include "Character/Character.h"
 #include "Creation/CharacterCreation.h"
-
-#include "Inventory/Inventory.h"  
+#include "Inventory/Inventory.h"
 
 
 FCharacter CurrentCharacter;
@@ -186,12 +185,38 @@ void PrintAvailableArmour()
 
 void PrintInventory(FCharacter& Character)
 {
-
+    std::cout << "Materials:" << std::endl;
+    for (const FMaterial& Mat : Character.GetInventory()->GetMaterials())
+    {
+        std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
+    }
+    std::cout << std::endl << "Weapons: " << std::endl;
+    for (const FWeapon& Wep : Character.GetInventory()->GetWeapons())
+    {
+        std::cout << Wep.WeaponData->ItemName << std::endl;
+        std::cout << EAbilityToString(Wep.RequiredStat) << " : " << Wep.RequiredStatAmount << std::endl;
+        std::cout << Wep.Damage << std::endl;
+    }
+    std::cout << std::endl << "Materials: " << std::endl;
+    for (const FArmour& Arm : Character.GetInventory()->GetArmour())
+    {
+        std::cout << Arm.ArmourData->ItemName << std::endl;
+        std::cout << EAbilityToString(Arm.RequiredStat) << " : " << Arm.RequiredStatAmount << std::endl;
+        std::cout << Arm.Defence << std::endl;
+    }
 }
 
 void PrintCharacter(const FCharacterData& Character)
 {
-
+    std::cout << Character.CharName << " the " << Character.CharRace.RaceName << " " << Character.CharClass.ClassName << std::endl;
+    std::cout << "Str: " << Character.CharStats.at(EAbility::EAStr) << std::endl;
+    std::cout << "Dex: " << Character.CharStats.at(EAbility::EADex) << std::endl;
+    std::cout << "Con: " << Character.CharStats.at(EAbility::EACon) << std::endl;
+    std::cout << "Int: " << Character.CharStats.at(EAbility::EAInt) << std::endl;
+    std::cout << "Wis: " << Character.CharStats.at(EAbility::EAWis) << std::endl;
+    std::cout << "Cha: " << Character.CharStats.at(EAbility::EACha) << std::endl;
+    std::cout << "HP: " << Character.CurrentHP << "/" << Character.MaxHP << std::endl;
+    std::cout << "MP: " << Character.CurrentMP << "/" << Character.MaxMP << std::endl;
 }
 
 std::string SelectAbility(int Skill)
@@ -221,12 +246,6 @@ EMode SelectMode(int Mode)
 int main()
 {
     bIsFinalised = false;
-    /*
-     PrintAvailableMaterials(4);
-
-     PrintAvailableWeapons();
-
-     PrintAvailableArmour();*/
 
     std::string CharName = "Toby";
     int RaceIndex = 0;
@@ -253,8 +272,9 @@ int main()
     PrintAvailableClasses();
     std::cin >> ClassIndex;
 
-    Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), CharName, RaceIndex - 1, ClassIndex - 1, Skill, Amount, Mode);
 
+    Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), CharName, RaceIndex - 1, ClassIndex - 1);
+    
     while (Creator.GetAttributePoints() >= 0)
     {
         if (bIsFinalised) { break; }
@@ -285,17 +305,27 @@ int main()
         {
             bIsFinalised = true;
         }
-        int ActionIndex = 0;
+    }
 
-        while (CurrentCharacter.GetCharacter().IsAlive())
+    if (bIsFinalised)
+    {
+        Creator.SetHPandMP(CurrentCharacter.GetCharacterReference());
+        PrintCharacter(CurrentCharacter.GetCharacter());
+    }
+    else
+    {
+        std::cerr << "Somtehing went wrong with Character Creation" << std::endl << "Please restart the game";
+    }
+
+    while (CurrentCharacter.GetCharacter().IsAlive())
+    {
+        std::cout << "What would you like to do?" << std::endl;
+        std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
+        std::cin >> ActionIndex;
+
+
+        switch (ActionIndex)
         {
-            std::cout << "What would you like to do?" << std::endl;
-            std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
-            std::cin >> ActionIndex;
-
-
-            switch (ActionIndex)
-            {
             case 1:
             {
                 int MaterialIndex = 0;
@@ -311,7 +341,7 @@ int main()
                 const FMaterialData& Material = MainItem.GetLoader()->GetAvailableMaterials()[MaterialIndex - 1];
                 CurrentCharacter.GatherMaterials(&Material);
 
-                for (const FMaterial& Materials : CurrentCharacter.Inventory.GetMaterials())
+                for (const FMaterial& Materials : CurrentCharacter.GetInventory()->GetMaterials())
                 {
                     if (Materials.Material->MaterialName == Material.MaterialName)
                     {
@@ -325,13 +355,14 @@ int main()
                 int ItemTypeIndex = 0;
                 int ItemIndex = 0;
 
-                std::cout << "You currently have: ";
-                PrintInventory(CurrentCharacter);
-
-                if (CurrentCharacter.Inventory.GetMaterials().empty())
+                if (CurrentCharacter.GetInventory()->GetMaterials().empty())
                 {
                     std::cout << "You have no materials, go gather some!" << std::endl << std::endl;
                     break;
+                }
+                else 
+                {
+                    PrintInventory(CurrentCharacter);
                 }
 
                 std::cout << "Would you like to craft Weapons(1) or Armour(2)" << std::endl;
@@ -345,9 +376,9 @@ int main()
                     std::cin >> ItemIndex;
                     CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons().at(ItemIndex - 1));
 
-                    for (const FWeapon& Weapon : CurrentCharacter.Inventory.GetWeapons())
+                    for (const FWeapon& Weapon : CurrentCharacter.GetInventory()->GetWeapons())
                     {
-                        if (!CurrentCharacter.Inventory.GetWeapons().empty())
+                        if (!CurrentCharacter.GetInventory()->GetWeapons().empty())
                         {
                             std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
                         }
@@ -363,7 +394,7 @@ int main()
                     std::cin >> ItemIndex;
                     CurrentCharacter.CraftArmour(MainItem.GetCraftableArmour().at(ItemIndex - 1));
 
-                    for (const FArmour& Armour : CurrentCharacter.Inventory.GetArmour())
+                    for (const FArmour& Armour : CurrentCharacter.GetInventory()->GetArmour())
                     {
                         std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
                     }
@@ -389,22 +420,10 @@ int main()
 
                 break;
             }
-            }
         }
-
-
-        if (bIsFinalised)
-        {
-            PrintCharacter(CurrentCharacter.GetCharacter());
-        }
-        else
-        {
-            std::cerr << "Somtehing went wrong with Character Creation" << std::endl << "Please restart the game";
-        }
-
-
-        return 0;
     }
+
+    return 0;
 }
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

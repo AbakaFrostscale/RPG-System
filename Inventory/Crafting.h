@@ -16,8 +16,8 @@ class FCrafting
 public:
 	FCrafting();
 
-	FWeapon CraftWeapon(const FWeapon& WeaponToCraft);
-	FArmour CraftArmour(const FArmour& ArmourToCraft);
+	const FWeapon CraftWeapon(const FWeapon& WeaponToCraft);
+	const FArmour CraftArmour(const FArmour& ArmourToCraft);
 
 	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft);
 	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);

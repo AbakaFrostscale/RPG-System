@@ -137,6 +137,7 @@ bool FInventory::HasMaterial(const FMaterial& Material)
 	}
 	return false;
 }
+
 ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 {
 	for (const FMaterial& ItemMaterialIndex : Weapon.WeaponData->RequiredMaterial)
