@@ -31,6 +31,12 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	ApplyClassModifiers(Character);
 
 	Character.CharStats = Character.BaseStats;
+
+	Character.MaxHP = CalculateCharacterMaxHP(Character);
+	Character.MaxMP = CalculateCharacterMaxMP(Character);
+
+	Character.CurrentHP = Character.MaxHP;
+	Character.CurrentMP = Character.MaxMP;
 }
 
 /** 
@@ -41,39 +47,15 @@ UISkill - Determines the skill from FAttributes struct that need to be modified 
 UIAmount - Determines the amount of AttributesPoints to use with upgrading the skill
 */
 
-//Chooses the race from AvailableRaces based on an index fed in from the UI
-void FCharacterCreator::ChooseRace(int RaceIndex)
-{	
-	if(bIsFinalised) { return; }	
-
-	if (RaceIndex < 0 || RaceIndex >= AvailableRaces.size())
-	return;
-	
-	
-	Character.CharRace = AvailableRaces[RaceIndex - 1].Race;
-	ApplyRaceBaseStats();
-
 FRaceData FCharacterCreator::ChooseRace(int RaceIndex)
 {
-	return GetAvailableRaces()[RaceIndex];
-
+	return Loader->GetAvailableRaces()[RaceIndex];
 }
 
 //Chooses the class from AvailableClasses based on an index fed from the UI
 FClassData FCharacterCreator::ChooseClass(int ClassIndex)
 {
-	if (bIsFinalised) { return; }
-
-	if (ClassIndex < 0 || ClassIndex >= AvailableClasses.size())
-	return;
-	
-
-	Character.CharClass = AvailableClasses[ClassIndex - 1].Class;
-	ApplyClassModifiers();
-
 	return Loader->GetAvailableClasses()[ClassIndex];
-
-	return GetAvailableClasses()[ClassIndex];
 }
 
 /**

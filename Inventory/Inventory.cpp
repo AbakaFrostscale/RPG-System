@@ -14,11 +14,6 @@ FInventory::FInventory()
 	
 }
 
-void FInventory::CheckInventory()
-{
-
-}
-
 void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
 {
 	for (auto It = Inventory.Materials.begin(); It != Inventory.Materials.end();)

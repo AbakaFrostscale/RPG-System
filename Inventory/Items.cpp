@@ -11,21 +11,21 @@ FItem::FItem()
 
 	CopperSword = 
 	{	
-		FindItemData("Copper Sword"),
+		Loader->FindItemData("Copper Sword"),
 		4,
 		EAbility::EADex, 
 		2 
 	};
 	IronSword =
 	{
-	   FindItemData("Iron Sword"),
+	   Loader->FindItemData("Iron Sword"),
 	   6,
 	   EAbility::EAStr,
 	   4
 	};
 	SteelSword =
 	{
-		FindItemData("Steel Sword"),
+		Loader->FindItemData("Steel Sword"),
 		8,
 		EAbility::EAStr,
 		4
@@ -60,36 +60,4 @@ FItem::FItem()
   AvailableArmour.push_back(CopperChestPlate);
 	AvailableArmour.push_back(IronChestPlate);
 	AvailableArmour.push_back(SpiderSilkArmour);
-}
-  
-
-const FItemData* FItem::FindItemData(const std::string& ItemName)
-{
-	for (const FItemData& Item : GetAvailableItems())
-	{
-		if (Item.ItemName == ItemName)
-		{
-			return &Item;
-		}
-	}
-	return nullptr;
-}
-
-void FItem::ResolveMaterials(std::vector<FItemData>& Items)
-{
-	for (size_t i = 0; i < Items.size(); i++)
-  {
-		Items[i].RequiredMaterial.clear();
-		for (const auto& key : Items[i].RawRequiredMaterials)
-		{
-			for (FMaterialData& ReqMaterial : AvailableMaterials)
-			{
-				if (ReqMaterial.MaterialName == key.first)
-				{
-					Items[i].RequiredMaterial.push_back({ &ReqMaterial, key.second });
-					break;
-				}
-			}
-		}
-	}
 }

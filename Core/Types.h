@@ -69,7 +69,6 @@ struct FMaterialData
 struct FMaterial
 {
 	const FMaterialData* Material;
-	FMaterialData* Material;
 	int MaterialAmount;
 };
 

@@ -16,8 +16,6 @@ class FItem
 {
 public:
 	FItem();
-	const FItemData* FindItemData(const std::string& ItemName);
-	void ResolveMaterials(std::vector<FItemData>& Items);
 
 	FWeapon CopperSword;
 	FWeapon IronSword;
