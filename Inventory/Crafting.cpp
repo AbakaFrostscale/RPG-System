@@ -78,9 +78,7 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 {
 	bool bArmourExists = false;
 	//Check if the weapon exists and is craftable
-	for (FArmour& ArmourIndex : CraftableArmour)
 	for (const FArmour& ArmourIndex : Item->GetCraftableArmour())
-	for (FArmour& ArmourIndex : Item->GetCraftableArmour())
 	{
 		if (ArmourIndex.ArmourData->ItemName == ArmourToCraft.ArmourData->ItemName)
 		{

@@ -35,8 +35,6 @@ public:
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
 
-	void SetHPandMP();
-
 	FInventory Inventory;
 
 	const FCharacterData GetCharacter() const { return Character; }

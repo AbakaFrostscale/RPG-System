@@ -43,7 +43,7 @@ void FLoadExternalData::ResolveMaterials(std::vector<FItemData>& Items)
 			{
 				if (ReqMaterial.MaterialName == key.first)
 				{
-					Items[i].RequiredMaterial.push_back({ &ReqMaterial, key.second });
+					Items[i].RequiredMaterial.push_back( {&ReqMaterial, key.second} );
 					break;
 				}
 			}

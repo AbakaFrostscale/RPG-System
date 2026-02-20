@@ -3,9 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include "Character/Character.h"
-#include "Creation/CharacterCreation.h"
-=======
 
 #include "Core/LoadExternalData.h"
 #include "Core/Random.h"
@@ -35,34 +32,13 @@ std::string EAbilityToString(EAbility Ability)
     case EAbility::EACha: return "Charisma";
     default: return "None";
     }
-    else if (Attribute == "Dex")
 }
 
 void PrintAvailableRaces()
 {
     int Index = 1;
+
     for (const FRaceData& Race : Creator.GetLoader()->GetAvailableRaces())
-    {
-        return EAttributes::EDex;
-    }
-    else if (Attribute == "Con")
-    {
-        return EAttributes::ECon;
-    }
-    else if (Attribute == "Int")
-    {
-        return EAttributes::EInt;
-    }
-    else if (Attribute == "Wis")
-    {
-        return EAttributes::EWis;
-    }
-    else if (Attribute == "Cha")
-    {
-        return EAttributes::ECha;
-    }
-    else
-    for (const FRaceData& Race : Creator.GetAvailableRaces())
     {
         std::cout << Index << " : Race: " << Race.RaceName << std::endl;
 
@@ -78,21 +54,20 @@ void PrintAvailableRaces()
     std::cout << std::endl;
 }
 
-EIncreaseOrDecrease StringToMode(std::string Mode)
+void PrintAvailableClasses()
 {
     int Index = 1;
-    for (const FClassData& Class : Creator.GetAvailableClasses())
+
+    for (const FClassData& Class : Creator.GetLoader()->GetAvailableClasses())
     {
         std::cout << Index << " : Class: " << Class.ClassName << std::endl;
 
-        std::cout << "    Base Health: " << Class.BaseHealth << std::endl;
-
-        std::cout << "    Str Mod: " << Class.StatModifier.at(EAbility::EAStr) << std::endl;
-        std::cout << "    Str Dex: " << Class.StatModifier.at(EAbility::EADex) << std::endl;
-        std::cout << "    Str Con: " << Class.StatModifier.at(EAbility::EACon) << std::endl;
-        std::cout << "    Str Int: " << Class.StatModifier.at(EAbility::EAInt) << std::endl;
-        std::cout << "    Str Wis: " << Class.StatModifier.at(EAbility::EAWis) << std::endl;
-        std::cout << "    Str Cha: " << Class.StatModifier.at(EAbility::EACha) << std::endl;
+        std::cout << "    Str: " << Class.StatModifier.at(EAbility::EAStr) << std::endl;
+        std::cout << "    Dex: " << Class.StatModifier.at(EAbility::EADex) << std::endl;
+        std::cout << "    Con: " << Class.StatModifier.at(EAbility::EACon) << std::endl;
+        std::cout << "    Int: " << Class.StatModifier.at(EAbility::EAInt) << std::endl;
+        std::cout << "    Wis: " << Class.StatModifier.at(EAbility::EAWis) << std::endl;
+        std::cout << "    Cha: " << Class.StatModifier.at(EAbility::EACha) << std::endl;
 
         ++Index;
     }
@@ -102,7 +77,7 @@ EIncreaseOrDecrease StringToMode(std::string Mode)
 void PrintAvailableMaterials(int Type)
 {
     int Index = 1;
-    for (const FMaterialData& Material : MainItem.GetAvailableMaterials())
+    for (const FMaterialData& Material : MainItem.GetLoader()->GetAvailableMaterials())
     {
         switch (Type)
         {
@@ -144,7 +119,7 @@ void PrintCraftableItems()
 {
     int Index = 1;
 
-    for (const FItemData& Item : MainItem.GetAvailableItems())
+    for (const FItemData& Item : MainItem.GetLoader()->GetAvailableItems())
     {
         std::cout << Index << " : Item: " << Item.ItemName << std::endl;
         std::cout << "    Item Type: " << Item.ItemType << std::endl;
@@ -153,113 +128,7 @@ void PrintCraftableItems()
     }
     std::cout << std::endl;
 }
-    int ActionIndex = 0;
 
-    while (CurrentCharacter.GetCharacter().IsAlive())
-    {
-        std::cout << "What would you like to do?" << std::endl;
-        std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
-        std::cin >> ActionIndex;
-
-
-        switch (ActionIndex)
-        {
-        case 1:
-            {
-                int MaterialIndex = 0;
-                int MaterialTypeIndex = 0;
-
-                std::cout << "What material type are you looking for Wood(1), Metal(2), Cloth(3), All(4)" << std::endl;
-                std::cin >> MaterialTypeIndex;
-                PrintAvailableMaterials(MaterialTypeIndex);
-
-                std::cout << "What material would you like to gather?" << std::endl;
-                std::cin >> MaterialIndex;
-
-                const FMaterialData& Material = MainItem.GetLoader()->GetAvailableMaterials()[MaterialIndex - 1];
-                CurrentCharacter.GatherMaterials(&Material);
-
-                for (const FMaterial& Materials : CurrentCharacter.Inventory.GetMaterials())
-                {
-                    if (Materials.Material->MaterialName == Material.MaterialName)
-                    {
-                        std::cout << "You now have " << Materials.MaterialAmount << " " << Materials.Material->MaterialName << std::endl;
-                    }
-                }
-                break;
-            }
-        case 2:
-            {
-                int ItemTypeIndex = 0;
-                int ItemIndex = 0;
-                
-                std::cout << "You currently have: ";
-                PrintInventory(CurrentCharacter);
-
-                if (CurrentCharacter.Inventory.GetMaterials().empty())
-                {
-                    std::cout << "You have no materials, go gather some!" << std::endl << std::endl;
-                    break;
-                }
-
-                std::cout << "Would you like to craft Weapons(1) or Armour(2)" << std::endl;
-                std::cin >> ItemTypeIndex;
-                std::cout << std::endl << "Which item would you like to craft?" << std::endl;
-                
-                switch (ItemTypeIndex)
-                {
-                    case 1:
-                        PrintAvailableWeapons();
-                        std::cin >> ItemIndex;
-                        CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons().at(ItemIndex - 1));
-
-                        for (const FWeapon & Weapon : CurrentCharacter.Inventory.GetWeapons())
-                        {
-                           if (!CurrentCharacter.Inventory.GetWeapons().empty())
-                           {
-                                std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
-                           }
-                           else
-                           {
-                               std::cout << "The item was not crafted" << std::endl;
-                           }
-                       }
-
-                        break;
-                    case 2: 
-                        PrintAvailableArmour();
-                        std::cin >> ItemIndex;
-                        CurrentCharacter.CraftArmour(MainItem.GetCraftableArmour().at(ItemIndex - 1));
-
-                        for (const FArmour& Armour : CurrentCharacter.Inventory.GetArmour())
-                        {
-                            std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
-                        }
-                        break;
-                    default:
-                        std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
-                        break;
-                }
-                break;
-            }
-        case 3:
-            {
-
-                break;
-            }
-        case 4:
-            {
-
-                break;
-            }
-        default:
-            {
-
-                break;
-            }
-        }
-
-    }
 
 void  PrintAvailableWeapons()
 {
@@ -269,7 +138,7 @@ void  PrintAvailableWeapons()
     {
         std::cout << Index << " : Item: " << Weapon.WeaponData->ItemName << std::endl;
         std::cout << "    Required Materials: " << std::endl;
-        for (const FMaterialData& Material : MainItem.GetAvailableMaterials())
+        for (const FMaterialData& Material : MainItem.GetLoader()->GetAvailableMaterials())
         {
             for (const FMaterial& WepMateral : Weapon.WeaponData->RequiredMaterial)
             {
@@ -296,7 +165,7 @@ void PrintAvailableArmour()
     {
         std::cout << Index << " : Item: " << Armour.ArmourData->ItemName << std::endl;
         std::cout << "    Required Materials: " << std::endl;
-        for (const FMaterialData& Material : MainItem.GetAvailableMaterials())
+        for (const FMaterialData& Material : MainItem.GetLoader()->GetAvailableMaterials())
         {
             for (const FMaterial& ArmMateral : Armour.ArmourData->RequiredMaterial)
             {
@@ -315,21 +184,14 @@ void PrintAvailableArmour()
     std::cout << std::endl;
 };
 
-int main()
+void PrintInventory(FCharacter& Character)
 {
-    std::cout << Character.CharName << std::endl;;
-    std::cout << Character.CharRace.RaceName << std::endl;
-    std::cout << Character.CharClass.ClassName << std::endl;
-    
-    std::cout << "Str: " << Character.CharStats[EAbility::EAStr] << std::endl;
-    std::cout << "Dex: " << Character.CharStats[EAbility::EADex] << std::endl;
-    std::cout << "Con: " << Character.CharStats[EAbility::EACon] << std::endl;
-    std::cout << "Int: " << Character.CharStats[EAbility::EAInt] << std::endl;
-    std::cout << "Wis: " << Character.CharStats[EAbility::EAWis] << std::endl;
-    std::cout << "Cha: " << Character.CharStats[EAbility::EACha] << std::endl;
-    
-    std::cout << Character.CurrentHP << "/" << Character.MaxHP << std::endl;
-    std::cout << Character.CurrentMP << "/" << Character.MaxMP << std::endl;
+
+}
+
+void PrintCharacter(const FCharacterData& Character)
+{
+
 }
 
 std::string SelectAbility(int Skill)
@@ -356,14 +218,15 @@ EMode SelectMode(int Mode)
     }
 }
 
+int main()
 {
     bIsFinalised = false;
-   /*
-    PrintAvailableMaterials(4);
+    /*
+     PrintAvailableMaterials(4);
 
-    PrintAvailableWeapons();
+     PrintAvailableWeapons();
 
-    PrintAvailableArmour();*/
+     PrintAvailableArmour();*/
 
     std::string CharName = "Toby";
     int RaceIndex = 0;
@@ -371,65 +234,69 @@ EMode SelectMode(int Mode)
 
     std::string Skill = "Str";
     int SkillIndex = 0;
-    
+
     int Amount = 0;
-    
+
     EMode Mode = EMode::EMIncrease;
     int ModeIndex;
+
+    int ActionIndex = 0;
 
     std::cout << "Please choose a name for your characeter : ";
     std::cin >> CharName;
 
-    std::cout << "Next select a race for your character (1-" << Creator.GetAvailableRaces().size() << ")" << std::endl ;
+    std::cout << "Next select a race for your character (1-" << Creator.GetLoader()->GetAvailableRaces().size() << ")" << std::endl;
     PrintAvailableRaces();
     std::cin >> RaceIndex;
 
-    Character.CurrentCharacter = Creator.FinalizeCharacter();
+    std::cout << "Next you must choose a class for your character (1-" << Creator.GetLoader()->GetAvailableClasses().size() << ")" << std::endl;
+    PrintAvailableClasses();
+    std::cin >> ClassIndex;
 
-    CurrentCharacter.CreateCharacter(CharName, RaceIndex - 1, ClassIndex - 1, Skill, Amount, Mode);
+    Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), CharName, RaceIndex - 1, ClassIndex - 1, Skill, Amount, Mode);
 
     while (Creator.GetAttributePoints() >= 0)
     {
         if (bIsFinalised) { break; }
-       
+
         std::cout << "Please choose a skill to increase (1-6)" << std::endl;
         std::cout << "1: Strength" << std::endl;
         std::cout << "2: Dexterity" << std::endl;
         std::cout << "3: Constitution" << std::endl;
         std::cout << "4: Intelligence" << std::endl;
         std::cout << "5: Wisdom" << std::endl;
-        std::cout << "6: Charisma" << std::endl; 
+        std::cout << "6: Charisma" << std::endl;
         std::cin >> SkillIndex;
         Skill = SelectAbility(SkillIndex);
 
         std::cout << "Would you like to Increase(1) or Decrease(2) the ability?" << std::endl;
         std::cin >> ModeIndex;
         Mode = SelectMode(ModeIndex);
-        
+
 
         std::cout << "Select by how much no more than: " << Creator.GetAttributePoints() << std::endl;
         std::cin >> Amount;
 
 
-        Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(),Skill, Amount, Mode);
+        Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(), Skill, Amount, Mode);
 
 
         if (Creator.GetAttributePoints() <= 0)
         {
             bIsFinalised = true;
         }
-    int ActionIndex = 0;
+        int ActionIndex = 0;
 
-    while (CurrentCharacter.GetCharacter().IsAlive())
-    {
-        std::cout << "What would you like to do?" << std::endl;
-        std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
-        std::cin >> ActionIndex;
-
-
-        switch (ActionIndex)
+        while (CurrentCharacter.GetCharacter().IsAlive())
         {
-        case 1:
+            std::cout << "What would you like to do?" << std::endl;
+            std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
+            std::cin >> ActionIndex;
+
+
+            switch (ActionIndex)
+            {
+            case 1:
             {
                 int MaterialIndex = 0;
                 int MaterialTypeIndex = 0;
@@ -453,11 +320,11 @@ EMode SelectMode(int Mode)
                 }
                 break;
             }
-        case 2:
+            case 2:
             {
                 int ItemTypeIndex = 0;
                 int ItemIndex = 0;
-                
+
                 std::cout << "You currently have: ";
                 PrintInventory(CurrentCharacter);
 
@@ -470,75 +337,75 @@ EMode SelectMode(int Mode)
                 std::cout << "Would you like to craft Weapons(1) or Armour(2)" << std::endl;
                 std::cin >> ItemTypeIndex;
                 std::cout << std::endl << "Which item would you like to craft?" << std::endl;
-                
+
                 switch (ItemTypeIndex)
                 {
-                    case 1:
-                        PrintAvailableWeapons();
-                        std::cin >> ItemIndex;
-                        CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons().at(ItemIndex - 1));
+                case 1:
+                    PrintAvailableWeapons();
+                    std::cin >> ItemIndex;
+                    CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons().at(ItemIndex - 1));
 
-                        for (const FWeapon & Weapon : CurrentCharacter.Inventory.GetWeapons())
+                    for (const FWeapon& Weapon : CurrentCharacter.Inventory.GetWeapons())
+                    {
+                        if (!CurrentCharacter.Inventory.GetWeapons().empty())
                         {
-                           if (!CurrentCharacter.Inventory.GetWeapons().empty())
-                           {
-                                std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
-                           }
-                           else
-                           {
-                               std::cout << "The item was not crafted" << std::endl;
-                           }
-                       }
-
-                        break;
-                    case 2: 
-                        PrintAvailableArmour();
-                        std::cin >> ItemIndex;
-                        CurrentCharacter.CraftArmour(MainItem.GetCraftableArmour().at(ItemIndex - 1));
-
-                        for (const FArmour& Armour : CurrentCharacter.Inventory.GetArmour())
-                        {
-                            std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
+                            std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
                         }
-                        break;
-                    default:
-                        std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
-                        break;
+                        else
+                        {
+                            std::cout << "The item was not crafted" << std::endl;
+                        }
+                    }
+
+                    break;
+                case 2:
+                    PrintAvailableArmour();
+                    std::cin >> ItemIndex;
+                    CurrentCharacter.CraftArmour(MainItem.GetCraftableArmour().at(ItemIndex - 1));
+
+                    for (const FArmour& Armour : CurrentCharacter.Inventory.GetArmour())
+                    {
+                        std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
+                    }
+                    break;
+                default:
+                    std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
+                    break;
                 }
                 break;
             }
-        case 3:
+            case 3:
             {
 
                 break;
             }
-        case 4:
+            case 4:
             {
 
                 break;
             }
-        default:
+            default:
             {
 
                 break;
+            }
             }
         }
+
+
+        if (bIsFinalised)
+        {
+            PrintCharacter(CurrentCharacter.GetCharacter());
+        }
+        else
+        {
+            std::cerr << "Somtehing went wrong with Character Creation" << std::endl << "Please restart the game";
+        }
+
+
+        return 0;
     }
-
-
-    if (bIsFinalised)
-    {
-        PrintCharacter(CurrentCharacter.GetCharacter());
-    }
-    else
-    {
-        std::cerr << "Somtehing went wrong with Character Creation" << std::endl << "Please restart the game";
-    }
-
-
-    return 0;
 }
-
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
