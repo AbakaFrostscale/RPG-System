@@ -4,41 +4,43 @@
 //Description: Portfolio project demonstrating a full RPG system
 //version 1.00
 
-#include <iostream>
-
 #include "Core/LoadExternalData.h"
 #include "Inventory/Items.h"
-#include "Inventory/Inventory.h"
 #include "Crafting.h"
 
 FCrafting::FCrafting()
 {
 
 	Item = std::make_unique<FItem>();
-	Inventory = std::make_unique<FInventory>();
 }
 
-const FWeapon FCrafting::CraftWeapon(const FWeapon& WeaponToCraft)
+std::optional<FWeapon> FCrafting::CraftWeapon(std::optional<FWeapon> WeaponToCraft, FInventory& Inventory)
 {
-	if (CanWeaponBeCrafted(WeaponToCraft) == ECraftingResponse::ECRItemDoesNotExist	||
-		CanWeaponBeCrafted(WeaponToCraft) == ECraftingResponse::ECRMaterialsMissing ||
-		CanWeaponBeCrafted(WeaponToCraft) == ECraftingResponse::ECRItemAlreadyInInventory) 
-		{ return {}; }	
+	// checks ti see if weapon exists, materials are suffficient and it is not in the inventory
+	if (CanWeaponBeCrafted(*WeaponToCraft, Inventory) != ECraftingResponse::ECRCanBeCrafted) { return std::nullopt; }
+
+	for (const FMaterial& Material : WeaponToCraft->WeaponData->RequiredMaterial)
+	{
+		Inventory.RemoveMaterials(Material, Material.MaterialAmount);
+	}
 
 	return WeaponToCraft;
 }
 
-const FArmour FCrafting::CraftArmour(const FArmour& ArmourToCraft)
+std::optional<FArmour> FCrafting::CraftArmour(std::optional<FArmour> ArmourToCraft, FInventory& Inventory)
 {
-	if (CanArmourBeCrafted(ArmourToCraft) == ECraftingResponse::ECRItemDoesNotExist || 
-		CanArmourBeCrafted(ArmourToCraft) == ECraftingResponse::ECRMaterialsMissing ||
-		CanArmourBeCrafted(ArmourToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
-		{ return {}; }
+	// checks ti see if armour exists, materials are suffficient and it is not in the inventory
+	if (CanArmourBeCrafted(*ArmourToCraft, Inventory) != ECraftingResponse::ECRCanBeCrafted) { return std::nullopt; }
+
+	for (const FMaterial& Material : ArmourToCraft->ArmourData->RequiredMaterial)
+	{
+		Inventory.RemoveMaterials(Material, Material.MaterialAmount);
+	}
 
 	return ArmourToCraft;
 }
 
-ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
+ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft, FInventory& Inventory)
 {
 	bool bWeaponExists = false;
 	
@@ -57,12 +59,12 @@ ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
 		return ECraftingResponse::ECRItemDoesNotExist;
 	}
 
-	if (Inventory->HasWeapon(WeaponToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
+	if (Inventory.HasWeapon(WeaponToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
 	{
 			return ECraftingResponse::ECRItemAlreadyInInventory;
 	}
 
-	if (Inventory->HasRequiredMaterialsWeapon(WeaponToCraft) == ECraftingResponse::ECRMaterialsMissing)
+	if (Inventory.HasRequiredMaterialsWeapon(WeaponToCraft) == ECraftingResponse::ECRMaterialsMissing)
 	{
 		//TODO notify UI which materials are missing
 
@@ -72,7 +74,7 @@ ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft)
 	return ECraftingResponse::ECRCanBeCrafted;
 }
 
-ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
+ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft, FInventory& Inventory)
 {
 	bool bArmourExists = false;
 	//Check if the weapon exists and is craftable
@@ -90,12 +92,12 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft)
 		return ECraftingResponse::ECRItemDoesNotExist;
 	}
 
-	if (Inventory->HasArmour(ArmourToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
+	if (Inventory.HasArmour(ArmourToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
 	{
 		return ECraftingResponse::ECRItemAlreadyInInventory;
 	}
 
-	if (Inventory->HasRequiredMaterialsArmour(ArmourToCraft) == ECraftingResponse::ECRMaterialsMissing)
+	if (Inventory.HasRequiredMaterialsArmour(ArmourToCraft) == ECraftingResponse::ECRMaterialsMissing)
 	{
 		//TODO notify UI which materials are missing
 

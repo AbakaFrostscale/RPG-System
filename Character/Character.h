@@ -8,6 +8,7 @@
 
 #include <string>
 #include <array>
+#include <optional>
 #include "Core/Random.h"
 #include "CharacterStats.h"
 #include "Creation/CharacterCreation.h"
@@ -39,13 +40,16 @@ public:
 	FCharacterData& GetCharacterReference() { return Character; }
 	const std::unique_ptr<FInventory>& GetInventory() const { return Inventory; }
 
+	const std::optional<FWeapon>& GetEquippedWeapon() const{ return EquippedWeapon; }
+	const std::optional<FArmour>& GetEquippedArmour() const { return EquippedArmour; }
+
 private:
 	std::shared_ptr<FCrafting> Crafter;
 	std::unique_ptr<FInventory> Inventory;
 	
 	FCharacterCreator Creator;
 	FCharacterData Character;
-	FWeapon EquippedWeapon;
-	FArmour EquippedArmour;
+	std::optional<FWeapon> EquippedWeapon;
+	std::optional<FArmour> EquippedArmour;
 
 };

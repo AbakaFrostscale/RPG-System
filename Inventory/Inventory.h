@@ -10,9 +10,6 @@
 #include "Core/Types.h"
 #include "Items.h"
 
-class FLoadExternalData;
-class FCharacter;
-
 struct FInventoryStorage
 {
 	std::vector<FMaterial> Materials;
@@ -31,10 +28,10 @@ public:
 	void AddMaterials(const FMaterialData* Material, int AmountToAdd);
 
 	void RemoveWeapons(const FWeapon& Weapon);
-	void AddWeapons(const FWeapon& Weapon);
+	void AddWeapons(std::optional<FWeapon> Weapon);
 
 	void RemoveArmour(const FArmour& Armour);
-	void AddArmour(const FArmour& Armour);
+	void AddArmour(std::optional<FArmour> Armour);
 
 	ECraftingResponse HasArmour(const FArmour& Armour);
 	ECraftingResponse HasWeapon(const FWeapon& Weapon); 
