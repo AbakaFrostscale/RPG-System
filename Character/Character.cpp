@@ -27,29 +27,37 @@ void FCharacter::GatherMaterials(const FMaterialData* MaterialNeeded)
 //receive input from UI notifying the system which weapon need to be crafted 
 void FCharacter::CraftWeapon(const FWeapon& Weapon)
 {
-	const FWeapon CraftedWeapon = Crafter->CraftWeapon(Weapon);
-
-	Inventory->AddWeapons(CraftedWeapon);
+	Inventory->AddWeapons(Crafter->CraftWeapon(Weapon, *Inventory));
 }
 
 //receive input from UI notifying the system which armour need to be crafted 
 void FCharacter::CraftArmour(const FArmour& Armour)
 {
-	const FArmour& CraftedArmour = Crafter->CraftArmour(Armour);
-
-	Inventory->AddArmour(Crafter->CraftArmour(CraftedArmour));
+	Inventory->AddArmour(Crafter->CraftArmour(Armour, *Inventory));
 }
 
 void FCharacter::EquipWeapon(const FWeapon& Weapon)
 {
-	if (Inventory->HasWeapon(Weapon) != ECraftingResponse::ECRCanBeCrafted) { return; }
-
-	EquippedWeapon = Weapon;
+	if (Inventory->HasWeapon(Weapon) == ECraftingResponse::ECRItemAlreadyInInventory
+		&& Character.CharStats.at(Weapon.RequiredStat) >= Weapon.RequiredStatAmount)
+	{
+		EquippedWeapon = Weapon;
+	}
+	else
+	{
+		return;
+	}
 }
 
 void FCharacter::EquipArmour(const FArmour& Armour)
 {
-	if (Inventory->HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
-
-	EquippedArmour = Armour;
+	if (Inventory->HasArmour(Armour) == ECraftingResponse::ECRItemAlreadyInInventory
+		&& Character.CharStats.at(Armour.RequiredStat) >= Armour.RequiredStatAmount)
+	{
+		EquippedArmour = Armour;
+	}
+	else
+	{ 
+		return; 
+	}
 }

@@ -5,6 +5,7 @@
 //version 1.00
 
 #include <vector>
+#include <optional>
 #include <iostream>
 #include "Inventory.h"
 #include "Core/LoadExternalData.h"
@@ -69,12 +70,11 @@ void FInventory::RemoveWeapons(const FWeapon& Weapon)
 	}
 }
 
-void FInventory::AddWeapons(const FWeapon& Weapon)
+void FInventory::AddWeapons(std::optional<FWeapon> Weapon)
 {
-	if (HasWeapon(Weapon) != ECraftingResponse::ECRCanBeCrafted) { return; }
+	if (!Weapon || HasWeapon(*Weapon) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
-	std::cout << Weapon.WeaponData->ItemName << " created!" << std::endl;
-	Inventory.Weapons.push_back(Weapon);
+	Inventory.Weapons.push_back(*Weapon);
 }
 
 void FInventory::RemoveArmour(const FArmour& Armour)
@@ -95,11 +95,11 @@ void FInventory::RemoveArmour(const FArmour& Armour)
 	}
 }
 
-void FInventory::AddArmour(const FArmour& Armour)
+void FInventory::AddArmour(std::optional<FArmour> Armour)
 {
-	if (HasArmour(Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
+	if (!Armour || HasArmour(*Armour) != ECraftingResponse::ECRCanBeCrafted) { return; }
 
-	Inventory.Armour.push_back(Armour);
+	Inventory.Armour.push_back(*Armour);
 }
 
 ECraftingResponse FInventory::HasArmour(const FArmour& Armor)

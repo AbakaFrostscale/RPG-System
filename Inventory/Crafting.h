@@ -7,20 +7,21 @@
 #pragma once
 
 #include <vector> 
+#include <optional>
+#include "Inventory.h"
 
 class FItem;
-class FInventory;
 
 class FCrafting 
 {
 public:
 	FCrafting();
 
-	const FWeapon CraftWeapon(const FWeapon& WeaponToCraft);
-	const FArmour CraftArmour(const FArmour& ArmourToCraft);
+	std::optional<FWeapon> CraftWeapon(std::optional<FWeapon> WeaponToCraft, FInventory& Inventory);
+	std::optional<FArmour> CraftArmour(std::optional<FArmour> ArmourToCraft, FInventory& Inventory);
 
-	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft);
-	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft);
+	ECraftingResponse CanWeaponBeCrafted(const FWeapon& WeaponToCraft, FInventory& Inventory);
+	ECraftingResponse CanArmourBeCrafted(const FArmour& ArmourToCraft, FInventory& Inventory);
 
 
 	std::vector<FWeapon> GetCraftableWeapons() { return CraftableWeapons; }
@@ -28,7 +29,6 @@ public:
 
 private:
 	std::unique_ptr<FItem> Item;
-	std::unique_ptr<FInventory> Inventory;
 
 	std::vector<FWeapon> CraftableWeapons;
 	std::vector<FArmour> CraftableArmour;
