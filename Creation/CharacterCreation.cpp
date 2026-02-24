@@ -31,6 +31,8 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	ApplyClassModifiers(Character);
 
 	Character.CharStats = Character.BaseStats;
+
+	Character.Team = ETeam::ETPlayers;
 }
 
 /** 

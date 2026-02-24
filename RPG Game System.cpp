@@ -18,6 +18,7 @@ FItem MainItem;
 
 bool bIsFinalised;
 
+
 std::string EAbilityToString(EAbility Ability)
 
 {
@@ -392,21 +393,18 @@ int main()
 				PrintAvailableWeapons();
 				std::cin >> ItemIndex;
 
-				CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons()[ItemIndex -1]);
+				CurrentCharacter.CraftWeapon(MainItem.GetCraftableWeapons()[ItemIndex - 1]);
 
 				if (CurrentCharacter.GetInventory()->GetWeapons().empty())
 				{
 					std::cout << "The item was not crafted" << std::endl;
 				}
-				else
+
+				for (const FWeapon& Weapon : CurrentCharacter.GetInventory()->GetWeapons())
 				{
-					for (const FWeapon& Weapon : CurrentCharacter.GetInventory()->GetWeapons())
+					if (Weapon.WeaponData->ItemName == MainItem.GetCraftableWeapons()[ItemIndex - 1].WeaponData->ItemName)
 					{
-						if (Weapon.WeaponData->ItemName == MainItem.GetCraftableWeapons()[ItemIndex - 1].WeaponData->ItemName)
-						{
-							std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
-							break;
-						}
+						std::cout << "You now have a " << Weapon.WeaponData->ItemName << " in your inventory!" << std::endl;
 					}
 				}
 				break;
@@ -421,16 +419,14 @@ int main()
 				if (CurrentCharacter.GetInventory()->GetArmour().empty())
 				{
 					std::cout << "The item was not crafted" << std::endl;
+					break;
 				}
-				else
+
+				for (const FArmour& Armour : CurrentCharacter.GetInventory()->GetArmour())
 				{
-					for (const FArmour& Armour : CurrentCharacter.GetInventory()->GetArmour())
+					if (Armour.ArmourData->ItemName == MainItem.GetCraftableArmour()[ItemIndex - 1].ArmourData->ItemName)
 					{
-						if (Armour.ArmourData->ItemName == MainItem.GetCraftableArmour()[ItemIndex - 1].ArmourData->ItemName)
-						{
-							std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
-							break;
-						}
+						std::cout << "You now have a " << Armour.ArmourData->ItemName << " in your inventory!" << std::endl;
 					}
 				}
 				break;
@@ -498,19 +494,17 @@ int main()
 				std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
 				break;
 			}
-
 			break;
 		}
 		case 4:
 		{
 
-			break;
-		}
-		default:
-		{
 
 			break;
 		}
+		default:
+			std::cout << "That is not a valid selection try again!" << std::endl << std::endl;
+			break;
 		}
 	}
 	return 0;
