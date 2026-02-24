@@ -23,10 +23,6 @@ public:
 
 	class FRandom Random;
 
-		
-
-	FCharacterData CurrentCharacter;
-
 	void GatherMaterials(const FMaterialData* MaterialNeeded);
 
 	void CraftWeapon(const FWeapon& Weapon);

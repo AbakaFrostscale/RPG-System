@@ -9,7 +9,7 @@
 #include <string>
 #include "Core/Types.h" 
 
-struct FCharacterData 
+struct FCombatant 
 { 
 	std::string CharName; 
 	int MaxHP = 0;
@@ -21,6 +21,11 @@ struct FCharacterData
 	std::map<EAbility, int> CharStats;
 	std::map<EAbility, int> BaseStats;
 
+	ETeam Team = ETeam::ETPlayers;
+
 	bool IsAlive() const { return CurrentHP > 0; } ; 
 };
+
+struct FCharacterData : public FCombatant{};
+struct FEnemyData : public FCombatant{};
 
