@@ -77,5 +77,6 @@
     <None Include="DataBases\ClassDatabase.csv" />
     <None Include="DataBases\MaterialDatabase.csv" />
     <None Include="DataBases\ItemsDatabase.csv" />
+    <None Include="DataBases\EnemiesDatabase.csv" />
   </ItemGroup>
 </Project>

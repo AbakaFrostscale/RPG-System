@@ -9,7 +9,7 @@
 
 FTurnBasedCombat::FTurnBasedCombat()
 {
-
+	Loader = std::make_unique<FLoadExternalData>();
 }
 
 

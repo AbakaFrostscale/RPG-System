@@ -19,6 +19,7 @@ public:
 	FTurnBasedCombat();
 
 private:
+	std::unique_ptr<FLoadExternalData> Loader;
 
 
 };

@@ -16,16 +16,22 @@ struct FCombatant
 	int CurrentHP = 0; 
 	int MaxMP = 0;
 	int CurrentMP = 0; 
-	FRaceData CharRace; 
-	FClassData CharClass; 
-	std::map<EAbility, int> CharStats;
-	std::map<EAbility, int> BaseStats;
 
 	ETeam Team = ETeam::ETPlayers;
 
 	bool IsAlive() const { return CurrentHP > 0; } ; 
 };
 
-struct FCharacterData : public FCombatant{};
-struct FEnemyData : public FCombatant{};
+struct FCharacterData : public FCombatant
+{
+	FRaceData CharRace; 
+	FClassData CharClass; 
+	std::map<EAbility, int> CharStats;
+	std::map<EAbility, int> BaseStats;
+};
+
+struct FEnemyData : public FCombatant
+{
+	std::map<EAbility, int> EnemyStats;
+};
 
