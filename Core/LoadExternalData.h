@@ -4,14 +4,18 @@
 //Description: Portfolio project demonstrating a full RPG system
 //version 1.00
 
-
 #pragma once
 
-#include "Types.h"
 #include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
+
+#include "Types.h" 
+#include "External/json.hpp"
+#include "Character/CharacterStats.h"
+
+using json = nlohmann::json;
 
 class FLoadExternalData
 {
@@ -21,6 +25,7 @@ public:
 	//CharacterCreation
 	const std::vector<FRaceData>& GetAvailableRaces() const { return AvailableRaces; }
 	const std::vector<FClassData>& GetAvailableClasses() const { return AvailableClasses; }
+	const std::vector<FSpellData>& GetAvailableSpells()	const { return AvailableSpells; }
 
 	//Items
 	const std::vector<FItemData>& GetAvailableItems() const { return AvailableItems; }
@@ -28,9 +33,14 @@ public:
 
 	const FItemData* FindItemData(const std::string& ItemName);
 	void ResolveMaterials(std::vector<FItemData>& Items);
+
+	//Enemies
+	const std::vector<FEnemyData>& GetEnemies() const { return Enemy; }
 	
 
 private: 
+
+	std::vector<FEnemyData> Enemy;
 	
 	//CharacterCreation
 	std::vector<FRaceData> AvailableRaces;
@@ -40,6 +50,29 @@ private:
 	std::vector<FMaterialData> AvailableMaterials;
 	std::vector<FItemData> AvailableItems;
 
+	std::vector<FSpellData> AvailableSpells;
+
+	template<typename T>
+	bool LoadJSON(const std::string& FilePath, std::vector<T>& OutVector)
+	{
+		std::ifstream file(FilePath);
+		if (!file.is_open())
+		{
+			return false;
+		}
+
+		json data;
+		file >> data;
+
+
+		for (const auto& Element: data)
+		{
+			T obj;
+			obj.FromJson(Element);
+			OutVector.push_back(obj);
+		}
+		return true;
+	}
 
 	template<typename T>
 	bool LoadCSV(const std::string& FilePath, std::vector<T>& OutVector)

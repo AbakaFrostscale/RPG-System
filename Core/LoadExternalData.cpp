@@ -6,6 +6,7 @@
 
 
 #include "LoadExternalData.h"
+#include "Character/CharacterStats.h"
 
 FLoadExternalData::FLoadExternalData()
 {
@@ -16,6 +17,10 @@ FLoadExternalData::FLoadExternalData()
 	//Items
 	LoadCSV("DataBases/MaterialDatabase.csv", AvailableMaterials);
 	LoadCSV("DataBases/ItemsDatabase.csv", AvailableItems);
+
+	LoadCSV("DataBases/EnemiesDatabase.csv", Enemy);
+
+	LoadJSON("DataBases/Spells.json", AvailableSpells);
 
 	ResolveMaterials(AvailableItems);
 }
@@ -50,3 +55,5 @@ void FLoadExternalData::ResolveMaterials(std::vector<FItemData>& Items)
 		}
 	}
 }
+
+

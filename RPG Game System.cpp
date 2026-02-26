@@ -11,7 +11,9 @@
 #include "Creation/CharacterCreation.h"
 #include "Inventory/Inventory.h"
 
+#include "Combat/TurnBasedCombat.h"
 
+FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
 FCharacterCreator Creator;
 FItem MainItem;
@@ -19,7 +21,7 @@ FItem MainItem;
 bool bIsFinalised;
 
 
-std::string EAbilityToString(EAbility Ability)
+static std::string EAbilityToString(EAbility Ability)
 
 {
 	switch (Ability)
@@ -34,7 +36,28 @@ std::string EAbilityToString(EAbility Ability)
 	}
 }
 
-void PrintAvailableRaces()
+static std::string ETypeToString(EType Type)
+{
+	switch (Type)
+	{
+	case EType::ETMob: return "Mob";
+	case EType::ETBoss: return "Boss";
+	default: return "Mob";
+	}
+}
+
+static EDifficulty IntToEDifficulty(int Difficuty)
+{
+	switch (Difficuty)
+	{
+	case 1: return EDifficulty::EDEasy;
+	case 2: return EDifficulty::EDMedium;
+	case 3: return EDifficulty::EDHard;
+	default: return EDifficulty::EDEasy;
+	}
+}
+
+static void PrintAvailableRaces()
 {
 	int Index = 1;
 
@@ -54,7 +77,7 @@ void PrintAvailableRaces()
 	std::cout << std::endl;
 }
 
-void PrintAvailableClasses()
+static void PrintAvailableClasses()
 {
 	int Index = 1;
 
@@ -74,7 +97,7 @@ void PrintAvailableClasses()
 	std::cout << std::endl;
 }
 
-void PrintAvailableMaterials(int Type)
+static void PrintAvailableMaterials(int Type)
 {
 	int Index = 1;
 	for (const FMaterialData& Material : MainItem.GetLoader()->GetAvailableMaterials())
@@ -115,7 +138,7 @@ void PrintAvailableMaterials(int Type)
 	std::cout << std::endl;
 }
 
-void PrintCraftableItems()
+static void PrintCraftableItems()
 {
 	int Index = 1;
 
@@ -130,7 +153,7 @@ void PrintCraftableItems()
 }
 
 
-void  PrintAvailableWeapons()
+static void  PrintAvailableWeapons()
 {
 	int Index = 1;
 
@@ -157,7 +180,7 @@ void  PrintAvailableWeapons()
 	std::cout << std::endl;
 }
 
-void PrintAvailableArmour()
+static void PrintAvailableArmour()
 {
 	int Index = 1;
 
@@ -184,7 +207,7 @@ void PrintAvailableArmour()
 	std::cout << std::endl;
 };
 
-void PrintInventoryMaterials(FCharacter& Character)
+static void PrintInventoryMaterials(FCharacter& Character)
 {
 	std::cout << "Materials:" << std::endl;
 	for (const FMaterial& Mat : Character.GetInventory()->GetMaterials())
@@ -193,7 +216,7 @@ void PrintInventoryMaterials(FCharacter& Character)
 	}
 }
 
-void PrintInventoryWeapons(FCharacter& Character)
+static void PrintInventoryWeapons(FCharacter& Character)
 {
 	int Index = 1;
 	std::cout << std::endl << "Weapons: " << std::endl;
@@ -207,7 +230,7 @@ void PrintInventoryWeapons(FCharacter& Character)
 	}
 }
 
-void PrintInventoryArmour(FCharacter& Character)
+static void PrintInventoryArmour(FCharacter& Character)
 {
 	int Index = 1;
 	std::cout << std::endl << "Armour: " << std::endl;
@@ -222,7 +245,7 @@ void PrintInventoryArmour(FCharacter& Character)
 }
 
 
-void PrintCharacter(const FCharacterData& Character)
+static void PrintCharacter(const FCharacterData& Character)
 {
 	std::cout << Character.CharName << " the " << Character.CharRace.RaceName << " " << Character.CharClass.ClassName << std::endl;
 	std::cout << "Str: " << Character.CharStats.at(EAbility::EAStr) << std::endl;
@@ -233,9 +256,22 @@ void PrintCharacter(const FCharacterData& Character)
 	std::cout << "Cha: " << Character.CharStats.at(EAbility::EACha) << std::endl;
 	std::cout << "HP: " << Character.CurrentHP << "/" << Character.MaxHP << std::endl;
 	std::cout << "MP: " << Character.CurrentMP << "/" << Character.MaxMP << std::endl;
+
+	if (!Character.Spells.empty())
+	{
+		std::cout << "Spells: " << std::endl;
+		for (const FSpellData& Spell : Character.Spells)
+		{
+			std::cout << Spell.SpellName << std::endl;
+			std::cout << "	Damage: " << Spell.Damage << std::endl;
+			std::cout << "	MP Cost: " << Spell.MPCost << std::endl;
+		}
+	}
+
+	std::cout << std::endl;
 }
 
-std::string SelectAbility(int Skill)
+static std::string SelectAbility(int Skill)
 {
 	switch (Skill)
 	{
@@ -249,7 +285,7 @@ std::string SelectAbility(int Skill)
 	}
 }
 
-EMode SelectMode(int Mode)
+static EMode SelectMode(int Mode)
 {
 	switch (Mode)
 	{
@@ -295,7 +331,7 @@ int main()
 	{
 		if (bIsFinalised) { break; }
 
-		std::cout << "Please choose a skill to increase (1-6)" << std::endl;
+		std::cout << "Please choose an ability to modify (1-6)" << std::endl;
 		std::cout << "1: Strength" << std::endl;
 		std::cout << "2: Dexterity" << std::endl;
 		std::cout << "3: Constitution" << std::endl;
@@ -309,10 +345,8 @@ int main()
 		std::cin >> ModeIndex;
 		Mode = SelectMode(ModeIndex);
 
-
 		std::cout << "Select by how much no more than: " << Creator.GetAttributePoints() << std::endl;
 		std::cin >> Amount;
-
 
 		Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(), Skill, Amount, Mode);
 
@@ -498,6 +532,26 @@ int main()
 		}
 		case 4:
 		{
+			int Difficulty = 0;
+
+			std::cout << "What difficulty do you want to try? Easy(1), Medium(2), Hard(3)" << std::endl;
+			std::cin >> Difficulty;
+
+			Combat.SetEnemies(IntToEDifficulty(Difficulty));
+			int EnemyIndex = 1;
+
+			std::cout << "You are attacked by: " << std::endl;
+
+			for (const FEnemyData& Enemy : Combat.GetEnemyCombatants())
+			{
+				std::cout << EnemyIndex << " : " << Enemy.CharName << std::endl;
+				std::cout << "   " << Enemy.CurrentHP << "/" << Enemy.MaxHP << std::endl;
+				std::cout << "   " << Enemy.Damage << std::endl;
+				std::cout << "   " << Enemy.Armour << std::endl;
+				std::cout << ETypeToString(Enemy.Type) << std::endl << std::endl;
+
+				++EnemyIndex;
+			}
 
 
 			break;

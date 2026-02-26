@@ -71,6 +71,9 @@
     <ClInclude Include="Core\LoadExternalData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="External\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DataBases\RaceDatabase.csv" />
@@ -78,5 +81,6 @@
     <None Include="DataBases\MaterialDatabase.csv" />
     <None Include="DataBases\ItemsDatabase.csv" />
     <None Include="DataBases\EnemiesDatabase.csv" />
+    <None Include="DataBases\Spells.json" />
   </ItemGroup>
 </Project>

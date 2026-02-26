@@ -11,6 +11,10 @@
 #include <vector>
 #include <utility>
 
+#include "External/json.hpp"
+
+using json = nlohmann::json;
+
 //enum to define stats that exist in the game for the characaters
 enum class EAbility
 {
@@ -21,6 +25,19 @@ enum class EAbility
 	EAWis,
 	EACha,
 	EANone
+};
+
+enum class EType
+{
+	ETMob,
+	ETBoss,
+};
+
+enum class EDifficulty
+{
+	EDEasy,
+	EDMedium,
+	EDHard,
 };
 
 //enum to be used for stat mode, wheter to increase or decrease the stat, mostly for UI input
@@ -144,5 +161,21 @@ struct FClassData
 		StatModifier[EAbility::EAInt] = std::stoi(Columns[5]);
 		StatModifier[EAbility::EAWis] = std::stoi(Columns[6]);
 		StatModifier[EAbility::EACha] = std::stoi(Columns[7]);
+	}
+};
+
+struct FSpellData
+{
+	std::string SpellName;
+	int Damage;
+	int MPCost;
+	std::vector<std::string> AllowedClasses;
+
+	void FromJson(const json& JsonObj)
+	{
+		SpellName = JsonObj.at("SpellName").get<std::string>();
+		Damage = JsonObj.at("Damage").get<int>();
+		MPCost = JsonObj.at("MPCost").get<int>();
+		AllowedClasses = JsonObj.at("AllowedClasses").get<std::vector<std::string>>();
 	}
 };

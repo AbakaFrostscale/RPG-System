@@ -33,6 +33,8 @@ public:
 	int CalculateCharacterMaxHP(FCharacterData& Character);
 	int CalculateCharacterMaxMP(FCharacterData& Character);
 
+	void SetCharacterSpells(FCharacterData& Character);
+
 	const int GetAttributePoints() const { return AvailableAttributePoints; }
 	const std::shared_ptr<FLoadExternalData> GetLoader() { return Loader; }
 

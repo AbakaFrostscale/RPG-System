@@ -148,6 +148,7 @@
     <ClInclude Include="Core\Random.h" />
     <ClInclude Include="Core\Types.h" />
     <ClInclude Include="Creation\CharacterCreation.h" />
+    <ClInclude Include="External\json.hpp" />
     <ClInclude Include="Inventory\Crafting.h" />
     <ClInclude Include="Inventory\Inventory.h" />
     <ClInclude Include="Inventory\Items.h" />
@@ -158,6 +159,7 @@
     <None Include="DataBases\ItemsDatabase.csv" />
     <None Include="DataBases\MaterialDatabase.csv" />
     <None Include="DataBases\RaceDatabase.csv" />
+    <None Include="DataBases\Spells.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
