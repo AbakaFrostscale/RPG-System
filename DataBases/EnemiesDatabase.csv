@@ -1,0 +1,6 @@
+Enemy,HP,MP,Damage,Defence,Str,Dex,Con,Int,Wis,Cha,Type
+Goblin Minion,7,0,4,2,0,2,0,0,0,0,Mob
+Goblin Warrior,10,0,6,5,0,2,0,0,0,0,Mob
+Goblin Boss,21,0,10,7,0,2,0,0,0,0,Boss
+Kobold Warrior,7,0,4,4,0,2,0,0,0,0,Mob
+Winged Kobold,10,0,6,5,0,3,0,0,0,0,Boss

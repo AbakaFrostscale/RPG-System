@@ -12,13 +12,28 @@
 #include "Character/CharacterStats.h"
 
 class FLoadExtrenalData;
+class FRandom;
 
 class FTurnBasedCombat
 {
 public:
 	FTurnBasedCombat();
 
+	void SetEnemies(EDifficulty Difficulty);
+
+	void CombatTurn(FCharacterData& Character, FEnemyData& Enemy);
+
+
+	const std::vector<FEnemyData>& GetEnemyCombatants() const { return EnemyCombatants; }
+
 private:
+	std::unique_ptr<FLoadExternalData> Loader;
+	std::unique_ptr<FRandom> Random;
+
+	std::vector<FEnemyData> EnemyCombatants;
+
+	std::vector<FEnemyData> EnemyMobs;
+	std::vector<FEnemyData> EnemyBoss;
 
 
 };

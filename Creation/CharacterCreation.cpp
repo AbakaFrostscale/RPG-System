@@ -33,6 +33,8 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	Character.CharStats = Character.BaseStats;
 
 	Character.Team = ETeam::ETPlayers;
+
+	SetCharacterSpells(Character);
 }
 
 /** 
@@ -78,43 +80,6 @@ bool FCharacterCreator::TryAllocatePoints(int& Current, int Base, int Amount, EM
 	return false;
 }
 
-const EAbility FCharacterCreator::StringToEAbility(std::string String)
-{
-	std::string Ability;
-	int count = std::min(3, static_cast<int>(String.length()));
-
-	for (int i = 0; i < count; i++)
-	{
-		Ability += std::toupper(static_cast<unsigned char>(String[i]));
-	}
-
-	if (Ability == "STR")
-	{
-		return EAbility::EAStr;
-	}
-	if (Ability == "DEX")
-	{
-		return EAbility::EADex;
-	}
-	if (Ability == "CON")
-	{
-		return EAbility::EACon;
-	}
-	if (Ability == "INT")
-	{
-		return EAbility::EAInt;
-	}
-	if (Ability == "WIS")
-	{
-		return EAbility::EAWis;
-	}
-	if (Ability == "Cha")
-	{
-		return EAbility::EACha;
-	}
-
-	return EAbility::EANone;
-}
 
 /**
 Skill refers the the Character.CharStat that needs to be increased
@@ -254,7 +219,58 @@ int FCharacterCreator::CalculateCharacterMaxMP(FCharacterData& Character)
 	}
 }
 
+void FCharacterCreator::SetCharacterSpells(FCharacterData& Character)
+{
+	if (Character.CharClass.ClassName == "Paladin" || Character.CharClass.ClassName == "Cleric" || Character.CharClass.ClassName == "Wizard" ||
+		Character.CharClass.ClassName == "Bard" || Character.CharClass.ClassName == "Sorcerer" || Character.CharClass.ClassName == "Druid")
+	{
+		for (const FSpellData& Spell : Loader->GetAvailableSpells())
+		{
+			for (const std::string& Class : Spell.AllowedClasses)
+			{
+				if (Character.CharClass.ClassName == Class)
+				{
+					Character.Spells.push_back(Spell);
+				}
+			}
+		}
+	}
+}
 
+const EAbility FCharacterCreator::StringToEAbility(std::string String)
+{
+	std::string Ability;
+	int count = std::min(3, static_cast<int>(String.length()));
 
+	for (int i = 0; i < count; i++)
+	{
+		Ability += std::toupper(static_cast<unsigned char>(String[i]));
+	}
 
+	if (Ability == "STR")
+	{
+		return EAbility::EAStr;
+	}
+	if (Ability == "DEX")
+	{
+		return EAbility::EADex;
+	}
+	if (Ability == "CON")
+	{
+		return EAbility::EACon;
+	}
+	if (Ability == "INT")
+	{
+		return EAbility::EAInt;
+	}
+	if (Ability == "WIS")
+	{
+		return EAbility::EAWis;
+	}
+	if (Ability == "CHA")
+	{
+		return EAbility::EACha;
+	}
 
+	return EAbility::EANone;
+}
