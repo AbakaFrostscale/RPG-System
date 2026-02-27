@@ -248,12 +248,16 @@ static void PrintInventoryArmour(FCharacter& Character)
 static void PrintCharacter(const FCharacterData& Character)
 {
 	std::cout << Character.CharName << " the " << Character.CharRace.RaceName << " " << Character.CharClass.ClassName << std::endl;
+	
 	std::cout << "Str: " << Character.CharStats.at(EAbility::EAStr) << std::endl;
 	std::cout << "Dex: " << Character.CharStats.at(EAbility::EADex) << std::endl;
 	std::cout << "Con: " << Character.CharStats.at(EAbility::EACon) << std::endl;
 	std::cout << "Int: " << Character.CharStats.at(EAbility::EAInt) << std::endl;
 	std::cout << "Wis: " << Character.CharStats.at(EAbility::EAWis) << std::endl;
 	std::cout << "Cha: " << Character.CharStats.at(EAbility::EACha) << std::endl;
+
+	std::cout << "Initiative: " << Character.InitiativeMod << std::endl;
+
 	std::cout << "HP: " << Character.CurrentHP << "/" << Character.MaxHP << std::endl;
 	std::cout << "MP: " << Character.CurrentMP << "/" << Character.MaxMP << std::endl;
 
@@ -548,12 +552,22 @@ int main()
 				std::cout << "   " << Enemy.CurrentHP << "/" << Enemy.MaxHP << std::endl;
 				std::cout << "   " << Enemy.Damage << std::endl;
 				std::cout << "   " << Enemy.Armour << std::endl;
+				std::cout << "   " << Enemy.InitiativeMod << std::endl;
 				std::cout << ETypeToString(Enemy.Type) << std::endl << std::endl;
 
 				++EnemyIndex;
 			}
 
+			std::vector<FInitiative> TurnOrder;
 
+			Combat.CalculateInitiative(TurnOrder, CurrentCharacter.GetCharacterReference());
+
+			std::cout << "The turn order will be: " << std::endl;
+
+			for (const FInitiative& Turn : TurnOrder)
+			{
+				std::cout << Turn.InititiveRoll << " : " << Turn.Combatant->CharName << std::endl;
+			}
 			break;
 		}
 		default:
