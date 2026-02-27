@@ -64,7 +64,7 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 
 			if (RandomChance == 10)
 			{
-				std::uniform_int_distribution<int> AmountDistBoss(0, EnemyMobs.size() - 1);
+				std::uniform_int_distribution<int> AmountDistBoss(0, EnemyBoss.size() - 1);
 				int RandomBoss = AmountDistBoss(Random->RandomGenerator);
 
 				EnemyCombatants.push_back(EnemyBoss[RandomBoss]);
@@ -81,10 +81,10 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 			std::uniform_int_distribution<int> AmountDistEnemies(2, 4);
 			AmountEnemies = AmountDistEnemies(Random->RandomGenerator);
 
-			std::uniform_int_distribution<int> AmountDistMobs(0, EnemyMobs.size());
+			std::uniform_int_distribution<int> AmountDistMobs(0, EnemyMobs.size() - 1);
 			int RandomMob = AmountDistMobs(Random->RandomGenerator);
 
-			std::uniform_int_distribution<int> AmountDistBoss(0, EnemyMobs.size());
+			std::uniform_int_distribution<int> AmountDistBoss(0, EnemyBoss.size() - 1);
 			int RandomBoss = AmountDistBoss(Random->RandomGenerator);
 
 			EnemyCombatants.push_back(EnemyBoss[RandomBoss]);
@@ -98,9 +98,38 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 	}
 }
 
-void FTurnBasedCombat::CombatTurn(FCharacterData& Character, FEnemyData& Enemy)
+void FTurnBasedCombat::CalculateInitiative(std::vector<FInitiative>& CombatantInitiative, 
+											FCharacterData& Character)
 {
+	std::uniform_int_distribution<int> DiceRollDist(1, 20);
+	int DiceRoll = DiceRollDist(Random->RandomGenerator);
+
+	CombatantInitiative.push_back({&Character, DiceRoll + Character.CharStats[EAbility::EADex]});
+
+	for (FEnemyData& Enemy : EnemyCombatants)
+	{
+		DiceRoll = DiceRollDist(Random->RandomGenerator);
+
+		CombatantInitiative.push_back({&Enemy, DiceRoll + Enemy.EnemyStats.at(EAbility::EADex)});
+	}
+
+	std::sort(
+		CombatantInitiative.begin(), 
+		CombatantInitiative.end(), 
+		[](const FInitiative& A, const FInitiative& B)
+		{
+			if (A.InititiveRoll == B.InititiveRoll)
+			{
+				return A.Combatant->InitiativeMod > B.Combatant->InitiativeMod;
+			}
+				
+			return A.InititiveRoll > B.InititiveRoll;
+		});
 }
+
+
+
+
 
 
 

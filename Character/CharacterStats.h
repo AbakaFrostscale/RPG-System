@@ -16,6 +16,7 @@ struct FCombatant
 	int CurrentHP = 0; 
 	int MaxMP = 0;
 	int CurrentMP = 0; 
+	int InitiativeMod = 0;
 
 	ETeam Team = ETeam::ETPlayers;
 
@@ -62,6 +63,9 @@ struct FEnemyData : public FCombatant
 		{
 			Type = EType::ETBoss;
 		}
+
+		InitiativeMod = EnemyStats[EAbility::EADex];
+		Team = ETeam::ETEnemies;
 	}
 };
 

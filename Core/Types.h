@@ -27,6 +27,14 @@ enum class EAbility
 	EANone
 };
 
+enum class EAction
+{
+	EACAttack,
+	EACDodge,
+	EACCastSpell,
+	EACNone,
+};
+
 enum class EType
 {
 	ETMob,

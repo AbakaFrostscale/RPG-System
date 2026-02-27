@@ -34,6 +34,7 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 
 	Character.Team = ETeam::ETPlayers;
 
+
 	SetCharacterSpells(Character);
 }
 
@@ -164,6 +165,8 @@ void FCharacterCreator::SetHPandMP(FCharacterData& Character)
 
 	Character.CurrentHP = Character.MaxHP;
 	Character.CurrentMP = Character.MaxMP;
+
+	Character.InitiativeMod = Character.CharStats[EAbility::EADex];
 }
 
 //Applies the stats of Race to the Character

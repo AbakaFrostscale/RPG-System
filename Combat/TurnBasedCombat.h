@@ -8,8 +8,16 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
+
 #include "Core/Random.h"
 #include "Character/CharacterStats.h"
+
+struct FInitiative
+{
+	FCombatant* Combatant;
+	int InititiveRoll = 0;
+};
 
 class FLoadExtrenalData;
 class FRandom;
@@ -21,8 +29,7 @@ public:
 
 	void SetEnemies(EDifficulty Difficulty);
 
-	void CombatTurn(FCharacterData& Character, FEnemyData& Enemy);
-
+	void CalculateInitiative(std::vector<FInitiative>& CombatantInitiative,FCharacterData& Character);
 
 	const std::vector<FEnemyData>& GetEnemyCombatants() const { return EnemyCombatants; }
 
