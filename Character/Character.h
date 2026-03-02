@@ -31,17 +31,21 @@ public:
 	void EquipWeapon(const FWeapon& Weapon);
 	void EquipArmour(const FArmour& Armour);
 
+	int HitEnemy(std::optional<FWeapon> Weapon);
+	void TakeDamage(int Damage);
+	FSpellData CastSpell(int Spell);
+
 
 	const FCharacterData GetCharacter() const { return Character; }
 	FCharacterData& GetCharacterReference() { return Character; }
-	const std::unique_ptr<FInventory>& GetInventory() const { return Inventory; }
+	const std::shared_ptr<FInventory>& GetInventory() const { return Inventory; }
 
 	const std::optional<FWeapon>& GetEquippedWeapon() const{ return EquippedWeapon; }
 	const std::optional<FArmour>& GetEquippedArmour() const { return EquippedArmour; }
 
 private:
 	std::shared_ptr<FCrafting> Crafter;
-	std::unique_ptr<FInventory> Inventory;
+	std::shared_ptr<FInventory> Inventory;
 	
 	FCharacterCreator Creator;
 	FCharacterData Character;
