@@ -148,6 +148,7 @@
     <ClInclude Include="Core\Random.h" />
     <ClInclude Include="Core\Types.h" />
     <ClInclude Include="Creation\CharacterCreation.h" />
+    <ClInclude Include="External\catch_amalgamated.hpp" />
     <ClInclude Include="External\json.hpp" />
     <ClInclude Include="Inventory\Crafting.h" />
     <ClInclude Include="Inventory\Inventory.h" />

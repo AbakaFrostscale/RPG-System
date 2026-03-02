@@ -74,6 +74,9 @@
     <ClInclude Include="External\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="External\catch_amalgamated.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="DataBases\RaceDatabase.csv" />
