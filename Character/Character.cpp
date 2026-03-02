@@ -12,7 +12,7 @@
 FCharacter::FCharacter()
 {
 	Crafter = std::make_shared<FCrafting>();
-	Inventory = std::make_unique<FInventory>();
+	Inventory = std::make_shared<FInventory>();
 	Random.RandomGenerator = std::mt19937(Random.rd());
 }
 
@@ -60,4 +60,25 @@ void FCharacter::EquipArmour(const FArmour& Armour)
 	{ 
 		return; 
 	}
+}
+
+int FCharacter::HitEnemy(std::optional<FWeapon> Weapon)
+{
+	if (!Weapon)
+	{
+		return 0;
+	}
+
+	std::uniform_int_distribution<int> DamageDist(1, Weapon->Damage);
+	return DamageDist(Random.RandomGenerator);
+}
+
+void FCharacter::TakeDamage(int Damage)
+{
+	Character.CurrentHP -= Damage;
+}
+
+FSpellData FCharacter::CastSpell(int Spell)
+{
+	return Character.Spells[Spell];
 }

@@ -7,6 +7,7 @@
 #include "Core/LoadExternalData.h"
 #include "Core/Random.h"
 #include "Combat/TurnBasedCombat.h"
+#include "Character/Character.h"
 
 FTurnBasedCombat::FTurnBasedCombat()
 {
@@ -14,6 +15,8 @@ FTurnBasedCombat::FTurnBasedCombat()
 
 	Random = std::make_unique<FRandom>();
 	Random->RandomGenerator = std::mt19937(Random->rd());
+
+	Character = std::make_unique<FCharacter>();
 
 	for (const FEnemyData& Enemy : Loader->GetEnemies())
 	{
@@ -95,6 +98,24 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 			}	
 			break;
 		}
+	}
+}
+
+void FTurnBasedCombat::CombatTurn(FCharacter& Character, FEnemyData& Enemy, EAction Action)
+{
+	switch (Action)
+	{
+	case EAction::EACAttack:
+		Character.HitEnemy(Character.GetEquippedWeapon());
+		break;
+	case EAction::EACDodge:
+		break;
+	case EAction::EACCastSpell:
+		break;
+	case EAction::EACNone:
+		break;
+	default:
+		break;
 	}
 }
 
