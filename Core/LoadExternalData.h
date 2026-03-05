@@ -7,6 +7,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -58,6 +59,7 @@ private:
 		std::ifstream file(FilePath);
 		if (!file.is_open())
 		{
+			std::cout << FilePath << " was not found!" << std::endl;
 			return false;
 		}
 
@@ -81,7 +83,7 @@ private:
 
 		if (!File.is_open())
 		{
-			//TODO, notify the UI that the file is not open
+			std::cout << FilePath << " was not found!" << std::endl;
 			return false;
 		}
 
