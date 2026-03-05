@@ -15,83 +15,92 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RPG Game System.cpp">
+    <ClCompile Include="..\test\CharacterBuilder_Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory\Crafting.cpp">
+    <ClCompile Include="..\External\catch_amalgamated.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory\Inventory.cpp">
+    <ClCompile Include="..\test\main_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Creation\CharacterCreation.cpp">
+    <ClCompile Include="..\Character\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Combat\TurnBasedCombat.cpp">
+    <ClCompile Include="..\Creation\CharacterCreation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Character\Character.cpp">
+    <ClCompile Include="..\Inventory\Crafting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory\Items.cpp">
+    <ClCompile Include="..\Inventory\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\LoadExternalData.cpp">
+    <ClCompile Include="..\Inventory\Items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\LoadExternalData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Combat\TurnBasedCombat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inventory\Crafting.h">
+    <ClInclude Include="..\External\catch_amalgamated.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory\Inventory.h">
+    <ClInclude Include="..\Creation\CharacterCreation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory\Items.h">
+    <ClInclude Include="..\Character\CharacterStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Creation\CharacterCreation.h">
+    <ClInclude Include="..\Character\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Random.h">
+    <ClInclude Include="..\Inventory\Crafting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Types.h">
+    <ClInclude Include="..\Inventory\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Combat\TurnBasedCombat.h">
+    <ClInclude Include="..\Inventory\Items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Character\Character.h">
+    <ClInclude Include="..\Core\LoadExternalData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Character\CharacterStats.h">
+    <ClInclude Include="..\Core\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\LoadExternalData.h">
+    <ClInclude Include="..\Combat\TurnBasedCombat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="External\json.hpp">
+    <ClInclude Include="..\Core\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataBases\ClassDatabase.csv">
+    <None Include="..\DataBases\ClassDatabase.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DataBases\EnemiesDatabase.csv">
+    <None Include="..\DataBases\EnemiesDatabase.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DataBases\ItemsDatabase.csv">
+    <None Include="..\DataBases\ItemsDatabase.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DataBases\MaterialDatabase.csv">
+    <None Include="..\DataBases\MaterialDatabase.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DataBases\RaceDatabase.csv">
+    <None Include="..\DataBases\RaceDatabase.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DataBases\Spells.json">
+    <None Include="..\DataBases\Spells.json">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

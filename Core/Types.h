@@ -175,8 +175,8 @@ struct FClassData
 struct FSpellData
 {
 	std::string SpellName;
-	int Damage;
-	int MPCost;
+	int Damage = 0;
+	int MPCost = 0;
 	std::vector<std::string> AllowedClasses;
 
 	void FromJson(const json& JsonObj)

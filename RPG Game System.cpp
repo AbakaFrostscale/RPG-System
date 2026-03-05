@@ -331,10 +331,8 @@ int main()
 
 	Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), CharName, RaceIndex - 1, ClassIndex - 1);
 
-	while (Creator.GetAttributePoints() >= 0)
+	while (!bIsFinalised)
 	{
-		if (bIsFinalised) { break; }
-
 		std::cout << "Please choose an ability to modify (1-6)" << std::endl;
 		std::cout << "1: Strength" << std::endl;
 		std::cout << "2: Dexterity" << std::endl;
