@@ -101,16 +101,31 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 	}
 }
 
-void FTurnBasedCombat::CombatTurn(FCharacter& Character, FEnemyData& Enemy, EAction Action)
+void FTurnBasedCombat::CombatRound(FCombatant* Attacker, int UITarget, int UIAction)
+{
+	if (Attacker->Team == ETeam::ETPlayers)
+	{
+		CombatTurn(Attacker, &EnemyCombatants[UITarget], EAction::EACAttack);
+	}
+
+	if (Attacker->Team == ETeam::ETEnemies)
+	{
+		std::cout << "Player Attacked by " << Attacker->CharName << std::endl;
+	}
+}
+
+void FTurnBasedCombat::CombatTurn(FCombatant* Attacker,FCombatant* Target, EAction Action)
 {
 	switch (Action)
 	{
 	case EAction::EACAttack:
-		Character.HitEnemy(Character.GetEquippedWeapon());
+		std::cout << Attacker->CharName << " attacks " << Target->CharName << std::endl;
 		break;
 	case EAction::EACDodge:
+		std::cout << "Dodge";
 		break;
 	case EAction::EACCastSpell:
+		std::cout << "Cast Spell";
 		break;
 	case EAction::EACNone:
 		break;

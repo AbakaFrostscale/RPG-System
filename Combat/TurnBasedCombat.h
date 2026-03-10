@@ -31,7 +31,9 @@ public:
 
 	void SetEnemies(EDifficulty Difficulty);
 
-	void CombatTurn(FCharacter& Character, FEnemyData& Enemy, EAction Action);
+	void CombatRound(FCombatant* Attacker, int UITarget, int UIAction);
+
+	void CombatTurn(FCombatant* Attacker, FCombatant* Target, EAction Action);
 
 	void CalculateInitiative(std::vector<FInitiative>& CombatantInitiative,FCharacterData& Character);
 
