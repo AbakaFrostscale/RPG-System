@@ -4,7 +4,6 @@
 #include "Creation/CharacterCreation.h"
 #include "Character/CharacterStats.h"
 #include "Core/LoadExternalData.h"
-#include "Core/Random.h"
 
 
 TEST_CASE("Checking CrateCharacter is setting the correct races(Human Fighter)", "[CharacterCreator]")
@@ -47,4 +46,15 @@ TEST_CASE("Increase Strength increases character Strength", "[CharacterCreator]"
 	}
 
 	REQUIRE(Character.CharStats[EAbility::EAStr] == InitialStrength + 10);
+}
+
+TEST_CASE("Test AbilityScoreIncrease(), [CharacterCreator]")
+{
+	FCharacterCreator Creator;
+	FCharacterData Character;
+
+	Creator.CreateCharacter(Character, "Grave", 0, 0);
+
+	
+	
 }

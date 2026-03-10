@@ -566,6 +566,12 @@ int main()
 			{
 				std::cout << Turn.InititiveRoll << " : " << Turn.Combatant->CharName << std::endl;
 			}
+
+			for (const FInitiative& Turn : TurnOrder)
+			{
+				Combat.CombatRound(Turn.Combatant, 1, 1);
+			}
+			
 			break;
 		}
 		default:
