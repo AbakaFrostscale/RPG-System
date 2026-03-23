@@ -13,8 +13,6 @@
 #include "Core/Random.h"
 #include "Character/CharacterStats.h"
 
-class FCharacter;
-
 struct FInitiative
 {
 	FCombatant* Combatant;
@@ -23,6 +21,7 @@ struct FInitiative
 
 class FLoadExtrenalData;
 class FRandom;
+class FCharacter;
 
 class FTurnBasedCombat
 {
@@ -31,9 +30,10 @@ public:
 
 	void SetEnemies(EDifficulty Difficulty);
 
-	void CombatRound(FCombatant* Attacker, int UITarget, int UIAction);
+	void CombatRound(FInitiative& Combatants, FCombatant* Target, EAction UIAction, FCharacterData& Player);
 
-	void CombatTurn(FCombatant* Attacker, FCombatant* Target, EAction Action);
+	void PlayerTurn(FCombatant* Attacker, FCombatant* Target, EAction Action);
+	void EnemyTurn(FCombatant* Attacker, FCombatant* Target, EAction Action);
 
 	void CalculateInitiative(std::vector<FInitiative>& CombatantInitiative,FCharacterData& Character);
 
@@ -42,12 +42,10 @@ public:
 private:
 	std::unique_ptr<FLoadExternalData> Loader;
 	std::unique_ptr<FRandom> Random;
-	std::unique_ptr<FCharacter> Character;
 
 	std::vector<FEnemyData> EnemyCombatants;
+	std::vector<FCharacterData*> PlayerCombatants;
 
 	std::vector<FEnemyData> EnemyMobs;
 	std::vector<FEnemyData> EnemyBoss;
-
-
 };
