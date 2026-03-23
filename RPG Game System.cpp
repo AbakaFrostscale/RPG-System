@@ -275,6 +275,32 @@ static void PrintCharacter(const FCharacterData& Character)
 	std::cout << std::endl;
 }
 
+static void PrintActions()
+{
+	std::cout << "1 : Attack" << std::endl;
+	std::cout << "2 : Dodge" << std::endl;
+	std::cout << "3 : Cast a Spell" << std::endl;
+	std::cout << "4 : Skip Turn" << std::endl;
+}
+
+static void PrintEnemies()
+{
+	int EnemyIndex = 1;
+
+	for (const FEnemyData& Enemy : Combat.GetEnemyCombatants())
+	{
+		std::cout << EnemyIndex << " : " << Enemy.CharName << std::endl;
+		std::cout << "   " << Enemy.CurrentHP << "/" << Enemy.MaxHP << std::endl;
+		std::cout << "   " << Enemy.Damage << std::endl;
+		std::cout << "   " << Enemy.Armour << std::endl;
+		std::cout << "   " << Enemy.InitiativeMod << std::endl;
+		std::cout << ETypeToString(Enemy.Type) << std::endl << std::endl;
+
+		++EnemyIndex;
+	}
+
+}
+
 static std::string SelectAbility(int Skill)
 {
 	switch (Skill)
@@ -540,21 +566,10 @@ int main()
 			std::cin >> Difficulty;
 
 			Combat.SetEnemies(IntToEDifficulty(Difficulty));
-			int EnemyIndex = 1;
 
 			std::cout << "You are attacked by: " << std::endl;
 
-			for (const FEnemyData& Enemy : Combat.GetEnemyCombatants())
-			{
-				std::cout << EnemyIndex << " : " << Enemy.CharName << std::endl;
-				std::cout << "   " << Enemy.CurrentHP << "/" << Enemy.MaxHP << std::endl;
-				std::cout << "   " << Enemy.Damage << std::endl;
-				std::cout << "   " << Enemy.Armour << std::endl;
-				std::cout << "   " << Enemy.InitiativeMod << std::endl;
-				std::cout << ETypeToString(Enemy.Type) << std::endl << std::endl;
-
-				++EnemyIndex;
-			}
+			PrintEnemies();
 
 			std::vector<FInitiative> TurnOrder;
 
@@ -566,12 +581,27 @@ int main()
 			{
 				std::cout << Turn.InititiveRoll << " : " << Turn.Combatant->CharName << std::endl;
 			}
+			std::cout << std::endl;
 
-			for (const FInitiative& Turn : TurnOrder)
-			{
-				Combat.CombatRound(Turn.Combatant, 1, 1);
-			}
+			int Target = 0;
 			
+			for (FInitiative& Turn : TurnOrder)
+			{
+				if (Turn.Combatant->Team == ETeam::ETPlayers)
+				{
+					std::cout << "Which enemy would you like to hit: " << std::endl;
+					PrintEnemies();
+
+					std::cin >> Target;
+				}
+				else
+				{
+					Target = 0;
+				}
+
+				Combat.CombatRound(Turn, TurnOrder[Target].Combatant, EAction::EACAttack, CurrentCharacter.GetCharacterReference());
+			}
+
 			break;
 		}
 		default:

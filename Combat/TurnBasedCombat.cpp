@@ -16,8 +16,6 @@ FTurnBasedCombat::FTurnBasedCombat()
 	Random = std::make_unique<FRandom>();
 	Random->RandomGenerator = std::mt19937(Random->rd());
 
-	Character = std::make_unique<FCharacter>();
-
 	for (const FEnemyData& Enemy : Loader->GetEnemies())
 	{
 		if (Enemy.Type == EType::ETMob)
@@ -101,20 +99,41 @@ void FTurnBasedCombat::SetEnemies(EDifficulty Difficulty)
 	}
 }
 
-void FTurnBasedCombat::CombatRound(FCombatant* Attacker, int UITarget, int UIAction)
+void FTurnBasedCombat::CombatRound(FInitiative& Combatant, FCombatant* Target, EAction UIAction, FCharacterData& Player)
 {
-	if (Attacker->Team == ETeam::ETPlayers)
-	{
-		CombatTurn(Attacker, &EnemyCombatants[UITarget], EAction::EACAttack);
-	}
 
-	if (Attacker->Team == ETeam::ETEnemies)
+	if (Combatant.Combatant->Team == ETeam::ETPlayers)
 	{
-		std::cout << "Player Attacked by " << Attacker->CharName << std::endl;
+		PlayerTurn(Combatant.Combatant, Target, EAction::EACAttack);
+	}
+	if (Combatant.Combatant->Team == ETeam::ETEnemies)
+	{
+		EnemyTurn(Combatant.Combatant, &Player, EAction::EACAttack);
 	}
 }
 
-void FTurnBasedCombat::CombatTurn(FCombatant* Attacker,FCombatant* Target, EAction Action)
+void FTurnBasedCombat::PlayerTurn(FCombatant* Attacker, FCombatant* Target, EAction Action)
+{
+	switch (Action)
+	{
+	case EAction::EACAttack:
+		std::cout << Attacker->CharName << " attacks " << Target->CharName << std::endl;
+		break;
+	case EAction::EACDodge:
+		std::cout << "Dodge";
+
+		break;
+	case EAction::EACCastSpell:
+		std::cout << "Cast Spell";
+		break;
+	case EAction::EACNone:
+		break;
+	default:
+		break;
+	}
+}
+
+void FTurnBasedCombat::EnemyTurn(FCombatant* Attacker, FCombatant* Target, EAction Action)
 {
 	switch (Action)
 	{
@@ -134,7 +153,7 @@ void FTurnBasedCombat::CombatTurn(FCombatant* Attacker,FCombatant* Target, EActi
 	}
 }
 
-void FTurnBasedCombat::CalculateInitiative(std::vector<FInitiative>& CombatantInitiative, 
+void FTurnBasedCombat::CalculateInitiative(std::vector<FInitiative>& CombatantInitiative,
 											FCharacterData& Character)
 {
 	std::uniform_int_distribution<int> DiceRollDist(1, 20);
@@ -162,15 +181,3 @@ void FTurnBasedCombat::CalculateInitiative(std::vector<FInitiative>& CombatantIn
 			return A.InititiveRoll > B.InititiveRoll;
 		});
 }
-
-
-
-
-
-
-
-
-
-
-
-
