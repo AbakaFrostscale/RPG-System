@@ -35,8 +35,13 @@ public:
 
 	void SetCharacterSpells(FCharacterData& Character);
 
+	const int GetMaxAttributePoints() const { return MaxAttributePoints; }
 	const int GetAttributePoints() const { return AvailableAttributePoints; }
+	void SetAttributePoints(int AttributePoints) { AvailableAttributePoints = AttributePoints; }
+
 	const std::shared_ptr<FLoadExternalData> GetLoader() { return Loader; }
+
+	const EAbility StringToEAbility(std::string String);
 
 private: 
 	bool TryAllocatePoints(int& Current, int Base, int Amount, EMode Mode);	
@@ -46,7 +51,6 @@ private:
 	int AvailableAttributePoints = 10;
 	int MaxAttributePoints = 10;
 
-	const EAbility StringToEAbility(std::string String);
 };
 
 

@@ -27,6 +27,15 @@ CharacterCreationScreen::CharacterCreationScreen()
 
 void CharacterCreationScreen::HandleInput(const sf::Event & event)
 {
+	if (IsFinalised)
+	{
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
+		{
+			std::cout << "Proceeding... " << std::endl;
+			ISFinished = true;
+		}
+	}
+
 	if (event.type == sf::Event::KeyPressed)
 	{
 		if (IsFinalised)
@@ -95,7 +104,18 @@ void CharacterCreationScreen::HandleInput(const sf::Event & event)
 			}
 			else if (Fields[SelectedIndex] == "Confirm")
 			{
+				if (Name.empty())
+				{
+					std::cout << "Name cannot be empty" << std::endl;
+					return;
+				}
+
 				IsFinalised = true;
+
+				CurrentCharacter.CharName = Name;
+				CurrentCharacter.CharRace.RaceName = RaceOptions[SelectedRaceIndex];
+				CurrentCharacter.CharClass.ClassName = ClassOptions[SelectedClassIndex];
+
 				std::cout << "Character Created!" << std::endl;
 				std::cout << "Name: " << Name << std::endl;
 				std::cout << "Race: " << RaceOptions[SelectedRaceIndex] << std::endl;
@@ -133,6 +153,25 @@ void CharacterCreationScreen::Update()
 
 void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 {
+	if (IsFinalised)
+	{
+		sf::Text doneText;
+		sf::Text instructText;
+		doneText.setFont(Font);
+		instructText.setFont(Font);
+		doneText.setString("Character Created!");
+		instructText.setString("Press Enter to continue...");
+		doneText.setCharacterSize(80);
+		instructText.setCharacterSize(32);
+		doneText.setPosition(50.f, 50.f);
+		instructText.setPosition(50.f, 200.f);
+
+		window.draw(doneText);
+		window.draw(instructText);
+
+		return;
+	}
+
 	sf::Text title;
 	title.setFont(Font);
 	title.setString("Character Creation");

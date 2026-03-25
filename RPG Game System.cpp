@@ -6,20 +6,43 @@
 
 #include "Core/LoadExternalData.h"
 #include "Core/Random.h"
+#include "SFML/Graphics.hpp"
 
+#include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
 #include "Character/Character.h"
-#include "Creation/CharacterCreation.h"
 #include "Inventory/Inventory.h"
 
 #include "Combat/TurnBasedCombat.h"
 
+enum class EGameState
+{
+	EGSStartMenu,
+	EGSCharacterCreation,
+	EGSGame
+};
+
+CharacterCreationScreen CreationScreen;
+
 FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
-FCharacterCreator Creator;
 FItem MainItem;
 
-bool bIsFinalised;
+EGameState CurrentState = EGameState::EGSCharacterCreation;
 
+bool bCharacterCreated;
+sf::Font GameFont;
+
+static void LoadFont()
+{
+	if (!GameFont.loadFromFile("Assets/Fonts/FFScript.ttf"))
+	{
+		std::cout << "Font failed to load!" << std::endl;
+	}
+	else
+	{
+		std::cout << "Font loaded!" << std::endl;
+	}
+}
 
 static std::string EAbilityToString(EAbility Ability)
 
@@ -57,7 +80,7 @@ static EDifficulty IntToEDifficulty(int Difficuty)
 	}
 }
 
-static void PrintAvailableRaces()
+/*static void PrintAvailableRaces()
 {
 	int Index = 1;
 
@@ -75,9 +98,9 @@ static void PrintAvailableRaces()
 		++Index;
 	}
 	std::cout << std::endl;
-}
+}*/
 
-static void PrintAvailableClasses()
+/*static void PrintAvailableClasses()
 {
 	int Index = 1;
 
@@ -95,7 +118,7 @@ static void PrintAvailableClasses()
 		++Index;
 	}
 	std::cout << std::endl;
-}
+}*/
 
 static void PrintAvailableMaterials(int Type)
 {
@@ -325,7 +348,7 @@ static EMode SelectMode(int Mode)
 	}
 }
 
-int main()
+/*int main()
 {
 	bIsFinalised = false;
 
@@ -610,7 +633,70 @@ int main()
 		}
 	}
 	return 0;
+}*/
+
+int main()
+{
+	LoadFont();
+
+	sf::RenderWindow window(sf::VideoMode(800, 600), "PLaceholder Name");
+
+	while (window.isOpen())
+	{
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+			{
+				window.close();
+			}
+
+			if (CurrentState == EGameState::EGSCharacterCreation)
+			{
+				CreationScreen.HandleInput(event);
+			}
+		}
+
+		if (CurrentState == EGameState::EGSCharacterCreation)
+		{
+			CreationScreen.Update();
+
+			if (CreationScreen.IsFinalised())
+			{
+				CurrentCharacter.SetCharacter(CreationScreen.GetCharacter());
+
+				std::cout << "Character passed to Game!" << std::endl;
+				PrintCharacter(CurrentCharacter.GetCharacter());
+
+				CurrentState = EGameState::EGSGame;
+			}
+		}
+
+		window.clear();
+
+		if (CurrentState == EGameState::EGSCharacterCreation)
+		{
+			CreationScreen.Draw(window);
+		}
+		else if (CurrentState == EGameState::EGSGame)
+		{
+			sf::Text gameText;
+
+			gameText.setFont(GameFont);
+			gameText.setString("Game Started!!!");
+			gameText.setCharacterSize(80);
+			gameText.setPosition(50.f, 50.f);
+
+			window.draw(gameText);
+		}
+
+		window.display();
+	}
+
+	return 0;
 }
+
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
