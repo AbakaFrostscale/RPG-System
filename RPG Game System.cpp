@@ -6,20 +6,16 @@
 
 #include "Core/LoadExternalData.h"
 #include "Core/Random.h"
+#include "SFML/Graphics.hpp"
 
-<<<<<<< Updated upstream
-=======
 #include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
 #include "UI/StartScreen/StartScreen.h"
->>>>>>> Stashed changes
+
 #include "Character/Character.h"
-#include "Creation/CharacterCreation.h"
 #include "Inventory/Inventory.h"
 
 #include "Combat/TurnBasedCombat.h"
 
-<<<<<<< Updated upstream
-=======
 enum class EGameState
 {
 	EGSStartMenu,
@@ -27,25 +23,18 @@ enum class EGameState
 	EGSGame
 };
 
-FCharacterCreationScreen CreationScreen;
+ FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
 
->>>>>>> Stashed changes
 FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
-FCharacterCreator Creator;
 FItem MainItem;
 
-<<<<<<< Updated upstream
-bool bIsFinalised;
-
-=======
 EGameState CurrentState = EGameState::EGSStartMenu;
 
 bool bCharacterCreated;
 sf::Font GameFont;
 sf::Clock Clock;
-
 
 static void LoadFont()
 {
@@ -54,7 +43,6 @@ static void LoadFont()
 		std::cout << "Font failed to load!" << std::endl;
 	}
 }
->>>>>>> Stashed changes
 
 static std::string EAbilityToString(EAbility Ability)
 
@@ -92,7 +80,7 @@ static EDifficulty IntToEDifficulty(int Difficuty)
 	}
 }
 
-static void PrintAvailableRaces()
+/*static void PrintAvailableRaces()
 {
 	int Index = 1;
 
@@ -110,9 +98,9 @@ static void PrintAvailableRaces()
 		++Index;
 	}
 	std::cout << std::endl;
-}
+}*/
 
-static void PrintAvailableClasses()
+/*static void PrintAvailableClasses()
 {
 	int Index = 1;
 
@@ -130,7 +118,7 @@ static void PrintAvailableClasses()
 		++Index;
 	}
 	std::cout << std::endl;
-}
+}*/
 
 static void PrintAvailableMaterials(int Type)
 {
@@ -360,7 +348,7 @@ static EMode SelectMode(int Mode)
 	}
 }
 
-int main()
+/*int main()
 {
 	bIsFinalised = false;
 
@@ -645,20 +633,16 @@ int main()
 		}
 	}
 	return 0;
-<<<<<<< Updated upstream
-=======
 }*/
 
 int main()
 {
 	LoadFont();
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Placeholder Name");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "PLaceholder Name");
 
 	while (window.isOpen())
 	{
-		sf::RectangleShape panel;
-		float deltaTime = Clock.restart().asSeconds();
 
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -754,8 +738,8 @@ int main()
 	}
 
 	return 0;
->>>>>>> Stashed changes
 }
+
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 

@@ -40,6 +40,11 @@ public:
 	FCharacterData& GetCharacterReference() { return Character; }
 	const std::shared_ptr<FInventory>& GetInventory() const { return Inventory; }
 
+	void SetCharacter(FCharacterData NewCharacter) { if (!NewCharacter.CharName.empty() && 
+														!NewCharacter.CharClass.ClassName.empty() &&
+														!NewCharacter.CharRace.RaceName.empty())
+														Character = NewCharacter; }
+
 	const std::optional<FWeapon>& GetEquippedWeapon() const{ return EquippedWeapon; }
 	const std::optional<FArmour>& GetEquippedArmour() const { return EquippedArmour; }
 
