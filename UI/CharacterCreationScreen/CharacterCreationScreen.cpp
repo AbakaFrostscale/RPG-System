@@ -5,7 +5,7 @@
 
 FCharacterCreator Creator;
 
-CharacterCreationScreen::CharacterCreationScreen()
+FCharacterCreationScreen::FCharacterCreationScreen()
 {
 	Loader = std::make_unique<FLoadExternalData>();
 
@@ -13,10 +13,24 @@ CharacterCreationScreen::CharacterCreationScreen()
 	{
 		std::cout << "Font failed to load!" << std::endl;
 	}
-	else
+
+	if (!CursorTexture.loadFromFile("Assets/Sprites/Cursors/03.png"))
 	{
-		std::cout << "Font loaded!" << std::endl;
+		std::cout << "Cursor failed to load!" << std::endl;
 	}
+
+
+	CursorSprite.setTexture(CursorTexture);
+	CursorSprite.setScale(.8f, .8f);
+
+	if (!CharacterTexture.loadFromFile("Assets/Sprites/Characters/Character Choice.png"))
+	{
+		std::cout << "Character failed to Load!" << std::endl;
+	}
+
+	CharacterSprite.setTexture(CharacterTexture);
+	CharacterSprite.setScale(8.f, 8.f);
+	CharacterSprite.setPosition(300.f, 200.f);
 
 	Fields = { "Name", "Race", "Class", "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma", "Reset", "Confirm"};
 	Attributes = { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
@@ -31,7 +45,7 @@ CharacterCreationScreen::CharacterCreationScreen()
 
 }
 
-void CharacterCreationScreen::HandleInput(const sf::Event & event)
+void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 {
 	bool IsAttributeSelected = SelectedIndex >= AttributeStartIndex && SelectedIndex < AttributeStartIndex + Attributes.size();
 
@@ -51,18 +65,25 @@ void CharacterCreationScreen::HandleInput(const sf::Event & event)
 
 		if (event.key.code == sf::Keyboard::Up)
 		{
-			SelectedIndex--;
+			do
+			{
 
-			if (SelectedIndex < 0)
-				SelectedIndex = Fields.size() - 1;
+				SelectedIndex--;
+
+				if (SelectedIndex < 0)
+					SelectedIndex = Fields.size() - 1;
+			} while (!CanSelectFields(SelectedIndex));
 		}
 
 		if (event.key.code == sf::Keyboard::Down)
 		{
-			SelectedIndex++;
+			do
+			{
+				SelectedIndex++;
 
-			if (SelectedIndex >= Fields.size())
-				SelectedIndex = 0;
+				if (SelectedIndex >= Fields.size())
+					SelectedIndex = 0;
+			} while (!CanSelectFields(SelectedIndex));
 		}
 
 		if (event.key.code == sf::Keyboard::Right)
@@ -112,6 +133,39 @@ void CharacterCreationScreen::HandleInput(const sf::Event & event)
 				std::string attr = GetSelectedAttribute();
 
 				Creator.AllocateAttributePoints(CurrentCharacter, attr, 1, EMode::EMDecrease);
+			}
+		}
+
+		if (event.key.code == sf::Keyboard::A)
+		{
+			if (bIsCharacterCreated)
+			{
+				SelectedCharacterIndex--;
+
+				if (SelectedCharacterIndex < 0)
+				{
+					SelectedCharacterIndex = MaxCharacters - 1;
+				}
+
+				CurrentFrame = 0;
+				AnimationTimer = 0.f;
+			}
+		}
+
+		if (event.key.code == sf::Keyboard::D)
+		{
+			if (bIsCharacterCreated)
+			{
+				SelectedCharacterIndex++;
+
+				if (SelectedCharacterIndex >= MaxCharacters)
+				{
+					SelectedCharacterIndex = 0;
+				}
+
+
+				CurrentFrame = 0;
+				AnimationTimer = 0.f;
 			}
 		}
 	}
@@ -183,12 +237,29 @@ void CharacterCreationScreen::HandleInput(const sf::Event & event)
 	}
 }
 
-void CharacterCreationScreen::Update()
+void FCharacterCreationScreen::Update(float deltaTime)
 {
+	CursorTimer += deltaTime;
+	CursorOffset = std::sin(CursorTimer) * 2.f;
 
+	AnimationTimer += deltaTime;
+
+	if (AnimationTimer >= AnimationSpeed)
+	{
+		AnimationTimer -= AnimationSpeed;
+
+		CurrentFrame++;
+		if (CurrentFrame >= FramesPerAnimation)
+			CurrentFrame = 0;
+	}
+
+	int frameX = (CurrentAnimationIndex * FramesPerAnimation + CurrentFrame) * FrameWidth;
+	int frameY = SelectedCharacterIndex * FrameHeight;
+
+	CharacterSprite.setTextureRect(sf::IntRect(frameX, frameY, FrameWidth, FrameHeight));
 }
 
-void CharacterCreationScreen::Draw(sf::RenderWindow & window)
+void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 {
 	if (bIsFinalised)
 	{
@@ -197,6 +268,9 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 
 		doneText.setFont(Font);
 		instructText.setFont(Font);
+
+		doneText.setFillColor(Theme.PrimaryColor);
+		instructText.setFillColor(Theme.PrimaryColor);
 		
 		doneText.setString(ToUpper("Character Created!"));
 		instructText.setString(ToUpper("Press Enter to continue..."));
@@ -216,6 +290,7 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 	sf::Text title;
 	
 	title.setFont(Font);
+	title.setFillColor(Theme.AccentColor);
 	title.setString(ToUpper("Character Creation"));
 	title.setCharacterSize(80);
 	title.setPosition(30.f, 0.f);
@@ -227,10 +302,19 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 
 	for (size_t i = 0; i < Fields.size(); i++)
 	{
+		if (!bIsCharacterCreated)
+		{
+			if (std::find(Attributes.begin(), Attributes.end(), Fields[i]) != Attributes.end())
+			{
+				continue;
+			}
+		}
+
 		sf::Text text;
 		text.setFont(Font);
+		text.setFillColor(Theme.PrimaryColor);
 		text.setCharacterSize(32);
-		text.setPosition(60.f, startY + i * 30.f);
+		text.setPosition(80.f, startY + i * 30.f);
 
 		std::string displayText = Fields[i];
 
@@ -245,6 +329,7 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 		else if (Fields[i] == "Class")
 		{
 			displayText += ": " + ClassOptions[SelectedClassIndex].ClassName;
+			
 		}
 		else if (bIsCharacterCreated && std::find(Attributes.begin(), Attributes.end(), Fields[i]) != Attributes.end())
 		{
@@ -255,7 +340,11 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 
 		if (i == SelectedIndex)
 		{
-			text.setCharacterSize(40);
+			CursorSprite.setPosition(text.getPosition().x - 30.f, text.getPosition().y + CursorOffset);
+
+			text.setFillColor(Theme.HighlightColor);
+		
+			window.draw(CursorSprite);
 		}
 
 		if (bIsCharacterCreated && (Fields[i] == "Name" || Fields[i] == "Race" || Fields[i] == "Class"))
@@ -274,16 +363,28 @@ void CharacterCreationScreen::Draw(sf::RenderWindow & window)
 		sf::Text pointsText;
 
 		pointsText.setFont(Font);
+		pointsText.setFillColor(Theme.PrimaryColor);
 		pointsText.setCharacterSize(32);
 		pointsText.setPosition(300.f, 120.f);
 
 		pointsText.setString(ToUpper("Available Attribute Points: " + std::to_string(Creator.GetAttributePoints())));
 
 		window.draw(pointsText);
+
+		sf::Text charText;
+		charText.setFont(Font);
+		charText.setFillColor(Theme.PrimaryColor);
+		charText.setCharacterSize(32);
+		charText.setPosition(380.f, 350.f);
+
+		charText.setString(std::to_string(SelectedCharacterIndex + 1) + " / " + std::to_string(MaxCharacters));
+
+		window.draw(charText);
+		window.draw(CharacterSprite);
 	}
 }
 
-std::string CharacterCreationScreen::ToUpper(const std::string& input)
+std::string FCharacterCreationScreen::ToUpper(const std::string& input)
 {
 	std::string result = input;
 
@@ -293,7 +394,19 @@ std::string CharacterCreationScreen::ToUpper(const std::string& input)
 }
 
 
-std::string CharacterCreationScreen::GetSelectedAttribute()
+std::string FCharacterCreationScreen::GetSelectedAttribute()
 {
 	return Fields[SelectedIndex];
+}
+
+bool FCharacterCreationScreen::CanSelectFields(int index) const
+{
+	if (!bIsCharacterCreated)
+	{
+		if (std::find(Attributes.begin(), Attributes.end(), Fields[index]) != Attributes.end())
+		{
+			return false;
+		}
+	}
+	return true;
 }

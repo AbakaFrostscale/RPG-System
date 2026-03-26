@@ -9,6 +9,8 @@
 #include "SFML/Graphics.hpp"
 
 #include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
+#include "UI/StartScreen/StartScreen.h"
+
 #include "Character/Character.h"
 #include "Inventory/Inventory.h"
 
@@ -21,26 +23,24 @@ enum class EGameState
 	EGSGame
 };
 
-CharacterCreationScreen CreationScreen;
+ FCharacterCreationScreen CreationScreen;
+FStartScreen StartScreen;
 
 FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
 FItem MainItem;
 
-EGameState CurrentState = EGameState::EGSCharacterCreation;
+EGameState CurrentState = EGameState::EGSStartMenu;
 
 bool bCharacterCreated;
 sf::Font GameFont;
+sf::Clock Clock;
 
 static void LoadFont()
 {
 	if (!GameFont.loadFromFile("Assets/Fonts/FFScript.ttf"))
 	{
 		std::cout << "Font failed to load!" << std::endl;
-	}
-	else
-	{
-		std::cout << "Font loaded!" << std::endl;
 	}
 }
 
@@ -652,15 +652,52 @@ int main()
 				window.close();
 			}
 
+			if (CurrentState == EGameState::EGSStartMenu)
+			{
+				StartScreen.HandleInput(event);
+			}
+
 			if (CurrentState == EGameState::EGSCharacterCreation)
 			{
 				CreationScreen.HandleInput(event);
 			}
 		}
 
+		if (CurrentState == EGameState::EGSStartMenu)
+		{
+			StartScreen.Update(deltaTime);
+
+			if (StartScreen.IsTransitionFinished())
+			{
+				int choice = StartScreen.GetSelectedOption();
+
+				if (choice == 0) //New Game
+				{
+					CurrentState = EGameState::EGSCharacterCreation;
+				}
+				else if (choice == 1) //Load Game
+				{
+					std::cout << "Load not yet implemented" << std::endl;
+					StartScreen.ResetTransition();
+				}
+				else if (choice == 2) //Exit
+				{
+					window.close();
+				}
+			}
+		}
+
 		if (CurrentState == EGameState::EGSCharacterCreation)
 		{
-			CreationScreen.Update();
+			CreationScreen.Update(deltaTime);
+			
+			panel.setSize(sf::Vector2f(600.f, 400.f));
+			panel.setPosition(40.f, 100.f);
+
+			panel.setFillColor(sf::Color(50, 10, 10));
+			panel.setOutlineThickness(2.f);
+			panel.setOutlineColor(sf::Color(200, 80, 80));
+
 
 			if (CreationScreen.IsFinalised())
 			{
@@ -673,10 +710,15 @@ int main()
 			}
 		}
 
-		window.clear();
+		window.clear(sf::Color(30, 5, 5));
 
-		if (CurrentState == EGameState::EGSCharacterCreation)
+		if (CurrentState == EGameState::EGSStartMenu)
 		{
+			StartScreen.Draw(window);
+		} 
+		else if (CurrentState == EGameState::EGSCharacterCreation)
+		{
+			window.draw(panel);
 			CreationScreen.Draw(window);
 		}
 		else if (CurrentState == EGameState::EGSGame)
@@ -691,6 +733,7 @@ int main()
 			window.draw(gameText);
 		}
 
+		
 		window.display();
 	}
 
