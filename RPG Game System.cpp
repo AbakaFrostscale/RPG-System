@@ -7,14 +7,19 @@
 #include "Core/LoadExternalData.h"
 #include "Core/Random.h"
 
+<<<<<<< Updated upstream
+=======
 #include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
 #include "UI/StartScreen/StartScreen.h"
+>>>>>>> Stashed changes
 #include "Character/Character.h"
 #include "Creation/CharacterCreation.h"
 #include "Inventory/Inventory.h"
 
 #include "Combat/TurnBasedCombat.h"
 
+<<<<<<< Updated upstream
+=======
 enum class EGameState
 {
 	EGSStartMenu,
@@ -24,13 +29,17 @@ enum class EGameState
 
 FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
+
+>>>>>>> Stashed changes
 FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
 FCharacterCreator Creator;
 FItem MainItem;
 
+<<<<<<< Updated upstream
 bool bIsFinalised;
 
+=======
 EGameState CurrentState = EGameState::EGSStartMenu;
 
 bool bCharacterCreated;
@@ -45,6 +54,7 @@ static void LoadFont()
 		std::cout << "Font failed to load!" << std::endl;
 	}
 }
+>>>>>>> Stashed changes
 
 static std::string EAbilityToString(EAbility Ability)
 
@@ -635,6 +645,8 @@ int main()
 		}
 	}
 	return 0;
+<<<<<<< Updated upstream
+=======
 }*/
 
 int main()
@@ -742,6 +754,7 @@ int main()
 	}
 
 	return 0;
+>>>>>>> Stashed changes
 }
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
