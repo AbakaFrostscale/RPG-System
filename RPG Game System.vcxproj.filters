@@ -39,6 +39,15 @@
     <ClCompile Include="Core\LoadExternalData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="UI\CharacterCreationScreen\CharacterCreationScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\StartScreen\StartScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inventory\Crafting.h">
@@ -74,6 +83,15 @@
     <ClInclude Include="External\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
+=======
+    <ClInclude Include="UI\CharacterCreationScreen\CharacterCreationScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\StartScreen\StartScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <None Include="DataBases\ClassDatabase.csv">
