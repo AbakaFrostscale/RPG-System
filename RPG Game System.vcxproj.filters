@@ -42,6 +42,9 @@
     <ClCompile Include="UI\CharacterCreationScreen\CharacterCreationScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\StartScreen\StartScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inventory\Crafting.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\CharacterCreationScreen\CharacterCreationScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\StartScreen\StartScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
