@@ -23,7 +23,7 @@ enum class EGameState
 	EGSGame
 };
 
- FCharacterCreationScreen CreationScreen;
+FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
 
 FTurnBasedCombat Combat;
@@ -639,10 +639,11 @@ int main()
 {
 	LoadFont();
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "PLaceholder Name");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "Placeholder Name");
 
 	while (window.isOpen())
 	{
+		float deltaTime = Clock.restart().asSeconds();
 
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -686,6 +687,7 @@ int main()
 				}
 			}
 		}
+			sf::RectangleShape panel;
 
 		if (CurrentState == EGameState::EGSCharacterCreation)
 		{
