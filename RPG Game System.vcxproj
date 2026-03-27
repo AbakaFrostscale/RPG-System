@@ -114,7 +114,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Admin\Desktop\Coding\ProjectGetAJob\RPG-System\Libraries\SFML-2.6.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,6 +142,7 @@
     <ClCompile Include="Inventory\Items.cpp" />
     <ClCompile Include="RPG Game System.cpp" />
     <ClCompile Include="UI\CharacterCreationScreen\CharacterCreationScreen.cpp" />
+    <ClCompile Include="UI\GameScreen\GameScreen.cpp" />
     <ClCompile Include="UI\StartScreen\StartScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="Inventory\Inventory.h" />
     <ClInclude Include="Inventory\Items.h" />
     <ClInclude Include="UI\CharacterCreationScreen\CharacterCreationScreen.h" />
+    <ClInclude Include="UI\GameScreen\GameScreen.h" />
     <ClInclude Include="UI\StartScreen\StartScreen.h" />
   </ItemGroup>
   <ItemGroup>

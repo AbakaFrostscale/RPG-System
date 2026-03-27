@@ -11,6 +11,7 @@
 #include <vector>
 #include <utility>
 
+#include <SFML/Graphics.hpp>
 #include "External/json.hpp"
 
 using json = nlohmann::json;
@@ -186,4 +187,12 @@ struct FSpellData
 		MPCost = JsonObj.at("MPCost").get<int>();
 		AllowedClasses = JsonObj.at("AllowedClasses").get<std::vector<std::string>>();
 	}
+};
+
+struct FTheme
+{
+	sf::Color PrimaryColor = sf::Color(220, 80, 80);
+	sf::Color HighlightColor = sf::Color(255, 200, 200);
+	sf::Color AccentColor = sf::Color(255, 120, 220);
+	sf::Color BackgroundColor = sf::Color(30, 5, 5);
 };

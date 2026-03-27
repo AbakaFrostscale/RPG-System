@@ -3,19 +3,13 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include "Core/Types.h"
 
 #include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
 #include <Character/Character.h>
 
 class FLoadExternalData;
-
-struct FTheme
-{
-	sf::Color PrimaryColor = sf::Color(220, 80, 80);
-	sf::Color HighlightColor = sf::Color(255, 200, 200);
-	sf::Color AccentColor = sf::Color(255, 120, 220);
-	sf::Color BackgroundColor = sf::Color(30, 5, 5);
-};
 
 class FCharacterCreationScreen
 {
@@ -31,8 +25,18 @@ public:
 	FCharacterData GetCharacter() { return CurrentCharacter; }
 	bool IsFinalised() { return bIsFinalised; }
 
+	void StartFadeIn();
+
 private:
 	FTheme Theme;
+
+	//sound
+	sf::Music CharacterCreationMusic;
+	sf::SoundBuffer CursorMoveBuffer;
+	sf::SoundBuffer ConfirmBuffer;
+
+	sf::Sound CursorMoveSound;
+	sf::Sound ConfirmSound;
 
 	//Cursor 
 	sf::Texture CursorTexture;
@@ -40,6 +44,9 @@ private:
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
 
+	bool bFadingIn = true;
+	float FadeAlpha = 255.f;
+	float FadeSpeed = 200.f;
 
 	std::string GetSelectedAttribute();
 	bool CanSelectFields(int index) const;
