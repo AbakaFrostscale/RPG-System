@@ -10,6 +10,7 @@
 
 #include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
 #include "UI/StartScreen/StartScreen.h"
+#include "UI/GameScreen/GameScreen.h"
 
 #include "Character/Character.h"
 #include "Inventory/Inventory.h"
@@ -25,6 +26,9 @@ enum class EGameState
 
 FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
+FGameScreen GameScreen;
+
+FTheme Theme;
 
 FTurnBasedCombat Combat;
 FCharacter CurrentCharacter;
@@ -675,6 +679,8 @@ int main()
 				if (choice == 0) //New Game
 				{
 					CurrentState = EGameState::EGSCharacterCreation;
+					StartScreen.StopMusic();
+					CreationScreen.StartFadeIn();
 				}
 				else if (choice == 1) //Load Game
 				{
@@ -687,7 +693,7 @@ int main()
 				}
 			}
 		}
-			sf::RectangleShape panel;
+		sf::RectangleShape panel;
 
 		if (CurrentState == EGameState::EGSCharacterCreation)
 		{
@@ -698,7 +704,7 @@ int main()
 
 			panel.setFillColor(sf::Color(50, 10, 10));
 			panel.setOutlineThickness(2.f);
-			panel.setOutlineColor(sf::Color(200, 80, 80));
+			panel.setOutlineColor(sf::Color(Theme.PrimaryColor));
 
 
 			if (CreationScreen.IsFinalised())
@@ -712,7 +718,12 @@ int main()
 			}
 		}
 
-		window.clear(sf::Color(30, 5, 5));
+		if (CurrentState == EGameState::EGSGame)
+		{
+			GameScreen.Update(deltaTime);
+		}
+
+		window.clear(sf::Color(Theme.BackgroundColor));
 
 		if (CurrentState == EGameState::EGSStartMenu)
 		{
@@ -725,14 +736,8 @@ int main()
 		}
 		else if (CurrentState == EGameState::EGSGame)
 		{
-			sf::Text gameText;
-
-			gameText.setFont(GameFont);
-			gameText.setString("Game Started!!!");
-			gameText.setCharacterSize(80);
-			gameText.setPosition(50.f, 50.f);
-
-			window.draw(gameText);
+			GameScreen.SetCharacter(CurrentCharacter.GetCharacter());
+			GameScreen.Draw(window);
 		}
 
 		

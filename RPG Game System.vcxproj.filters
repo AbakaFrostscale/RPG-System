@@ -45,6 +45,9 @@
     <ClCompile Include="UI\StartScreen\StartScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\GameScreen\GameScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Inventory\Crafting.h">
@@ -84,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\StartScreen\StartScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GameScreen\GameScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

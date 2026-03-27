@@ -37,6 +37,30 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	RaceOptions = Loader->GetAvailableRaces();
 	ClassOptions = Loader->GetAvailableClasses();
 
+	if (!CharacterCreationMusic.openFromFile("Assets/Audio/Music/Loop/Shop_Loop.wav"))
+	{
+		std::cout << "Menu music not found" << std::endl;
+	}
+
+	CharacterCreationMusic.setLoop(true);
+	CharacterCreationMusic.setVolume(50.f);
+
+	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
+	{
+		std::cout << "Select sound failed to load!" << std::endl;
+	}
+
+	CursorMoveSound.setBuffer(CursorMoveBuffer);
+	CursorMoveSound.setVolume(50.f);
+
+	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Accept.mp3"))
+	{
+		std::cout << "Confirm sound failed to load!" << std::endl;
+	}
+
+	ConfirmSound.setBuffer(ConfirmBuffer);
+	ConfirmSound.setVolume(50.f);
+
 	SelectedIndex = 0;
 	SelectedClassIndex = 0;
 	SelectedRaceIndex = 0;
@@ -69,6 +93,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			{
 
 				SelectedIndex--;
+				CursorMoveSound.play();
 
 				if (SelectedIndex < 0)
 					SelectedIndex = Fields.size() - 1;
@@ -80,6 +105,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			do
 			{
 				SelectedIndex++;
+				CursorMoveSound.play();
 
 				if (SelectedIndex >= Fields.size())
 					SelectedIndex = 0;
@@ -93,12 +119,14 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				if (Fields[SelectedIndex] == "Race")
 				{
 					SelectedRaceIndex++;
+					CursorMoveSound.play();
 					if (SelectedRaceIndex >= RaceOptions.size())
 						SelectedRaceIndex = 0;
 				}
 				else if (Fields[SelectedIndex] == "Class")
 				{
 					SelectedClassIndex++;
+					CursorMoveSound.play();
 					if (SelectedClassIndex >= ClassOptions.size())
 						SelectedClassIndex = 0;
 				}
@@ -118,12 +146,14 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				if (Fields[SelectedIndex] == "Race")
 				{
 					SelectedRaceIndex--;
+					CursorMoveSound.play();
 					if (SelectedRaceIndex < 0)
 						SelectedRaceIndex = RaceOptions.size() - 1;
 				}
 				else if (Fields[SelectedIndex] == "Class")
 				{
 					SelectedClassIndex--;
+					CursorMoveSound.play();
 					if (SelectedClassIndex < 0)
 						SelectedClassIndex = ClassOptions.size() - 1;
 				}
@@ -141,6 +171,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			if (bIsCharacterCreated)
 			{
 				SelectedCharacterIndex--;
+				CursorMoveSound.play();
 
 				if (SelectedCharacterIndex < 0)
 				{
@@ -157,6 +188,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			if (bIsCharacterCreated)
 			{
 				SelectedCharacterIndex++;
+				CursorMoveSound.play();
 
 				if (SelectedCharacterIndex >= MaxCharacters)
 				{
@@ -178,6 +210,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			{
 				if (bIsCharacterCreated)
 					return;
+				CursorMoveSound.play();
 				IsEditingName = !IsEditingName;
 			}
 			else if (Fields[SelectedIndex] == "Confirm")
@@ -187,6 +220,8 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 					std::cout << "Name cannot be empty" << std::endl;
 					return;
 				}
+
+				ConfirmSound.play();
 
 				if (!bIsCharacterCreated)
 				{
@@ -209,6 +244,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				Creator.SetAttributePoints(Creator.GetMaxAttributePoints());
 
 				bIsCharacterCreated = false;
+				ConfirmSound.play();
 
 				std::cout << "Character Reset!" << std::endl;
 			}
@@ -257,6 +293,17 @@ void FCharacterCreationScreen::Update(float deltaTime)
 	int frameY = SelectedCharacterIndex * FrameHeight;
 
 	CharacterSprite.setTextureRect(sf::IntRect(frameX, frameY, FrameWidth, FrameHeight));
+
+	if (bFadingIn)
+	{
+		FadeAlpha -= FadeSpeed * deltaTime;
+
+		if (FadeAlpha <= 0.f)
+		{
+			FadeAlpha = 0.f;
+			bFadingIn = false;
+		}
+	}
 }
 
 void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
@@ -382,6 +429,16 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		window.draw(charText);
 		window.draw(CharacterSprite);
 	}
+
+	//=================================================================== FADE ====================================================================================
+	if (bFadingIn)
+	{
+		sf::RectangleShape Fade;
+		Fade.setSize(sf::Vector2f(window.getSize()));
+		Fade.setFillColor(sf::Color(50, 0, 0, static_cast<sf::Uint8>(FadeAlpha)));
+
+		window.draw(Fade);
+	}
 }
 
 std::string FCharacterCreationScreen::ToUpper(const std::string& input)
@@ -393,6 +450,12 @@ std::string FCharacterCreationScreen::ToUpper(const std::string& input)
 	return result;
 }
 
+void FCharacterCreationScreen::StartFadeIn()
+{
+	CharacterCreationMusic.play();
+	bFadingIn = true;
+	FadeAlpha = 255.f;
+}
 
 std::string FCharacterCreationScreen::GetSelectedAttribute()
 {
