@@ -18,6 +18,7 @@ public:
 	std::string ToUpper(const std::string& input);
 
 	void SetCharacter(const FCharacterData& Character);
+	void SetSelectedCharacter(const int SelectedCharacter);
 
 private:
 	FTheme Theme;
@@ -32,9 +33,9 @@ private:
 	sf::Texture PlayerTexture;
 	sf::Sprite PlayerSprite;
 
-	sf::Vector2f PlayerPosition = sf::Vector2f(640.f, 360.f);
+	sf::Vector2f PlayerPosition = sf::Vector2f(300.f, 200.f);
 
-	float MoveSpeed = 200.f;
+	float MoveSpeed = 100.f;
 
 	int SelectedCharacterRow = 0;
 
@@ -42,14 +43,19 @@ private:
 	float AnimationTimer = 0.f;
 	float AnimationSpeed = 0.25f;
 
-	int FrameHeight = 18;
-	int FrameWidth = 18;
+	int FrameHeight = 20;
+	int FrameWidth = 20;
 
 	//Animation movement indexes
 	int DownRow = 0;
-	int LeftRow = 1;
-	int RightRow = 1;
-	int UpRow = 2;
+	int LeftRow = 2;
+	int UpRow = 4;
 
 	int CurrentAnimationRow = 0;
+
+	// Camera
+
+	sf::View Camera;
+
+
 };
