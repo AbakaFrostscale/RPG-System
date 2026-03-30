@@ -18,7 +18,6 @@ public:
 	void Draw(sf::RenderWindow& window);
 
 	void ResetTransition();
-	void StopMusic();
 
 	bool IsTransitionFinished() const;
 	int GetSelectedOption() const;
@@ -36,6 +35,9 @@ private:
 
 	sf::Sound CursorMoveSound;
 	sf::Sound ConfirmSound;
+
+	bool bMusicFading = false;
+	float MusicFadeSpeed = 40.f;
 
 	//Cursor 
 	sf::Texture CursorTexture;

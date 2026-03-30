@@ -26,6 +26,7 @@ public:
 	bool IsFinalised() { return bIsFinalised; }
 
 	void StartFadeIn();
+	void Transition();
 	void StopMusic();
 
 	const int GetSelectedCharacter() const { return SelectedCharacterIndex; }
@@ -48,8 +49,12 @@ private:
 	float CursorTimer = 0.f;
 
 	bool bFadingIn = true;
-	float FadeAlpha = 255.f;
+	bool bFadingOut = false;
+	bool IsFadeOutFinished = false;
+	float FadeInAlpha = 255.f;
+	float FadeOutAlpha = 0.f;
 	float FadeSpeed = 200.f;
+
 
 	std::string GetSelectedAttribute();
 	bool CanSelectFields(int index) const;

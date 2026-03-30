@@ -39,7 +39,7 @@ private:
 
 	int SelectedCharacterRow = 0;
 
-	int CurrentFrame;
+	int CurrentFrame = 0;
 	float AnimationTimer = 0.f;
 	float AnimationSpeed = 0.25f;
 

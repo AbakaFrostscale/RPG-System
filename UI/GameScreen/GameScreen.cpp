@@ -66,7 +66,10 @@ void FGameScreen::Update(float DeltaTime)
 
 	if (Direction.x != 0.f || Direction.y != 0.f)
 	{
-		float Length = std::sqrt(Direction.x * Direction.x + Direction.y + Direction.y);
+		float Length = std::sqrt(Direction.x * Direction.x + Direction.y * Direction.y);
+
+		Direction.x /= Length;
+		Direction.y /= Length;
 	}
 
 	PlayerPosition.x += Direction.x * MoveSpeed * DeltaTime;
@@ -109,7 +112,6 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	
 	window.setView(Camera);
 
-	std::cout << "Character Drawn at " << PlayerPosition.x << ", " << PlayerPosition.y << std::endl;
 	window.draw(PlayerSprite);
 
 	window.setView(window.getDefaultView());
