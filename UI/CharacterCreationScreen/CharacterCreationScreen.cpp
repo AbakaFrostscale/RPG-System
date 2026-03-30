@@ -235,6 +235,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				if (bIsCharacterCreated && !bIsFinalised)
 				{
 					Creator.SetHPandMP(CurrentCharacter);
+					StopMusic();
 					bIsFinalised = true;
 				}
 			}
@@ -282,17 +283,23 @@ void FCharacterCreationScreen::Update(float deltaTime)
 
 	if (AnimationTimer >= AnimationSpeed)
 	{
-		AnimationTimer -= AnimationSpeed;
+		AnimationTimer = 0.f;
 
-		CurrentFrame++;
-		if (CurrentFrame >= FramesPerAnimation)
-			CurrentFrame = 0;
+		CurrentFrame += AnimDirection;
+
+		if (CurrentFrame >= 8)
+		{
+			CurrentFrame = 8;
+			AnimDirection = -1;
+		}
+		else if (CurrentFrame <= 7)
+		{
+			CurrentFrame = 7;
+			AnimDirection = 1;
+		}
 	}
 
-	int frameX = (CurrentAnimationIndex * FramesPerAnimation + CurrentFrame) * FrameWidth;
-	int frameY = SelectedCharacterIndex * FrameHeight;
-
-	CharacterSprite.setTextureRect(sf::IntRect(frameX, frameY, FrameWidth, FrameHeight));
+	CharacterSprite.setTextureRect(sf::IntRect(CurrentFrame * FrameWidth, SelectedCharacterIndex * FrameHeight, FrameWidth, FrameHeight));
 
 	if (bFadingIn)
 	{
@@ -438,8 +445,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		Fade.setFillColor(sf::Color(50, 0, 0, static_cast<sf::Uint8>(FadeAlpha)));
 
 		window.draw(Fade);
-	}
-}
+	}	}
 
 std::string FCharacterCreationScreen::ToUpper(const std::string& input)
 {
@@ -455,6 +461,11 @@ void FCharacterCreationScreen::StartFadeIn()
 	CharacterCreationMusic.play();
 	bFadingIn = true;
 	FadeAlpha = 255.f;
+}
+
+void FCharacterCreationScreen::StopMusic()
+{
+	CharacterCreationMusic.stop();
 }
 
 std::string FCharacterCreationScreen::GetSelectedAttribute()

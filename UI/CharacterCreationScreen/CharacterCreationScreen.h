@@ -26,6 +26,9 @@ public:
 	bool IsFinalised() { return bIsFinalised; }
 
 	void StartFadeIn();
+	void StopMusic();
+
+	const int GetSelectedCharacter() const { return SelectedCharacterIndex; }
 
 private:
 	FTheme Theme;
@@ -68,12 +71,13 @@ private:
 	int FrameWidth = 20;
 	int FrameHeight = 20;
 
-	int CurrentFrame = 0;
+	int CurrentFrame = 6;
+	int AnimDirection = 1;
 	float AnimationTimer = 0.f;
-	float AnimationSpeed = 0.25f;
+	float AnimationSpeed = 0.75f;
 
 	int FramesPerAnimation = 2;
-	int CurrentAnimationIndex = 0;
+	int CurrentAnimationIndex = 6;
 	int SelectedCharacterIndex = 0;
 	int MaxCharacters = 12;
 

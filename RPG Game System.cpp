@@ -720,6 +720,8 @@ int main()
 
 		if (CurrentState == EGameState::EGSGame)
 		{
+			GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
+
 			GameScreen.Update(deltaTime);
 		}
 
