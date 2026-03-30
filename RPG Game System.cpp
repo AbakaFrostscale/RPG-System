@@ -679,7 +679,6 @@ int main()
 				if (choice == 0) //New Game
 				{
 					CurrentState = EGameState::EGSCharacterCreation;
-					StartScreen.StopMusic();
 					CreationScreen.StartFadeIn();
 				}
 				else if (choice == 1) //Load Game

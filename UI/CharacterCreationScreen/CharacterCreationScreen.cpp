@@ -236,7 +236,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				{
 					Creator.SetHPandMP(CurrentCharacter);
 					StopMusic();
-					bIsFinalised = true;
+					bFadingOut = true;
 				}
 			}
 			else if (Fields[SelectedIndex] == "Reset")
@@ -303,12 +303,23 @@ void FCharacterCreationScreen::Update(float deltaTime)
 
 	if (bFadingIn)
 	{
-		FadeAlpha -= FadeSpeed * deltaTime;
+		FadeInAlpha -= FadeSpeed * deltaTime;
 
-		if (FadeAlpha <= 0.f)
+		if (FadeInAlpha <= 0.f)
 		{
-			FadeAlpha = 0.f;
+			FadeInAlpha = 0.f;
 			bFadingIn = false;
+		}
+	}
+
+	if (bFadingOut)
+	{
+		FadeOutAlpha += deltaTime * FadeSpeed;
+
+		if (FadeOutAlpha >= 255.f)
+		{
+			FadeOutAlpha = 255.f;
+			IsFadeOutFinished = true;
 		}
 	}
 }
@@ -442,10 +453,21 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 	{
 		sf::RectangleShape Fade;
 		Fade.setSize(sf::Vector2f(window.getSize()));
-		Fade.setFillColor(sf::Color(50, 0, 0, static_cast<sf::Uint8>(FadeAlpha)));
+		Fade.setFillColor(sf::Color(50, 0, 0, static_cast<sf::Uint8>(FadeInAlpha)));
 
 		window.draw(Fade);
-	}	}
+	}	
+
+	if (bFadingOut)
+	{
+		sf::RectangleShape Fade;
+		Fade.setSize(sf::Vector2f(window.getSize()));
+		Fade.setFillColor(sf::Color(50, 0, 0, static_cast<float>(FadeOutAlpha)));
+
+		window.draw(Fade);
+		Transition();
+	}
+}
 
 std::string FCharacterCreationScreen::ToUpper(const std::string& input)
 {
@@ -460,7 +482,15 @@ void FCharacterCreationScreen::StartFadeIn()
 {
 	CharacterCreationMusic.play();
 	bFadingIn = true;
-	FadeAlpha = 255.f;
+	FadeInAlpha = 255.f;
+}
+
+void FCharacterCreationScreen::Transition()
+{
+	if (IsFadeOutFinished)
+	{
+		bIsFinalised = true;
+	}
 }
 
 void FCharacterCreationScreen::StopMusic()

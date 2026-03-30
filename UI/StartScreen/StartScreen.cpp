@@ -70,6 +70,7 @@ void FStartScreen::HandleInput(const sf::Event & event)
 		{
 			ConfirmSound.play();
 			bTransitioning = true;
+			bMusicFading = true;
 		}
 	}
 
@@ -79,6 +80,23 @@ void FStartScreen::Update(float deltaTime)
 {
 	CursorTimer += deltaTime;
 	CursorOffset = std::sin(CursorTimer) * 2.f;
+
+	if (bMusicFading)
+	{
+		float NewVolume = MenuMusic.getVolume() - MusicFadeSpeed * deltaTime;
+
+		if (NewVolume <= 0.f)
+		{
+			NewVolume = 0.f;
+			std::cout << "Music Stopped!" << std::endl;
+			MenuMusic.stop();
+			bMusicFading = false;
+		}
+
+		MenuMusic.setVolume(NewVolume);
+
+		std::cout << MenuMusic.getVolume() << std::endl;
+	}
 
 	if (bTransitioning)
 	{
@@ -148,15 +166,8 @@ void FStartScreen::ResetTransition()
 {
 	bTransitioning = false;
 	bTranisitionFinished = false;
+	MenuMusic.setVolume(50.f);
 	FadeAlpha = 0.f;
-}
-
-void FStartScreen::StopMusic()
-{
-	if (IsTransitionFinished())
-	{
-		MenuMusic.stop();
-	}
 }
 
 bool FStartScreen::IsTransitionFinished() const
