@@ -22,8 +22,9 @@ FStartScreen::FStartScreen()
 	}
 
 	MenuMusic.setLoop(true);
-	MenuMusic.setVolume(50.f);
+	MenuMusic.setVolume(0.f);
 	MenuMusic.play();
+	bMusicFadingIn = true;
 
 	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
 	{
@@ -70,7 +71,7 @@ void FStartScreen::HandleInput(const sf::Event & event)
 		{
 			ConfirmSound.play();
 			bTransitioning = true;
-			bMusicFading = true;
+			bMusicFadingOut = true;
 		}
 	}
 
@@ -81,21 +82,31 @@ void FStartScreen::Update(float deltaTime)
 	CursorTimer += deltaTime;
 	CursorOffset = std::sin(CursorTimer) * 2.f;
 
-	if (bMusicFading)
+	if (bMusicFadingIn)
+	{
+		float NewVolume = MenuMusic.getVolume() + MusicFadeSpeed * deltaTime;
+
+		if (NewVolume >= 50.f)
+		{
+			NewVolume = 50.f;
+			bMusicFadingIn = false;
+		}
+
+		MenuMusic.setVolume(NewVolume);
+	}
+
+	if (bMusicFadingOut)
 	{
 		float NewVolume = MenuMusic.getVolume() - MusicFadeSpeed * deltaTime;
 
 		if (NewVolume <= 0.f)
 		{
 			NewVolume = 0.f;
-			std::cout << "Music Stopped!" << std::endl;
 			MenuMusic.stop();
-			bMusicFading = false;
+			bMusicFadingOut = false;
 		}
 
 		MenuMusic.setVolume(NewVolume);
-
-		std::cout << MenuMusic.getVolume() << std::endl;
 	}
 
 	if (bTransitioning)
@@ -166,7 +177,7 @@ void FStartScreen::ResetTransition()
 {
 	bTransitioning = false;
 	bTranisitionFinished = false;
-	MenuMusic.setVolume(50.f);
+	bMusicFadingIn = true;
 	FadeAlpha = 0.f;
 }
 

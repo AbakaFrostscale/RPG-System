@@ -43,7 +43,8 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	}
 
 	CharacterCreationMusic.setLoop(true);
-	CharacterCreationMusic.setVolume(50.f);
+	CharacterCreationMusic.play();
+	CharacterCreationMusic.setVolume(0.f);
 
 	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
 	{
@@ -72,15 +73,6 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 {
 	bool IsAttributeSelected = SelectedIndex >= AttributeStartIndex && SelectedIndex < AttributeStartIndex + Attributes.size();
-
-	if (bIsFinalised)
-	{
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
-		{
-			std::cout << "Proceeding... " << std::endl;
-			IsFinished = true;
-		}
-	}
 
 	if (event.type == sf::Event::KeyPressed)
 	{
@@ -235,7 +227,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				if (bIsCharacterCreated && !bIsFinalised)
 				{
 					Creator.SetHPandMP(CurrentCharacter);
-					StopMusic();
+					bMusicFadingOut = true;
 					bFadingOut = true;
 				}
 			}
@@ -321,6 +313,33 @@ void FCharacterCreationScreen::Update(float deltaTime)
 			FadeOutAlpha = 255.f;
 			IsFadeOutFinished = true;
 		}
+	}
+
+	if (bMusicFadingIn)
+	{
+		float NewVolume = CharacterCreationMusic.getVolume() + MusicFadeSpeed * deltaTime;
+
+		if (NewVolume >= 50.f)
+		{
+			NewVolume = 50.f;
+			bMusicFadingIn = false;
+		}
+
+		CharacterCreationMusic.setVolume(NewVolume);
+	}
+
+	if (bMusicFadingOut)
+	{
+		float NewVolume = CharacterCreationMusic.getVolume() - MusicFadeSpeed * deltaTime;
+
+		if (NewVolume <= 0.f)
+		{
+			NewVolume = 0.f;
+			CharacterCreationMusic.stop();
+			bMusicFadingOut = false;
+		}
+
+		CharacterCreationMusic.setVolume(NewVolume);
 	}
 }
 
@@ -480,7 +499,7 @@ std::string FCharacterCreationScreen::ToUpper(const std::string& input)
 
 void FCharacterCreationScreen::StartFadeIn()
 {
-	CharacterCreationMusic.play();
+	bMusicFadingIn = true;
 	bFadingIn = true;
 	FadeInAlpha = 255.f;
 }

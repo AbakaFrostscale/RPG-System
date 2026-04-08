@@ -42,6 +42,10 @@ private:
 	sf::Sound CursorMoveSound;
 	sf::Sound ConfirmSound;
 
+	bool bMusicFadingIn = false;
+	bool bMusicFadingOut = false;
+	float MusicFadeSpeed = 40.f;
+
 	//Cursor 
 	sf::Texture CursorTexture;
 	sf::Sprite CursorSprite;

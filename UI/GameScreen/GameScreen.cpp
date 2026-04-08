@@ -19,6 +19,41 @@ FGameScreen::FGameScreen()
 	PlayerSprite.setPosition(PlayerPosition);
 
 	PlayerSprite.setTextureRect(sf::IntRect(0, SelectedCharacterRow * FrameHeight, FrameWidth, FrameHeight));
+	PlayerBounds = PlayerSprite.getLocalBounds();
+
+	if (!GameMusic.openFromFile("Assets/Audio/Music/Loop/Field_Loop.wav"))
+	{
+		std::cout << "Failed to load Field_Loop.wav!" << std::endl;
+	}
+
+	GameMusic.setLoop(true);
+	GameMusic.play();
+	GameMusic.setVolume(0.f);
+
+	bMusicFadingIn = true;
+
+	Ground.setSize(sf::Vector2f(3000.f, 3000.f));
+	Ground.setFillColor(sf::Color(60, 140, 60));
+	Ground.setPosition(0.f, 0.f);
+
+	if (!TreeTexture.loadFromFile("Assets/Environment/Trees.png"))
+	{
+		std::cout << "Failed to load tree sheet!" << std::endl;
+	}
+
+	FTree Tree;
+
+	Tree.Sprite.setTexture(TreeTexture);
+	Tree.Sprite.setTextureRect(TreeSize[5]);
+
+	sf::FloatRect Bounds = Tree.Sprite.getLocalBounds();
+
+	Tree.Sprite.setOrigin(Bounds.width / 2.f, Bounds.height);
+
+	Tree.Sprite.setPosition(500.f, 400.f);
+	Tree.Collision = sf::FloatRect(Tree.Sprite.getPosition().x - 30.f, Tree.Sprite.getPosition().y - 30.f, 60.f, 30.f);
+
+	Trees.push_back(Tree);
 }
 
 void FGameScreen::HandleInput(const sf::Event& event)
@@ -31,6 +66,7 @@ void FGameScreen::Update(float DeltaTime)
 	sf::Vector2f Direction(0.f, 0.f);
 
 	bool bMoving = false;
+
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -72,11 +108,43 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.y /= Length;
 	}
 
-	PlayerPosition.x += Direction.x * MoveSpeed * DeltaTime;
-	PlayerPosition.y += Direction.y * MoveSpeed * DeltaTime;
+	sf::Vector2f NewPosition = PlayerPosition;
 
-	PlayerSprite.setPosition(PlayerPosition);
+	NewPosition.x += Direction.x * MoveSpeed * DeltaTime;
+	NewPosition.y += Direction.y * MoveSpeed * DeltaTime;
 
+	sf::FloatRect NewPlayerBounds(NewPosition.x - 10.f, NewPosition.y - 10.f, 20.f, 20.f);
+
+	bool bBlocked = false;
+
+	for (const FTree& Tree : Trees)
+	{
+		if (NewPlayerBounds.intersects(Tree.Collision))
+		{
+			bBlocked = true;
+			break;
+		}
+	}
+
+	if (!bBlocked)
+	{
+		PlayerPosition = NewPosition;
+		PlayerSprite.setPosition(PlayerPosition);
+	}
+
+
+	if (bMusicFadingIn)
+	{
+		float NewVolume = GameMusic.getVolume() + MusicFadeSpeed * DeltaTime;
+
+		if (NewVolume >= 50.f)
+		{
+			NewVolume = 50.f;
+			bMusicFadingIn = false;
+		}
+
+		GameMusic.setVolume(NewVolume);
+	}
 	
 	if (bMoving)
 	{
@@ -100,7 +168,7 @@ void FGameScreen::Update(float DeltaTime)
 	}
 
 	PlayerSprite.setTextureRect(sf::IntRect((CurrentFrame + CurrentAnimationRow) * FrameWidth, SelectedCharacterRow * FrameHeight, FrameWidth, FrameHeight));
-	PlayerSprite.setOrigin(FrameWidth / 2.f, FrameHeight / 2.f);
+	PlayerSprite.setOrigin(PlayerBounds.width / 2.f, PlayerBounds.height / 2.f);
 	
 	Camera.setCenter(PlayerPosition);
 }
@@ -111,6 +179,13 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	Camera.setCenter(PlayerPosition);
 	
 	window.setView(Camera);
+
+	window.draw(Ground);
+
+	for (const FTree& Tree : Trees)
+	{
+		window.draw(Tree.Sprite);
+	}
 
 	window.draw(PlayerSprite);
 
