@@ -22,6 +22,7 @@ public:
 	bool IsTransitionFinished() const;
 	int GetSelectedOption() const;
 	bool IsOptionSelected();
+	bool bMusicFadingIn = false;
 
 private:
 	FTheme Theme;
@@ -36,7 +37,7 @@ private:
 	sf::Sound CursorMoveSound;
 	sf::Sound ConfirmSound;
 
-	bool bMusicFading = false;
+	bool bMusicFadingOut = false;
 	float MusicFadeSpeed = 40.f;
 
 	//Cursor 
