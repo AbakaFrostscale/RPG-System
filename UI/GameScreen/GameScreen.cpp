@@ -1,6 +1,7 @@
 #include "GameScreen.h"
 #include <iostream>
 #include <cmath>
+#include <random>
 
 FGameScreen::FGameScreen()
 {
@@ -32,28 +33,42 @@ FGameScreen::FGameScreen()
 
 	bMusicFadingIn = true;
 
-	Ground.setSize(sf::Vector2f(3000.f, 3000.f));
-	Ground.setFillColor(sf::Color(60, 140, 60));
-	Ground.setPosition(0.f, 0.f);
+	if (!GroundTexture.loadFromFile("Assets/Environment/SeamlessGroundTextures/grass-bright-1.png"))
+	{
+		std::cout << "Failed to load grass-bright-1.png" << std::endl;
+	}
+
+	GroundTexture.setRepeated(true);
+	GroundTexture.setSmooth(false);
+
+	Ground.setSize(sf::Vector2f(WorldWidth, WorldHeight));
+	Ground.setTexture(&GroundTexture);
+	Ground.setTextureRect(sf::IntRect(0, 0, WorldWidth, WorldHeight));
+
+	if (!PathTexture.loadFromFile("Assets/Environment/SeamlessGroundTextures/grass-red-1.png"))
+	{
+		std::cout << "Failed to load grass-red-1.png" << std::endl;
+	}
+
+	PathTexture.setRepeated(true);
+	PathTexture.setSmooth(false);
+
+	Path.setSize(sf::Vector2f(WorldWidth, 140));
+	Path.setPosition(0, WorldHeight / 2.0f - 70);
+	Path.setTexture(&PathTexture);
+	Path.setTextureRect(sf::IntRect(0, 0, WorldWidth, 40));
 
 	if (!TreeTexture.loadFromFile("Assets/Environment/Trees.png"))
 	{
 		std::cout << "Failed to load tree sheet!" << std::endl;
 	}
 
-	FTree Tree;
+	if (!RockTexture.loadFromFile("Assets/Environment/Rocks by Klyssilla_Tileset_32x32.png"))
+	{
+		std::cout << "Failed to load rocks sheet!" << std::endl;
+	}
 
-	Tree.Sprite.setTexture(TreeTexture);
-	Tree.Sprite.setTextureRect(TreeSize[5]);
-
-	sf::FloatRect Bounds = Tree.Sprite.getLocalBounds();
-
-	Tree.Sprite.setOrigin(Bounds.width / 2.f, Bounds.height);
-
-	Tree.Sprite.setPosition(500.f, 400.f);
-	Tree.Collision = sf::FloatRect(Tree.Sprite.getPosition().x - 30.f, Tree.Sprite.getPosition().y - 30.f, 60.f, 30.f);
-
-	Trees.push_back(Tree);
+	GenerateForest();
 }
 
 void FGameScreen::HandleInput(const sf::Event& event)
@@ -113,13 +128,23 @@ void FGameScreen::Update(float DeltaTime)
 	NewPosition.x += Direction.x * MoveSpeed * DeltaTime;
 	NewPosition.y += Direction.y * MoveSpeed * DeltaTime;
 
-	sf::FloatRect NewPlayerBounds(NewPosition.x - 10.f, NewPosition.y - 10.f, 20.f, 20.f);
-
 	bool bBlocked = false;
 
-	for (const FTree& Tree : Trees)
+	if (NewPosition.x <= 0 + 10.f)
+		bBlocked = true;
+	if (NewPosition.y <= 0 + 10.f)
+		bBlocked = true;
+	if (NewPosition.x >= WorldWidth - 10.f)
+		bBlocked = true;
+	if (NewPosition.y >= WorldHeight - 10.f)
+		bBlocked = true;
+
+	sf::FloatRect NewPlayerBounds(NewPosition.x - 10.f, NewPosition.y - 10.f, 20.f, 20.f);
+
+
+	for (const FForestObject& ForestObject : ForestObjects)
 	{
-		if (NewPlayerBounds.intersects(Tree.Collision))
+		if (NewPlayerBounds.intersects(ForestObject.Collision))
 		{
 			bBlocked = true;
 			break;
@@ -170,21 +195,52 @@ void FGameScreen::Update(float DeltaTime)
 	PlayerSprite.setTextureRect(sf::IntRect((CurrentFrame + CurrentAnimationRow) * FrameWidth, SelectedCharacterRow * FrameHeight, FrameWidth, FrameHeight));
 	PlayerSprite.setOrigin(PlayerBounds.width / 2.f, PlayerBounds.height / 2.f);
 	
-	Camera.setCenter(PlayerPosition);
+	float HalfWidth = ScreenWidth / 2.f;
+	float HalfHeight = ScreenHeight / 2.f;
+
+	if (CameraPos.x < HalfWidth)
+		CameraPos.x = HalfWidth;
+	if (CameraPos.y < HalfHeight)
+		CameraPos.y = HalfHeight;
+	if (CameraPos.x > WorldWidth - HalfWidth)
+		CameraPos.x = WorldWidth - HalfWidth;
+	if (CameraPos.y > WorldHeight - HalfHeight)
+		CameraPos.y = WorldHeight - HalfHeight;
+
+	Camera.setCenter(CameraPos);
 }
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
-	Camera.setSize(window.getSize().x, window.getSize().y);
-	Camera.setCenter(PlayerPosition);
+	Camera.setSize(ScreenWidth, ScreenHeight);
+	CameraPos = PlayerPosition;
+
+	float HalfWidth = ScreenWidth / 2.f;
+	float HalfHeight = ScreenHeight / 2.f;
+
+	if (CameraPos.x < HalfWidth)
+		CameraPos.x = HalfWidth;
+	if (CameraPos.y < HalfHeight)
+		CameraPos.y = HalfHeight;
+	if (CameraPos.x > WorldWidth - HalfWidth)
+		CameraPos.x = WorldWidth - HalfWidth;
+	if (CameraPos.y > WorldHeight - HalfHeight)
+		CameraPos.y = WorldHeight - HalfHeight;
+	
+	Camera.setCenter(CameraPos);
+
 	
 	window.setView(Camera);
 
 	window.draw(Ground);
+	window.draw(Path);
 
-	for (const FTree& Tree : Trees)
+	for (const FForestObject& Object : ForestObjects)
 	{
-		window.draw(Tree.Sprite);
+		if (!IsOnPath(Object.Sprite.getPosition()))
+		{
+			window.draw(Object.Sprite);
+		}
 	}
 
 	window.draw(PlayerSprite);
@@ -205,7 +261,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	CharacterInforText.setFont(Font);
 	CharacterInforText.setCharacterSize(32);
 	CharacterInforText.setFillColor(sf::Color::White);
-	CharacterInforText.setPosition(window.getSize().x / 30.f, window.getSize().y - 150.f);
+	CharacterInforText.setPosition(ScreenWidth / 2.f, ScreenHeight - 250.f);
 
 	window.draw(CharacterInforText);
 }
@@ -234,4 +290,75 @@ void FGameScreen::SetCharacter(const FCharacterData& Character)
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 {
 	SelectedCharacterRow = SelectedCharacter;
+}
+
+void FGameScreen::GenerateForest()
+{
+	ForestObjects.clear();
+
+	PlaceForestObjects(TreeTexture, TreeSize, 80, 120.f);
+	PlaceForestObjects(RockTexture, Rocks, 40, 70.f);
+	PlaceForestObjects(TreeTexture, Bushes, 150, 40.f);
+}
+
+void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance)
+{
+	std::mt19937 Random(12345);
+
+	std::uniform_int_distribution <int> VariantDist(0, Variants.size() - 1);
+	std::uniform_real_distribution<float> XDist(100.f, WorldWidth - 100.f);
+	std::uniform_real_distribution<float> YDist(100.f, WorldHeight - 100.f);
+
+	for (int i = 0; i < 200; i++)
+	{
+		int VariantType = VariantDist(Random);
+
+		float X = XDist(Random);
+		float Y = YDist(Random);
+
+		FForestObject ForestObject;
+
+		ForestObject.Sprite.setTexture(Texture);
+		ForestObject.Sprite.setTextureRect(Variants[VariantType]);
+
+		sf::FloatRect Bounds = ForestObject.Sprite.getLocalBounds();
+
+		ForestObject.Sprite.setOrigin(Bounds.width / 2.f, Bounds.height);
+
+		ForestObject.Sprite.setPosition(X, Y);
+
+		float TrunkWidth = Bounds.width * .3f;
+		float TrunkHeight = 16.f;
+
+		ForestObject.Collision = sf::FloatRect(X - TrunkWidth / 2.f, Y - TrunkHeight, TrunkWidth, TrunkHeight);
+
+		bool bTooClose = false;
+
+		for (const FForestObject& ExistingObject : ForestObjects)
+		{
+			float DX = ExistingObject.Sprite.getPosition().x - X;
+			float DY = ExistingObject.Sprite.getPosition().y - Y;
+
+			float Distance = std::sqrt(DX * DX + DY * DY);
+
+			if (Distance < MinDistance)
+			{
+				bTooClose = true;
+				break;
+			}
+		}
+
+		if (!bTooClose)
+		{
+			ForestObjects.push_back(ForestObject);
+		}
+	}
+}
+
+bool FGameScreen::IsOnPath(sf::Vector2f position)
+{
+	float PathTop = WorldHeight / 2.f - 70;
+	float PathBottom = WorldHeight / 2.f + 70;
+
+	return position.y >= PathTop && position.y <= PathBottom;
 }
