@@ -666,6 +666,11 @@ int main()
 			{
 				CreationScreen.HandleInput(event);
 			}
+
+			if (CurrentState == EGameState::EGSGame)
+			{
+				GameScreen.HandleInput(event);
+			}
 		}
 
 		if (CurrentState == EGameState::EGSStartMenu)

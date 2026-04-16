@@ -6,10 +6,26 @@
 
 #include "Character/CharacterStats.h"
 
+enum class EObjectType
+{
+	EOTTree,
+	EOTRock,
+	EOTBush
+};
+
+enum class ECollisionType
+{
+	ECTTree,
+	ECTRock,
+	ECTBush,
+	ECTNone
+};
+
 struct FForestObject
 {
 	sf::Sprite Sprite;
 	sf::FloatRect Collision;
+	EObjectType ObjectType;
 };
 
 class FGameScreen
@@ -32,7 +48,9 @@ private:
 	FCharacterData CurrentCharacter;
 
 	void GenerateForest();
-	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance);
+	void OverlappingObject();
+	void CollectItem(int ObjectToCollect);
+	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
 	bool IsOnPath(sf::Vector2f position);
 
 	sf::Font Font;
@@ -43,12 +61,14 @@ private:
 	sf::Texture PlayerTexture;
 	sf::Sprite PlayerSprite;
 	sf::FloatRect PlayerBounds;
+	sf::FloatRect PlayerReach;
 
 	sf::Vector2f PlayerPosition = sf::Vector2f(300.f, 200.f);
 
 	float MoveSpeed = 100.f;
 
 	int SelectedCharacterRow = 0;
+	int CurrentInteractableObjectIndex = 0;
 
 	int CurrentFrame = 0;
 	float AnimationTimer = 0.f;
@@ -88,6 +108,7 @@ private:
 	sf::Texture PathTexture;
 
 	std::vector<FForestObject> ForestObjects;
+	std::vector<sf::Sprite*> DrawList;
 
 	sf::RectangleShape Ground;
 	sf::RectangleShape Path;

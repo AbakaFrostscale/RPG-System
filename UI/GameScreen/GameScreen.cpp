@@ -73,7 +73,14 @@ FGameScreen::FGameScreen()
 
 void FGameScreen::HandleInput(const sf::Event& event)
 {
-
+	if (event.type == sf::Event::KeyPressed)
+	{
+		if (event.key.code == sf::Keyboard::E)
+		{
+			std::cout << "E Key Pressed" << std::endl;
+			CollectItem(CurrentInteractableObjectIndex);
+		}
+	}
 }
 
 void FGameScreen::Update(float DeltaTime)
@@ -81,7 +88,6 @@ void FGameScreen::Update(float DeltaTime)
 	sf::Vector2f Direction(0.f, 0.f);
 
 	bool bMoving = false;
-
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -100,7 +106,7 @@ void FGameScreen::Update(float DeltaTime)
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
+	{																  
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
 		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
@@ -141,6 +147,7 @@ void FGameScreen::Update(float DeltaTime)
 
 	sf::FloatRect NewPlayerBounds(NewPosition.x - 10.f, NewPosition.y - 10.f, 20.f, 20.f);
 
+	OverlappingObject();
 
 	for (const FForestObject& ForestObject : ForestObjects)
 	{
@@ -151,12 +158,12 @@ void FGameScreen::Update(float DeltaTime)
 		}
 	}
 
+
 	if (!bBlocked)
 	{
 		PlayerPosition = NewPosition;
 		PlayerSprite.setPosition(PlayerPosition);
 	}
-
 
 	if (bMusicFadingIn)
 	{
@@ -232,18 +239,33 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	
 	window.setView(Camera);
 
+
 	window.draw(Ground);
 	window.draw(Path);
 
-	for (const FForestObject& Object : ForestObjects)
+	for (FForestObject& Object : ForestObjects)
 	{
-		if (!IsOnPath(Object.Sprite.getPosition()))
+		if (Object.Sprite.getPosition().y < PlayerSprite.getPosition().y)
+		{
+				window.draw(Object.Sprite);
+		}
+	}
+
+	sf::RectangleShape debugBox;
+	debugBox.setPosition(PlayerReach.getPosition());
+	debugBox.setSize(PlayerReach.getSize());
+	debugBox.setFillColor(sf::Color(255, 0, 0, 100));
+
+	window.draw(PlayerSprite);
+	window.draw(debugBox);
+
+	for (FForestObject& Object : ForestObjects)
+	{
+		if (Object.Sprite.getPosition().y >= PlayerSprite.getPosition().y)
 		{
 			window.draw(Object.Sprite);
 		}
 	}
-
-	window.draw(PlayerSprite);
 
 	window.setView(window.getDefaultView());
 
@@ -296,25 +318,127 @@ void FGameScreen::GenerateForest()
 {
 	ForestObjects.clear();
 
-	PlaceForestObjects(TreeTexture, TreeSize, 80, 120.f);
-	PlaceForestObjects(RockTexture, Rocks, 40, 70.f);
-	PlaceForestObjects(TreeTexture, Bushes, 150, 40.f);
+	PlaceForestObjects(TreeTexture, TreeSize, 250, 120.f, 0.3f, 150.f, ECollisionType::ECTTree);
+	PlaceForestObjects(RockTexture, Rocks, 90, 70.f, 0.7f, 150.f, ECollisionType::ECTRock);
+	PlaceForestObjects(TreeTexture, Bushes, 300, 40.f, 0.5f, 50.f, ECollisionType::ECTBush);
+
+	std::sort(ForestObjects.begin(), ForestObjects.end(), [](FForestObject A, FForestObject B)
+		{
+			return A.Sprite.getPosition().y < B.Sprite.getPosition().y;
+		});
 }
 
-void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance)
+void FGameScreen::OverlappingObject()
+{
+	PlayerReach = sf::FloatRect(PlayerPosition.x - (PlayerBounds.width / 2.f), PlayerPosition.y - (PlayerBounds.height), PlayerBounds.width + 20.f, PlayerBounds.height + 20.f);
+	int ClosestObjectIndex = 0;
+
+	FForestObject* ClosestObject = nullptr;
+
+	for (size_t i = 0; i < ForestObjects.size(); i++)
+	{
+		if (PlayerReach.intersects(ForestObjects[i].Collision))
+		{
+			if (!ClosestObject)
+			{
+				ClosestObject = &ForestObjects[i];
+				ClosestObjectIndex = i;
+															  
+				continue;
+			}
+
+			float DistanceToClosestObject = (PlayerPosition.x - ClosestObject->Sprite.getPosition().x) * (PlayerPosition.x - ClosestObject->Sprite.getPosition().x) +
+												(PlayerPosition.y - ClosestObject->Sprite.getPosition().y) * (PlayerPosition.y - ClosestObject->Sprite.getPosition().y);
+			float DistanceToCurrentObject = (PlayerPosition.x - ForestObjects[i].Sprite.getPosition().x) * (PlayerPosition.x - ForestObjects[i].Sprite.getPosition().x) +
+												(PlayerPosition.y - ForestObjects[i].Sprite.getPosition().y) * (PlayerPosition.y - ForestObjects[i].Sprite.getPosition().y);
+
+			if (DistanceToCurrentObject < DistanceToClosestObject)
+			{
+				ClosestObject = &ForestObjects[i];
+				ClosestObjectIndex = i;
+			}
+		}
+	}
+	if (ClosestObject == nullptr)
+		return;
+		
+	switch (ClosestObject->ObjectType)
+	{
+	case EObjectType::EOTTree:
+		CurrentInteractableObjectIndex = ClosestObjectIndex;
+		break;
+	case EObjectType::EOTRock:
+		CurrentInteractableObjectIndex = ClosestObjectIndex;
+		break;
+	case EObjectType::EOTBush:
+		CurrentInteractableObjectIndex = ClosestObjectIndex;
+		break;
+	default:
+		break;
+	}
+}
+
+void FGameScreen::CollectItem(int ObjectToCollect)
+{
+	if (ObjectToCollect <= 0 && ObjectToCollect >= ForestObjects.size() - 1)
+		return;
+
+	switch (ForestObjects[ObjectToCollect].ObjectType)
+	{
+	case EObjectType::EOTTree:
+		std::cout << "You collected Wood from Tree " << ObjectToCollect << std::endl;
+		break;
+	case EObjectType::EOTRock:
+		std::cout << "You collected Ore from a Rock " << ObjectToCollect << std::endl;
+		break;
+	case EObjectType::EOTBush:
+		std::cout << "You collected Leaves from a Bush " << ObjectToCollect << std::endl;
+		break;
+	default:
+		break;
+	}
+
+	ForestObjects.erase(ForestObjects.begin() + ObjectToCollect);
+	ObjectToCollect = -1;
+}
+
+void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType)
 {
 	std::mt19937 Random(12345);
 
 	std::uniform_int_distribution <int> VariantDist(0, Variants.size() - 1);
 	std::uniform_real_distribution<float> XDist(100.f, WorldWidth - 100.f);
 	std::uniform_real_distribution<float> YDist(100.f, WorldHeight - 100.f);
+	std::uniform_real_distribution<float> ChanceDist(0.f, 1.f);
 
-	for (int i = 0; i < 200; i++)
+	sf::Vector2f ClusterCentre;
+	bool bHasClusterCentre = false;
+
+	for (int i = 0; i < Count; i++)
 	{
 		int VariantType = VariantDist(Random);
 
-		float X = XDist(Random);
-		float Y = YDist(Random);
+		float X;
+		float Y;
+
+
+		if (bHasClusterCentre && ChanceDist(Random) < ClusterChance)
+		{
+			//Spawn near existing cluster
+			std::uniform_real_distribution<float> OffsetDist(-ClusterRadius, ClusterRadius);
+
+			X = ClusterCentre.x + OffsetDist(Random);
+			Y = ClusterCentre.y + OffsetDist(Random);
+		}
+		else
+		{
+			//Start a new cluster
+			X = XDist(Random);
+			Y = YDist(Random);
+
+			ClusterCentre = { X, Y };
+			bHasClusterCentre = true;
+		}
 
 		FForestObject ForestObject;
 
@@ -327,13 +451,51 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 
 		ForestObject.Sprite.setPosition(X, Y);
 
-		float TrunkWidth = Bounds.width * .3f;
-		float TrunkHeight = 16.f;
+		sf::FloatRect CollisionBounds = ForestObject.Sprite.getGlobalBounds();
 
-		ForestObject.Collision = sf::FloatRect(X - TrunkWidth / 2.f, Y - TrunkHeight, TrunkWidth, TrunkHeight);
+		float Width = 0.f;
+		float Height = 0.f;
+
+		float CollisionX = 0.f;
+		float CollisionY = 0.f;
+
+		switch (CollisionType)
+		{
+		case ECollisionType::ECTTree:
+			Width = CollisionBounds.width * 0.5f;
+			Height = CollisionBounds.height * 0.3f;
+
+			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
+			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
+
+			ForestObject.ObjectType = EObjectType::EOTTree;
+			break;
+		case ECollisionType::ECTRock:
+			Width = CollisionBounds.width * 0.8f;
+			Height = CollisionBounds.height * 0.8f;
+
+			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
+			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
+
+			ForestObject.ObjectType = EObjectType::EOTRock;
+			break;
+		case ECollisionType::ECTBush:
+			Width = CollisionBounds.width * 0.9f;
+			Height = CollisionBounds.height * 0.8f;
+
+			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
+			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
+
+			ForestObject.ObjectType = EObjectType::EOTBush;
+			break;
+		default:
+			break;
+		}
+
+		ForestObject.Collision = sf::FloatRect(CollisionX, CollisionY, Width, Height);
 
 		bool bTooClose = false;
-
+																									
 		for (const FForestObject& ExistingObject : ForestObjects)
 		{
 			float DX = ExistingObject.Sprite.getPosition().x - X;
@@ -348,12 +510,14 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 			}
 		}
 
-		if (!bTooClose)
+		if (!bTooClose && !IsOnPath(ForestObject.Sprite.getPosition()))
 		{
 			ForestObjects.push_back(ForestObject);
 		}
 	}
 }
+
+
 
 bool FGameScreen::IsOnPath(sf::Vector2f position)
 {
