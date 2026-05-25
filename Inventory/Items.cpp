@@ -57,7 +57,7 @@ FItem::FItem()
 		0
 	};
 
-  AvailableArmour.push_back(CopperChestPlate);
+    AvailableArmour.push_back(CopperChestPlate);
 	AvailableArmour.push_back(IronChestPlate);
 	AvailableArmour.push_back(SpiderSilkArmour);
 }

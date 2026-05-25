@@ -7,7 +7,7 @@ FCharacterCreator Creator;
 
 FCharacterCreationScreen::FCharacterCreationScreen()
 {
-	Loader = std::make_unique<FLoadExternalData>();
+	Loader = std::make_shared<FLoadExternalData>();
 
 	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
 	{

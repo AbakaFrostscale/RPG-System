@@ -84,46 +84,6 @@ static EDifficulty IntToEDifficulty(int Difficuty)
 	}
 }
 
-/*static void PrintAvailableRaces()
-{
-	int Index = 1;
-
-	for (const FRaceData& Race : Creator.GetLoader()->GetAvailableRaces())
-	{
-		std::cout << Index << " : Race: " << Race.RaceName << std::endl;
-
-		std::cout << "    Str: " << Race.BaseStat.at(EAbility::EAStr) << std::endl;
-		std::cout << "    Dex: " << Race.BaseStat.at(EAbility::EADex) << std::endl;
-		std::cout << "    Con: " << Race.BaseStat.at(EAbility::EACon) << std::endl;
-		std::cout << "    Int: " << Race.BaseStat.at(EAbility::EAInt) << std::endl;
-		std::cout << "    Wis: " << Race.BaseStat.at(EAbility::EAWis) << std::endl;
-		std::cout << "    Cha: " << Race.BaseStat.at(EAbility::EACha) << std::endl;
-
-		++Index;
-	}
-	std::cout << std::endl;
-}*/
-
-/*static void PrintAvailableClasses()
-{
-	int Index = 1;
-
-	for (const FClassData& Class : Creator.GetLoader()->GetAvailableClasses())
-	{
-		std::cout << Index << " : Class: " << Class.ClassName << std::endl;
-
-		std::cout << "    Str: " << Class.StatModifier.at(EAbility::EAStr) << std::endl;
-		std::cout << "    Dex: " << Class.StatModifier.at(EAbility::EADex) << std::endl;
-		std::cout << "    Con: " << Class.StatModifier.at(EAbility::EACon) << std::endl;
-		std::cout << "    Int: " << Class.StatModifier.at(EAbility::EAInt) << std::endl;
-		std::cout << "    Wis: " << Class.StatModifier.at(EAbility::EAWis) << std::endl;
-		std::cout << "    Cha: " << Class.StatModifier.at(EAbility::EACha) << std::endl;
-
-		++Index;
-	}
-	std::cout << std::endl;
-}*/
-
 static void PrintAvailableMaterials(int Type)
 {
 	int Index = 1;
@@ -354,74 +314,6 @@ static EMode SelectMode(int Mode)
 
 /*int main()
 {
-	bIsFinalised = false;
-
-	std::string CharName = "Toby";
-	int RaceIndex = 0;
-	int ClassIndex = 0;
-
-	std::string Skill = "Str";
-	int SkillIndex = 0;
-
-	int Amount = 0;
-
-	EMode Mode = EMode::EMIncrease;
-	int ModeIndex;
-
-	int ActionIndex = 0;
-
-	std::cout << "Please choose a name for your characeter : ";
-	std::cin >> CharName;
-
-	std::cout << "Next select a race for your character (1-" << Creator.GetLoader()->GetAvailableRaces().size() << ")" << std::endl;
-	PrintAvailableRaces();
-	std::cin >> RaceIndex;
-
-	std::cout << "Next you must choose a class for your character (1-" << Creator.GetLoader()->GetAvailableClasses().size() << ")" << std::endl;
-	PrintAvailableClasses();
-	std::cin >> ClassIndex;
-
-
-	Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), CharName, RaceIndex - 1, ClassIndex - 1);
-
-	while (!bIsFinalised)
-	{
-		std::cout << "Please choose an ability to modify (1-6)" << std::endl;
-		std::cout << "1: Strength" << std::endl;
-		std::cout << "2: Dexterity" << std::endl;
-		std::cout << "3: Constitution" << std::endl;
-		std::cout << "4: Intelligence" << std::endl;
-		std::cout << "5: Wisdom" << std::endl;
-		std::cout << "6: Charisma" << std::endl;
-		std::cin >> SkillIndex;
-		Skill = SelectAbility(SkillIndex);
-
-		std::cout << "Would you like to Increase(1) or Decrease(2) the ability?" << std::endl;
-		std::cin >> ModeIndex;
-		Mode = SelectMode(ModeIndex);
-
-		std::cout << "Select by how much no more than: " << Creator.GetAttributePoints() << std::endl;
-		std::cin >> Amount;
-
-		Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(), Skill, Amount, Mode);
-
-
-		if (Creator.GetAttributePoints() <= 0)
-		{
-			bIsFinalised = true;
-		}
-	}
-
-	if (bIsFinalised)
-	{
-		Creator.SetHPandMP(CurrentCharacter.GetCharacterReference());
-		PrintCharacter(CurrentCharacter.GetCharacter());
-	}
-	else
-	{
-		std::cerr << "Somtehing went wrong with Character Creation" << std::endl << "Please restart the game";
-	}
-
 	while (CurrentCharacter.GetCharacter().IsAlive())
 	{
 		std::cout << "What would you like to do?" << std::endl;

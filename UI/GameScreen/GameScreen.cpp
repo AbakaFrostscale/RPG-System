@@ -2,9 +2,13 @@
 #include <iostream>
 #include <cmath>
 #include <random>
+#include <Core/LoadExternalData.h>
+#include <Inventory/Inventory.h>
 
 FGameScreen::FGameScreen()
 {
+	Loader = std::make_unique<FLoadExternalData>();
+
 	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
 	{
 		std::cout << "Failed to load font!" << std::endl;;
@@ -68,6 +72,8 @@ FGameScreen::FGameScreen()
 		std::cout << "Failed to load rocks sheet!" << std::endl;
 	}
 
+	Random.RandomGenerator = std::mt19937(Random.rd());
+
 	GenerateForest();
 }
 
@@ -93,6 +99,7 @@ void FGameScreen::Update(float DeltaTime)
 	{
 		Direction.y -= 1.f;
 		CurrentAnimationRow = UpRow;
+		FacingDirection = EFacingDirection::EFDUp;
 		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
 		bMoving = true;
 	}
@@ -101,14 +108,16 @@ void FGameScreen::Update(float DeltaTime)
 	{
 		Direction.y += 1.f;
 		CurrentAnimationRow = DownRow;
+		FacingDirection = EFacingDirection::EFDDown;
 		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
 		bMoving = true;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{																  
+	{
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
+		FacingDirection = EFacingDirection::EFDLeft;
 		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
 		bMoving = true;
 	}
@@ -117,6 +126,7 @@ void FGameScreen::Update(float DeltaTime)
 	{
 		Direction.x += 1.f;
 		CurrentAnimationRow = LeftRow;
+		FacingDirection = EFacingDirection::EFDRight;
 		PlayerSprite.setScale(sf::Vector2f(-2.f, 2.f));
 		bMoving = true;
 	}
@@ -303,6 +313,8 @@ void FGameScreen::SetCharacter(const FCharacterData& Character)
 {
 	CurrentCharacter = Character;
 
+	CharacterSheet.SetCharacter(Character);
+
 	CharacterInforText.setString
 	(ToUpper("Name: " + CurrentCharacter.CharName) +
 		ToUpper("\nRace: " + CurrentCharacter.CharRace.RaceName) +
@@ -330,7 +342,32 @@ void FGameScreen::GenerateForest()
 
 void FGameScreen::OverlappingObject()
 {
-	PlayerReach = sf::FloatRect(PlayerPosition.x - (PlayerBounds.width / 2.f), PlayerPosition.y - (PlayerBounds.height), PlayerBounds.width + 20.f, PlayerBounds.height + 20.f);
+	switch (FacingDirection)
+	{
+	case EFacingDirection::EFDUp:
+		PlayerReach = sf::FloatRect(PlayerPosition.x - PlayerBounds.width, PlayerPosition.y - PlayerBounds.height,
+			PlayerBounds.width + 20.f, 
+			PlayerBounds.height + 30.f);
+		break;
+	case EFacingDirection::EFDDown:
+		PlayerReach = sf::FloatRect(PlayerPosition.x - PlayerBounds.width, PlayerPosition.y + PlayerBounds.height,
+			PlayerBounds.width + 20.f,
+			PlayerBounds.height + 10.f);
+		break;
+	case EFacingDirection::EFDLeft:
+		PlayerReach = sf::FloatRect(PlayerPosition.x - PlayerBounds.width, PlayerPosition.y - PlayerBounds.height,
+			PlayerBounds.width + 30.f,
+			PlayerBounds.height + 20.f);
+		break;
+	case EFacingDirection::EFDRight:
+		PlayerReach = sf::FloatRect(PlayerPosition.x + PlayerBounds.width, PlayerPosition.y - PlayerBounds.height,
+			PlayerBounds.width + 10.f,
+			PlayerBounds.height + 20.f);
+		break;
+	default:
+		break;
+	}
+
 	int ClosestObjectIndex = 0;
 
 	FForestObject* ClosestObject = nullptr;
@@ -380,26 +417,83 @@ void FGameScreen::OverlappingObject()
 
 void FGameScreen::CollectItem(int ObjectToCollect)
 {
-	if (ObjectToCollect <= 0 && ObjectToCollect >= ForestObjects.size() - 1)
+	if (ObjectToCollect < 0 || ObjectToCollect >= ForestObjects.size())
 		return;
 
 	switch (ForestObjects[ObjectToCollect].ObjectType)
 	{
 	case EObjectType::EOTTree:
-		std::cout << "You collected Wood from Tree " << ObjectToCollect << std::endl;
-		break;
+		{
+			std::cout << "You collected Wood from Tree " << ObjectToCollect << std::endl;
+
+
+			// Add random Wood to inventory
+			std::uniform_int_distribution<int> GatheredDist(0, 3);
+			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
+
+			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
+			CharacterSheet.GatherMaterials(&Material);
+
+			// Notify how much of item was added to inventory
+			std::cout << "You collected " << Material.MaterialName << std::endl;
+
+			std::cout << "Materials:" << std::endl;
+			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			{
+				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
+			}
+
+			break;
+		}
 	case EObjectType::EOTRock:
-		std::cout << "You collected Ore from a Rock " << ObjectToCollect << std::endl;
-		break;
+		{
+			std::cout << "You collected Ore from a Rock " << ObjectToCollect << std::endl;
+
+			// Add random Ore to inventory
+			std::uniform_int_distribution<int> GatheredDist(4, 7);
+			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
+
+			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
+			CharacterSheet.GatherMaterials(&Material);
+
+			// Notify how much of item was added to inventory
+			std::cout << "You collected " << Material.MaterialName << std::endl;
+
+			std::cout << "Materials:" << std::endl;
+			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			{
+				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
+			}
+			break;
+		}
 	case EObjectType::EOTBush:
-		std::cout << "You collected Leaves from a Bush " << ObjectToCollect << std::endl;
-		break;
+		{
+			std::cout << "You collected Leaves from a Bush " << ObjectToCollect << std::endl;
+
+			// Add random Cloth to inventory	   
+
+			std::uniform_int_distribution<int> GatheredDist(9, 12);
+			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
+
+			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
+			CharacterSheet.GatherMaterials(&Material);
+
+			// Notify how much of item was added to inventory
+			std::cout << "You collected " << Material.MaterialName << std::endl;
+
+			std::cout << "Materials:" << std::endl;
+			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			{
+				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
+			}
+			break;
+		}
 	default:
 		break;
 	}
 
 	ForestObjects.erase(ForestObjects.begin() + ObjectToCollect);
-	ObjectToCollect = -1;
+	CurrentInteractableObjectIndex = -1;
 }
 
 void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType)
@@ -517,8 +611,6 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 	}
 }
 
-
-
 bool FGameScreen::IsOnPath(sf::Vector2f position)
 {
 	float PathTop = WorldHeight / 2.f - 70;
@@ -526,3 +618,4 @@ bool FGameScreen::IsOnPath(sf::Vector2f position)
 
 	return position.y >= PathTop && position.y <= PathBottom;
 }
+
