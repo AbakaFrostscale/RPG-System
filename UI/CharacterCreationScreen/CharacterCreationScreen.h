@@ -103,5 +103,5 @@ private:
 	sf::Font Font;
 	std::string Name;
 
-	std::unique_ptr<FLoadExternalData> Loader;
+	std::shared_ptr<FLoadExternalData> Loader;
 };

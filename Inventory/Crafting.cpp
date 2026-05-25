@@ -10,7 +10,6 @@
 
 FCrafting::FCrafting()
 {
-
 	Item = std::make_unique<FItem>();
 }
 

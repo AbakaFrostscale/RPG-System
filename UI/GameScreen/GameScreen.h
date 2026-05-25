@@ -1,16 +1,28 @@
 #pragma once
-#include "Core/Types.h"
+#include "Core/Types.h"	  
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
 #include "Character/CharacterStats.h"
+#include "Character/Character.h"
+#include "Core/Random.h"
+
+class FLoadExternalData;
 
 enum class EObjectType
 {
 	EOTTree,
 	EOTRock,
 	EOTBush
+};
+
+enum class EFacingDirection
+{
+	EFDUp,
+	EFDDown,
+	EFDLeft,
+	EFDRight
 };
 
 enum class ECollisionType
@@ -25,7 +37,7 @@ struct FForestObject
 {
 	sf::Sprite Sprite;
 	sf::FloatRect Collision;
-	EObjectType ObjectType;
+	EObjectType ObjectType = EObjectType::EOTTree;
 };
 
 class FGameScreen
@@ -39,13 +51,17 @@ public:
 
 	std::string ToUpper(const std::string& input);
 
-	void SetCharacter(const FCharacterData& Character);
 	void SetSelectedCharacter(const int SelectedCharacter);
+	void SetCharacter(const FCharacterData& Character);
+
+	const FCharacter& GetCharacter() { return CharacterSheet; }
 
 private:
 	FTheme Theme;
 
 	FCharacterData CurrentCharacter;
+	FCharacter CharacterSheet;
+	FRandom Random;
 
 	void GenerateForest();
 	void OverlappingObject();
@@ -69,6 +85,8 @@ private:
 
 	int SelectedCharacterRow = 0;
 	int CurrentInteractableObjectIndex = 0;
+
+	EFacingDirection FacingDirection = EFacingDirection::EFDDown;
 
 	int CurrentFrame = 0;
 	float AnimationTimer = 0.f;
@@ -202,4 +220,6 @@ private:
 		sf::IntRect{64, 64, 32, 32}, //Rock 10
 		sf::IntRect{96, 64, 64, 32} //Rock 11
 	};
+
+	std::unique_ptr<FLoadExternalData> Loader;
 };
