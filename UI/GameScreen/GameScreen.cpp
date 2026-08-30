@@ -72,19 +72,88 @@ FGameScreen::FGameScreen()
 		std::cout << "Failed to load rocks sheet!" << std::endl;
 	}
 
+
 	Random.RandomGenerator = std::mt19937(Random.rd());
 
 	GenerateForest();
+
+	CurrentGameMode = EGameMode::EGMUnpaused;
+
+	if (!CursorTexture.loadFromFile("Assets/Sprites/Cursors/03.png"))
+	{
+		std::cout << "Cursor failed to load!" << std::endl;
+	}
+	CursorSprite.setTexture(CursorTexture);
+	CursorSprite.setScale(.8f, .8f);
+	
+	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
+	{
+		std::cout << "Select sound failed to load!" << std::endl;
+	}
+	
+	CursorMoveSound.setBuffer(CursorMoveBuffer);
+	CursorMoveSound.setVolume(50.f);
+
+	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Accept.mp3"))
+	{
+		std::cout << "Confirm sound failed to load!" << std::endl;
+	}
+
+	ConfirmSound.setBuffer(ConfirmBuffer);
+	ConfirmSound.setVolume(50.f);
 }
 
 void FGameScreen::HandleInput(const sf::Event& event)
 {
 	if (event.type == sf::Event::KeyPressed)
 	{
+		if (CurrentGameMode == EGameMode::EGMPaused)
+		{
+			if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
+			{
+				SelectedIndex--;
+				CursorMoveSound.play();
+				if (SelectedIndex < 0)
+				{
+					SelectedIndex = MenuText.size() - 1;
+				}
+			}
+
+			if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
+			{
+				SelectedIndex++;
+				CursorMoveSound.play();
+				if (SelectedIndex >= MenuText.size())
+				{
+					SelectedIndex = 0;
+				}
+			}
+
+			if (event.key.code == sf::Keyboard::Enter)
+			{
+				ConfirmSound.play();
+			}
+		}
+
+
 		if (event.key.code == sf::Keyboard::E)
 		{
 			std::cout << "E Key Pressed" << std::endl;
 			CollectItem(CurrentInteractableObjectIndex);
+		}
+
+		if (event.key.code == sf::Keyboard::Escape)
+		{
+			if (CurrentGameMode == EGameMode::EGMUnpaused)
+			{
+				std::cout << "Game Paused" << std::endl;
+				CurrentGameMode = EGameMode::EGMPaused;
+			}
+			else if (CurrentGameMode == EGameMode::EGMPaused)
+			{
+				std::cout << "Game Unpaused" << std::endl;
+				CurrentGameMode = EGameMode::EGMUnpaused;
+			}
 		}
 	}
 }
@@ -94,6 +163,12 @@ void FGameScreen::Update(float DeltaTime)
 	sf::Vector2f Direction(0.f, 0.f);
 
 	bool bMoving = false;
+
+	if (CurrentGameMode == EGameMode::EGMPaused) 
+	{
+		CursorTimer += DeltaTime;
+		CursorOffset = std::sin(CursorTimer) * 2.f;
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -279,26 +354,61 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 
 	window.setView(window.getDefaultView());
 
-	TitleText.setFont(Font);
-	TitleText.setString(ToUpper("Game Screen"));
-	TitleText.setCharacterSize(60);
-	TitleText.setFillColor(Theme.HighlightColor);
-
-	sf::FloatRect TitleBounds = TitleText.getLocalBounds();
-	TitleText.setOrigin(TitleBounds.left + TitleBounds.width / 2.f, TitleBounds.top + TitleBounds.height / 2.f);
-	TitleText.setPosition(window.getSize().x / 2.f, 80.f);
-
-	window.draw(TitleText);
-
 	CharacterInforText.setFont(Font);
 	CharacterInforText.setCharacterSize(32);
 	CharacterInforText.setFillColor(sf::Color::White);
 	CharacterInforText.setPosition(ScreenWidth / 2.f, ScreenHeight - 250.f);
 
 	window.draw(CharacterInforText);
+
+	sf::Color ScreenBackground = sf::Color(30, 5, 5, 255/2);
+
+	PauseBackground.setSize(window.getView().getSize());
+	PauseBackground.setOrigin(PauseBackground.getSize() / 2.f);
+	PauseBackground.setPosition(window.getView().getCenter());
+	PauseBackground.setFillColor(ScreenBackground);
+
+	PauseMenu.setSize(sf::Vector2f(200.f, 400.f));
+	PauseMenu.setOrigin(PauseMenu.getSize() / 2.f);
+	PauseMenu.setPosition(window.getView().getCenter());
+	PauseMenu.setOutlineColor(Theme.PrimaryColor);
+	PauseMenu.setOutlineThickness(2.f);
+	PauseMenu.setFillColor(Theme.BackgroundColor);
+
+
+	if (CurrentGameMode == EGameMode::EGMPaused)
+	{
+		window.draw(PauseBackground);
+		window.draw(PauseMenu);
+		
+		sf::Text MenuOptionText;
+		float StartY = PauseMenu.getPosition().y - 150.f;
+
+		for (int i = 0; i < MenuText.size(); i++)
+		{
+			MenuOptionText.setFont(Font);
+			MenuOptionText.setFillColor(Theme.PrimaryColor);
+			MenuOptionText.setString(MenuText[i]);
+			MenuOptionText.setCharacterSize(40);
+
+			sf::FloatRect TextBounds = MenuOptionText.getLocalBounds();
+			MenuOptionText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+			
+			MenuOptionText.setPosition(PauseMenu.getPosition().x, StartY + i * 60.f);
+			
+			if (i == SelectedIndex)
+			{
+				CursorSprite.setPosition(MenuOptionText.getPosition().x - TextBounds.width / 2.f - 40.f, MenuOptionText.getPosition().y - TextBounds.height / 2.f + CursorOffset);
+
+				MenuOptionText.setFillColor(sf::Color(Theme.HighlightColor));
+
+				window.draw(CursorSprite);
+			}
+			
+			window.draw(MenuOptionText);
+		}
+	}
 }
-
-
 
 std::string FGameScreen::ToUpper(const std::string& input)
 {
@@ -472,7 +582,7 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 
 			// Add random Cloth to inventory	   
 
-			std::uniform_int_distribution<int> GatheredDist(9, 12);
+			std::uniform_int_distribution<int> GatheredDist(8, 11);
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
 
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
@@ -617,5 +727,20 @@ bool FGameScreen::IsOnPath(sf::Vector2f position)
 	float PathBottom = WorldHeight / 2.f + 70;
 
 	return position.y >= PathTop && position.y <= PathBottom;
+}
+
+bool FGameScreen::IsOptionSelected()
+{
+	if (bOptionChosen)
+	{
+		bOptionChosen = false;
+		return true;
+	}
+	return false;
+}
+
+int FGameScreen::GetSelectedOption()
+{
+	return SelectedIndex;
 }
 

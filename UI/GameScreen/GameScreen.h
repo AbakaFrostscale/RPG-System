@@ -10,6 +10,12 @@
 
 class FLoadExternalData;
 
+enum class EGameMode
+{
+	EGMPaused,
+	EGMUnpaused
+};
+
 enum class EObjectType
 {
 	EOTTree,
@@ -63,6 +69,8 @@ private:
 	FCharacter CharacterSheet;
 	FRandom Random;
 
+	EGameMode CurrentGameMode;
+
 	void GenerateForest();
 	void OverlappingObject();
 	void CollectItem(int ObjectToCollect);
@@ -70,8 +78,38 @@ private:
 	bool IsOnPath(sf::Vector2f position);
 
 	sf::Font Font;
-	sf::Text TitleText;
 	sf::Text CharacterInforText;
+
+	//pausemenu
+	sf::SoundBuffer CursorMoveBuffer;
+	sf::SoundBuffer ConfirmBuffer;
+
+	sf::Sound CursorMoveSound;
+	sf::Sound ConfirmSound;
+
+	sf::RectangleShape PauseBackground;
+	sf::RectangleShape PauseMenu;
+
+	bool IsOptionSelected();
+	int GetSelectedOption();
+	
+	std::vector<std::string> MenuText
+	{
+		"RESUME",
+		"INVENTORY",
+		"CRAFTING",
+		"SAVE",
+		"OPTIONS",
+		"EXIT"
+	};
+
+	int SelectedIndex = 0;
+	bool bOptionChosen = false;
+
+	sf::Texture CursorTexture;
+	sf::Sprite CursorSprite;
+	float CursorOffset = 0.f;
+	float CursorTimer = 0.f;
 
 	//player
 	sf::Texture PlayerTexture;
