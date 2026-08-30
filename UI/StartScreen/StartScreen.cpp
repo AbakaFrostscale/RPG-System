@@ -152,7 +152,6 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 
 		if (i == SelectedIndex)
 		{
-
 			CursorSprite.setPosition(text.getPosition().x - textBounds.width / 2.f - 40.f, text.getPosition().y - textBounds.height / 2.f + CursorOffset);
 
 			text.setFillColor(sf::Color(Theme.HighlightColor));
