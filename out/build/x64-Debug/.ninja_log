@@ -10,5 +10,6 @@
 15	2091	8099131905245851	CMakeFiles/RPGGameSystem.dir/Core/LoadExternalData.cpp.obj	9805f8ee763f134c
 32	2105	8099131905415235	CMakeFiles/RPGGameSystem.dir/UI/CharacterCreationScreen/CharacterCreationScreen.cpp.obj	5b8e9f07289b114f
 35	2170	8099131905445244	CMakeFiles/RPGGameSystem.dir/UI/GameScreen/GameScreen.cpp.obj	b985bb9a657ee65a
-2170	2550	8099131926780227	RPGGameSystem.exe	f8cdf3b4bdb232d2
 13	4141	8099132511645850	RPGGameSystem.exe	8c8321a185383927
+11	1866	8099149922754643	CMakeFiles/RPGGameSystem.dir/UI/StartScreen/StartScreen.cpp.obj	bca7ac98c6e1e6d0
+1866	2591	8099149941304632	RPGGameSystem.exe	a71f55eb603e8a2e

@@ -1,7 +1,0 @@
-<Solution>
-  <Configurations>
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
-  <Project Path="RPG_GameUI.vcxproj" Id="24049261-5947-4e8b-a102-8a8291b8e0e6" />
-</Solution>
