@@ -130,7 +130,7 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 	title.setCharacterSize(100);
 	sf::FloatRect titleBounds = title.getLocalBounds();
 	title.setOrigin(titleBounds.left + titleBounds.width / 2.f, titleBounds.top + titleBounds.height / 2.f);
-	title.setPosition(window.getSize().x / 2.f, 100.f);
+	title.setPosition(window.getView().getCenter().x, 100.f);
 
 	window.draw(title);
 
@@ -148,7 +148,7 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 		sf::FloatRect textBounds = text.getLocalBounds();
 		text.setOrigin(textBounds.left + textBounds.width / 2.f, textBounds.top + textBounds.height / 2.f);
 
-		text.setPosition(window.getSize().x / 2.f, startY + i * 60.f);
+		text.setPosition(window.getView().getCenter().x, startY + i * 60.f);
 
 		if (i == SelectedIndex)
 		{

@@ -1,0 +1,26 @@
+[
+  {
+    "SpellName": "Fireball",
+    "Damage": 30,
+    "MPCost": 10,
+    "AllowedClasses": [ "Wizard", "Sorcerer" ]
+  },
+  {
+    "SpellName": "Cure Wounds",
+    "Damage": -10,
+    "MPCost": 5,
+    "AllowedClasses": [ "Cleric", "Druid", "Paladin" ]
+  },
+  {
+    "SpellName": "Ray of Frost",
+    "Damage": 8,
+    "MPCost": 1,
+    "AllowedClasses": [ "Wizard", "Sorcerer", "Bard" ]
+  },
+  {
+    "SpellName": "Call Lightning",
+    "Damage": 20,
+    "MPCost": 10,
+    "AllowedClasses": [ "Druid", "Bard" ]
+  }
+]
