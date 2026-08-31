@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+
+
 # User-specific files
 *.rsuser
 *.suo
@@ -399,3 +401,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Keep SFML runtime DLLs
+!Libraries/SFML-2.6.2/bin/
+!Libraries/SFML-2.6.2/bin/**
+
+# CMake build directory
+out/
