@@ -9,13 +9,7 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "variables": [
-        {
-          "name": "SFML_ROOT",
-          "value": "D:\\RPG-System\\Libraries\\SFML-2.6.2"
-        }
-      ]
+      "ctestCommandArgs": ""
     }
   ]
 }

@@ -22,7 +22,7 @@ set(SOURCES
 add_executable(RPGGameSystem ${SOURCES}
 )
 
-set(SFML_ROOT "" CACHE PATH "Path to SFML 2.6.2")
+set(SFML_ROOT "${CMAKE_SOURCE_DIR}/Libraries/SFML-2.6.2")
 set(SFML_DIR "${SFML_ROOT}/lib/cmake")
 
 find_package(SFML 2.6 COMPONENTS graphics window audio system REQUIRED)
