@@ -115,7 +115,7 @@ void FGameScreen::HandleInput(const sf::Event& event)
 				CursorMoveSound.play();
 				if (SelectedIndex < 0)
 				{
-					SelectedIndex = MenuText.size() - 1;
+					SelectedIndex = MenuSettings.size() - 1;
 				}
 			}
 
@@ -123,7 +123,7 @@ void FGameScreen::HandleInput(const sf::Event& event)
 			{
 				SelectedIndex++;
 				CursorMoveSound.play();
-				if (SelectedIndex >= MenuText.size())
+				if (SelectedIndex >= MenuSettings.size())
 				{
 					SelectedIndex = 0;
 				}
@@ -131,15 +131,44 @@ void FGameScreen::HandleInput(const sf::Event& event)
 
 			if (event.key.code == sf::Keyboard::Enter)
 			{
+				switch (SelectedSetting)
+				{
+				case EMenuSetting::EMSResume:
+					MenuResult = EMenuResult::EMRResume;
+					break;
+				case EMenuSetting::EMSInventory:
+					MenuResult = EMenuResult::EMRInventory;
+					break;
+				case EMenuSetting::EMSCrafting:
+					MenuResult = EMenuResult::EMRCrafting;
+					break;
+				case EMenuSetting::EMSSave:
+					MenuResult = EMenuResult::EMRSave;
+					break;
+				case EMenuSetting::EMSOptions:
+					MenuResult = EMenuResult::EMROptions;
+					break;
+				case EMenuSetting::EMSExit:
+					MenuResult = EMenuResult::EMRExit;
+					break;
+				case EMenuSetting::EMSDefault:
+					std::cout << "Something Broke \n";
+					break;
+				default:
+					break;
+				}
 				ConfirmSound.play();
 			}
 		}
 
-
-		if (event.key.code == sf::Keyboard::E)
+		if (CurrentGameMode == EGameMode::EGMUnpaused &&  event.key.code == sf::Keyboard::E)
 		{
 			std::cout << "E Key Pressed" << std::endl;
-			CollectItem(CurrentInteractableObjectIndex);
+
+			if (ClosestObject != nullptr)
+			{
+				CollectItem(CurrentInteractableObjectIndex);
+			}
 		}
 
 		if (event.key.code == sf::Keyboard::Escape)
@@ -170,7 +199,7 @@ void FGameScreen::Update(float DeltaTime)
 		CursorOffset = std::sin(CursorTimer) * 2.f;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		Direction.y -= 1.f;
 		CurrentAnimationRow = UpRow;
@@ -179,7 +208,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		Direction.y += 1.f;
 		CurrentAnimationRow = DownRow;
@@ -188,7 +217,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
@@ -197,7 +226,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		Direction.x += 1.f;
 		CurrentAnimationRow = LeftRow;
@@ -242,7 +271,6 @@ void FGameScreen::Update(float DeltaTime)
 			break;
 		}
 	}
-
 
 	if (!bBlocked)
 	{
@@ -304,6 +332,29 @@ void FGameScreen::Update(float DeltaTime)
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
+	switch (MenuResult)
+	{
+	case EMenuResult::EMRResume:
+		CurrentGameMode = EGameMode::EGMUnpaused;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRInventory:
+		break;
+	case EMenuResult::EMRCrafting:
+		break;
+	case EMenuResult::EMRSave:
+		break;
+	case EMenuResult::EMROptions:
+		break;
+	case EMenuResult::EMRExit:
+		window.close();
+		break;
+	case EMenuResult::EMRDefault:
+		break;
+	default:
+		break;
+	}
+
 	Camera.setSize(ScreenWidth, ScreenHeight);
 	CameraPos = PlayerPosition;
 
@@ -384,11 +435,34 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 		sf::Text MenuOptionText;
 		float StartY = PauseMenu.getPosition().y - 150.f;
 
-		for (int i = 0; i < MenuText.size(); i++)
+		for (int i = 0; i < MenuSettings.size(); i++)
 		{
+			switch (MenuSettings[i])
+			{
+			case EMenuSetting::EMSResume:
+				MenuOptionText.setString("RESUME");
+				break;
+			case EMenuSetting::EMSInventory:
+				MenuOptionText.setString("INVENTORY");
+				break;
+			case EMenuSetting::EMSCrafting:
+				MenuOptionText.setString("CRAFT");
+				break;
+			case EMenuSetting::EMSSave:
+				MenuOptionText.setString("SAVE");
+				break;
+			case EMenuSetting::EMSOptions:
+				MenuOptionText.setString("OPTIONS");
+				break;
+			case EMenuSetting::EMSExit:
+				MenuOptionText.setString("EXIT");
+				break;
+			default:
+				break;
+			}
+
 			MenuOptionText.setFont(Font);
 			MenuOptionText.setFillColor(Theme.PrimaryColor);
-			MenuOptionText.setString(MenuText[i]);
 			MenuOptionText.setCharacterSize(40);
 
 			sf::FloatRect TextBounds = MenuOptionText.getLocalBounds();
@@ -398,6 +472,8 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 			
 			if (i == SelectedIndex)
 			{
+				SelectedSetting = MenuSettings[SelectedIndex];
+
 				CursorSprite.setPosition(MenuOptionText.getPosition().x - TextBounds.width / 2.f - 40.f, MenuOptionText.getPosition().y - TextBounds.height / 2.f + CursorOffset);
 
 				MenuOptionText.setFillColor(sf::Color(Theme.HighlightColor));
@@ -480,7 +556,7 @@ void FGameScreen::OverlappingObject()
 
 	int ClosestObjectIndex = 0;
 
-	FForestObject* ClosestObject = nullptr;
+	ClosestObject = nullptr;
 
 	for (size_t i = 0; i < ForestObjects.size(); i++)
 	{
@@ -535,7 +611,6 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 	case EObjectType::EOTTree:
 		{
 			std::cout << "You collected Wood from Tree " << ObjectToCollect << std::endl;
-
 
 			// Add random Wood to inventory
 			std::uniform_int_distribution<int> GatheredDist(0, 3);
@@ -738,9 +813,3 @@ bool FGameScreen::IsOptionSelected()
 	}
 	return false;
 }
-
-int FGameScreen::GetSelectedOption()
-{
-	return SelectedIndex;
-}
-

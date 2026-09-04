@@ -16,6 +16,28 @@ enum class EGameMode
 	EGMUnpaused
 };
 
+enum class EMenuSetting
+{
+	EMSResume,
+	EMSInventory,
+	EMSCrafting,
+	EMSSave,
+	EMSOptions,
+	EMSExit,
+	EMSDefault
+};
+
+enum class EMenuResult
+{
+	EMRResume,
+	EMRInventory,
+	EMRCrafting,
+	EMRSave,
+	EMROptions,
+	EMRExit, 
+	EMRDefault
+};
+
 enum class EObjectType
 {
 	EOTTree,
@@ -91,19 +113,20 @@ private:
 	sf::RectangleShape PauseMenu;
 
 	bool IsOptionSelected();
-	int GetSelectedOption();
+	EMenuResult MenuResult = EMenuResult::EMRDefault;
 	
-	std::vector<std::string> MenuText
+	std::vector<EMenuSetting> MenuSettings
 	{
-		"RESUME",
-		"INVENTORY",
-		"CRAFTING",
-		"SAVE",
-		"OPTIONS",
-		"EXIT"
+		EMenuSetting::EMSResume,
+		EMenuSetting::EMSInventory,
+		EMenuSetting::EMSCrafting,
+		EMenuSetting::EMSSave,
+		EMenuSetting::EMSOptions,
+		EMenuSetting::EMSExit
 	};
 
 	int SelectedIndex = 0;
+	EMenuSetting SelectedSetting = EMenuSetting::EMSDefault;
 	bool bOptionChosen = false;
 
 	sf::Texture CursorTexture;
@@ -168,6 +191,8 @@ private:
 
 	sf::RectangleShape Ground;
 	sf::RectangleShape Path;
+
+	FForestObject* ClosestObject = nullptr;
 		
 	std::vector<sf::IntRect> TreeSize
 	{
