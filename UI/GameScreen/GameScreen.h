@@ -13,7 +13,10 @@ class FLoadExternalData;
 enum class EGameMode
 {
 	EGMPaused,
-	EGMUnpaused
+	EGMUnpaused,
+	EGMInventory,
+	EGMCrafting,
+	EGMOptions
 };
 
 enum class EMenuSetting
@@ -85,6 +88,8 @@ public:
 	const FCharacter& GetCharacter() { return CharacterSheet; }
 
 private:
+	sf::Color ScreenBackgroundColour = sf::Color(30, 5, 5, 255 / 2);
+
 	FTheme Theme;
 
 	FCharacterData CurrentCharacter;
@@ -95,6 +100,7 @@ private:
 
 	void GenerateForest();
 	void OverlappingObject();
+	void DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu);
 	void CollectItem(int ObjectToCollect);
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
 	bool IsOnPath(sf::Vector2f position);
@@ -103,14 +109,14 @@ private:
 	sf::Text CharacterInforText;
 
 	//pausemenu
+	sf::RectangleShape PauseBackground;
+	sf::RectangleShape PauseMenu;
+	
 	sf::SoundBuffer CursorMoveBuffer;
 	sf::SoundBuffer ConfirmBuffer;
 
 	sf::Sound CursorMoveSound;
 	sf::Sound ConfirmSound;
-
-	sf::RectangleShape PauseBackground;
-	sf::RectangleShape PauseMenu;
 
 	bool IsOptionSelected();
 	EMenuResult MenuResult = EMenuResult::EMRDefault;
@@ -133,6 +139,30 @@ private:
 	sf::Sprite CursorSprite;
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
+
+	//inventory
+	sf::Text InventoryText;
+
+	sf::RectangleShape InventoryBackground;
+	sf::RectangleShape InventoryMenu;
+
+	//crafting
+	sf::Text CraftingText;
+
+	sf::RectangleShape CraftingBackground;
+	sf::RectangleShape CraftingMenu;
+
+	//option
+	sf::Text OptionsText;
+
+	sf::RectangleShape OptionsBackground;
+	sf::RectangleShape OptionsMenu;
+
+	//save
+	sf::Text SaveText;
+
+	sf::RectangleShape SaveBackground;
+	sf::RectangleShape SaveMenu;
 
 	//player
 	sf::Texture PlayerTexture;

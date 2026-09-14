@@ -173,12 +173,12 @@ void FGameScreen::HandleInput(const sf::Event& event)
 
 		if (event.key.code == sf::Keyboard::Escape)
 		{
-			if (CurrentGameMode == EGameMode::EGMUnpaused)
+			if (CurrentGameMode != EGameMode::EGMPaused)
 			{
 				std::cout << "Game Paused" << std::endl;
 				CurrentGameMode = EGameMode::EGMPaused;
 			}
-			else if (CurrentGameMode == EGameMode::EGMPaused)
+			else if (CurrentGameMode != EGameMode::EGMUnpaused)
 			{
 				std::cout << "Game Unpaused" << std::endl;
 				CurrentGameMode = EGameMode::EGMUnpaused;
@@ -199,7 +199,7 @@ void FGameScreen::Update(float DeltaTime)
 		CursorOffset = std::sin(CursorTimer) * 2.f;
 	}
 
-	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (CurrentGameMode == EGameMode::EGMUnpaused && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		Direction.y -= 1.f;
 		CurrentAnimationRow = UpRow;
@@ -208,7 +208,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (CurrentGameMode == EGameMode::EGMUnpaused && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		Direction.y += 1.f;
 		CurrentAnimationRow = DownRow;
@@ -217,7 +217,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (CurrentGameMode == EGameMode::EGMUnpaused && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
@@ -226,7 +226,7 @@ void FGameScreen::Update(float DeltaTime)
 		bMoving = true;
 	}
 
-	if (CurrentGameMode != EGameMode::EGMPaused && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (CurrentGameMode == EGameMode::EGMUnpaused && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		Direction.x += 1.f;
 		CurrentAnimationRow = LeftRow;
@@ -335,18 +335,30 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	switch (MenuResult)
 	{
 	case EMenuResult::EMRResume:
+		//Pause and Unpause Game
 		CurrentGameMode = EGameMode::EGMUnpaused;
 		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRInventory:
+		// Open Inventory Screen
+		CurrentGameMode = EGameMode::EGMInventory;
+		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRCrafting:
+		// Open Crafting Screen
+		CurrentGameMode = EGameMode::EGMCrafting;
+		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRSave:
+		// Save the Game
 		break;
 	case EMenuResult::EMROptions:
+		// Open the options menu
+		CurrentGameMode = EGameMode::EGMOptions;
+		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRExit:
+		// Double check to make sure people want to exit...
 		window.close();
 		break;
 	case EMenuResult::EMRDefault:
@@ -372,9 +384,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	
 	Camera.setCenter(CameraPos);
 
-	
 	window.setView(Camera);
-
 
 	window.draw(Ground);
 	window.draw(Path);
@@ -411,13 +421,11 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	CharacterInforText.setPosition(ScreenWidth / 2.f, ScreenHeight - 250.f);
 
 	window.draw(CharacterInforText);
-
-	sf::Color ScreenBackground = sf::Color(30, 5, 5, 255/2);
-
+	
 	PauseBackground.setSize(window.getView().getSize());
 	PauseBackground.setOrigin(PauseBackground.getSize() / 2.f);
 	PauseBackground.setPosition(window.getView().getCenter());
-	PauseBackground.setFillColor(ScreenBackground);
+	PauseBackground.setFillColor(ScreenBackgroundColour);
 
 	PauseMenu.setSize(sf::Vector2f(200.f, 400.f));
 	PauseMenu.setOrigin(PauseMenu.getSize() / 2.f);
@@ -426,12 +434,11 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	PauseMenu.setOutlineThickness(2.f);
 	PauseMenu.setFillColor(Theme.BackgroundColor);
 
-
 	if (CurrentGameMode == EGameMode::EGMPaused)
 	{
 		window.draw(PauseBackground);
 		window.draw(PauseMenu);
-		
+
 		sf::Text MenuOptionText;
 		float StartY = PauseMenu.getPosition().y - 150.f;
 
@@ -483,6 +490,22 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 			
 			window.draw(MenuOptionText);
 		}
+	}
+
+
+	if (CurrentGameMode == EGameMode::EGMInventory)
+	{
+		DrawScreen(window, InventoryText, InventoryBackground, InventoryMenu);
+	}
+
+	if (CurrentGameMode == EGameMode::EGMCrafting)
+	{
+		DrawScreen(window, CraftingText, CraftingBackground, CraftingMenu);
+	}
+
+	if (CurrentGameMode == EGameMode::EGMOptions)
+	{
+		DrawScreen(window, OptionsText, OptionsBackground, OptionsMenu);
 	}
 }
 
@@ -599,6 +622,25 @@ void FGameScreen::OverlappingObject()
 	default:
 		break;
 	}
+}
+
+void FGameScreen::DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu)
+{
+	ScreenBackground.setSize(window.getView().getSize());
+	ScreenBackground.setOrigin(ScreenBackground.getSize() / 2.f);
+	ScreenBackground.setPosition(window.getView().getCenter());
+	ScreenBackground.setFillColor(ScreenBackgroundColour);
+
+	ScreenMenu.setSize(sf::Vector2f(window.getView().getSize().x - 100.f, window.getView().getSize().y - 100.f));
+	ScreenMenu.setOrigin(ScreenMenu.getSize() / 2.f);
+	ScreenMenu.setPosition(window.getView().getCenter());
+	ScreenMenu.setOutlineColor(Theme.PrimaryColor);
+	ScreenMenu.setOutlineThickness(2.f);
+	ScreenMenu.setFillColor(Theme.BackgroundColor);
+
+	window.draw(ScreenText);
+	window.draw(ScreenBackground);
+	window.draw(ScreenMenu);
 }
 
 void FGameScreen::CollectItem(int ObjectToCollect)
