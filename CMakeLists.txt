@@ -14,6 +14,7 @@ set(SOURCES
 	Inventory/Crafting.cpp
 	Inventory/Inventory.cpp
 	Inventory/Items.cpp
+	SaveAndLoad/SaveAndLoad.cpp
 	UI/CharacterCreationScreen/CharacterCreationScreen.cpp
 	UI/GameScreen/GameScreen.cpp
 	UI/StartScreen/StartScreen.cpp

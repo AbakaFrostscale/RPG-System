@@ -6,9 +6,13 @@
 
 #include "Character/CharacterStats.h"
 #include "Character/Character.h"
+#include "Inventory/Inventory.h"
 #include "Core/Random.h"
+#include "SaveAndLoad/SaveAndLoad.h"
 
 class FLoadExternalData;
+
+class FCharacterCreator;
 
 enum class EGameMode
 {
@@ -25,6 +29,7 @@ enum class EMenuSetting
 	EMSInventory,
 	EMSCrafting,
 	EMSSave,
+	EMSLoad,
 	EMSOptions,
 	EMSExit,
 	EMSDefault
@@ -36,6 +41,7 @@ enum class EMenuResult
 	EMRInventory,
 	EMRCrafting,
 	EMRSave,
+	EMRLoad,
 	EMROptions,
 	EMRExit, 
 	EMRDefault
@@ -71,6 +77,7 @@ struct FForestObject
 	EObjectType ObjectType = EObjectType::EOTTree;
 };
 
+
 class FGameScreen
 {
 public:
@@ -94,6 +101,7 @@ private:
 
 	FCharacterData CurrentCharacter;
 	FCharacter CharacterSheet;
+	FSaveAndLoad SaveAndLoad;
 	FRandom Random;
 
 	EGameMode CurrentGameMode;
@@ -127,6 +135,7 @@ private:
 		EMenuSetting::EMSInventory,
 		EMenuSetting::EMSCrafting,
 		EMenuSetting::EMSSave,
+		EMenuSetting::EMSLoad,
 		EMenuSetting::EMSOptions,
 		EMenuSetting::EMSExit
 	};
@@ -314,5 +323,6 @@ private:
 		sf::IntRect{96, 64, 64, 32} //Rock 11
 	};
 
-	std::unique_ptr<FLoadExternalData> Loader;
+	std::shared_ptr<FCharacterCreator> Creator;
+	std::shared_ptr<FLoadExternalData> Loader;
 };

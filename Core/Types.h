@@ -87,8 +87,6 @@ struct FMaterialData
 		Type = Columns[1];
 		Weight = std::stoi(Columns[2]);
 	}
-
-
 };
 
 // Used to hold a specific metrial in an inventory or crafting requirement
@@ -196,3 +194,4 @@ struct FTheme
 	sf::Color AccentColor = sf::Color(255, 120, 220);
 	sf::Color BackgroundColor = sf::Color(30, 5, 5);
 };
+

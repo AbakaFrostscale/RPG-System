@@ -4,10 +4,12 @@
 #include <random>
 #include <Core/LoadExternalData.h>
 #include <Inventory/Inventory.h>
+#include <SaveAndLoad/SaveAndLoad.h>
 
 FGameScreen::FGameScreen()
 {
-	Loader = std::make_unique<FLoadExternalData>();
+	Loader = std::make_shared<FLoadExternalData>();
+	Creator = std::make_shared<FCharacterCreator>();
 
 	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
 	{
@@ -145,6 +147,9 @@ void FGameScreen::HandleInput(const sf::Event& event)
 				case EMenuSetting::EMSSave:
 					MenuResult = EMenuResult::EMRSave;
 					break;
+				case EMenuSetting::EMSLoad:
+					MenuResult = EMenuResult::EMRLoad;
+					break;
 				case EMenuSetting::EMSOptions:
 					MenuResult = EMenuResult::EMROptions;
 					break;
@@ -192,6 +197,11 @@ void FGameScreen::Update(float DeltaTime)
 	sf::Vector2f Direction(0.f, 0.f);
 
 	bool bMoving = false;
+
+	CharacterInforText.setString
+	(ToUpper("Name: " + CurrentCharacter.CharName) +
+		ToUpper("\nRace: " + CurrentCharacter.CharRace.RaceName) +
+		ToUpper("\nClass: " + CurrentCharacter.CharClass.ClassName));
 
 	if (CurrentGameMode == EGameMode::EGMPaused) 
 	{
@@ -351,6 +361,20 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 		break;
 	case EMenuResult::EMRSave:
 		// Save the Game
+		SaveAndLoad.SaveGame(CurrentCharacter, *CharacterSheet.GetInventory(), PlayerPosition);
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRLoad:
+		// Load Game
+		std::cout << CurrentCharacter.CharName << std::endl;
+
+		SaveAndLoad.LoadGame("SaveFile.json");
+		Creator->LoadCharacter(CurrentCharacter, SaveAndLoad.GetLoadData().SavedCharacter);
+		CharacterSheet.SetCharacter(CurrentCharacter);
+
+		std::cout << CharacterSheet.GetCharacter().CharName << std::endl;
+
+		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMROptions:
 		// Open the options menu
@@ -419,7 +443,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	CharacterInforText.setCharacterSize(32);
 	CharacterInforText.setFillColor(sf::Color::White);
 	CharacterInforText.setPosition(ScreenWidth / 2.f, ScreenHeight - 250.f);
-
+	
 	window.draw(CharacterInforText);
 	
 	PauseBackground.setSize(window.getView().getSize());
@@ -457,6 +481,9 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 				break;
 			case EMenuSetting::EMSSave:
 				MenuOptionText.setString("SAVE");
+				break;
+			case EMenuSetting::EMSLoad:
+				MenuOptionText.setString("LOAD");
 				break;
 			case EMenuSetting::EMSOptions:
 				MenuOptionText.setString("OPTIONS");
@@ -523,11 +550,6 @@ void FGameScreen::SetCharacter(const FCharacterData& Character)
 	CurrentCharacter = Character;
 
 	CharacterSheet.SetCharacter(Character);
-
-	CharacterInforText.setString
-	(ToUpper("Name: " + CurrentCharacter.CharName) +
-		ToUpper("\nRace: " + CurrentCharacter.CharRace.RaceName) +
-		ToUpper("\nClass: " + CurrentCharacter.CharClass.ClassName));
 }
 
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)

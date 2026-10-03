@@ -38,6 +38,28 @@ void FCharacterCreator::CreateCharacter(FCharacterData& Character, std::string U
 	SetCharacterSpells(Character);
 }
 
+void FCharacterCreator::LoadCharacter(FCharacterData& Character, const FCharacterData& LoadedCharacter)
+{
+	Character.CharName = LoadedCharacter.CharName;
+	
+	Character.CharRace = LoadedCharacter.CharRace;
+	ApplyRaceBaseStats(Character);
+
+	Character.CharClass = LoadedCharacter.CharClass;
+	ApplyClassModifiers(Character);
+
+	Character.CharStats = LoadedCharacter.CharStats;
+
+	Character.Team = ETeam::ETPlayers;
+
+	SetHPandMP(Character);
+
+	Character.CurrentHP = LoadedCharacter.CurrentHP;
+	Character.CurrentMP = LoadedCharacter.CurrentMP;
+
+	SetCharacterSpells(Character);
+}
+
 /** 
 Call to Create the character to be used by other classes 
 UIName - variable for receiving data from the UI in string format
@@ -224,6 +246,8 @@ int FCharacterCreator::CalculateCharacterMaxMP(FCharacterData& Character)
 
 void FCharacterCreator::SetCharacterSpells(FCharacterData& Character)
 {
+	Character.Spells.clear();
+
 	if (Character.CharClass.ClassName == "Paladin" || Character.CharClass.ClassName == "Cleric" || Character.CharClass.ClassName == "Wizard" ||
 		Character.CharClass.ClassName == "Bard" || Character.CharClass.ClassName == "Sorcerer" || Character.CharClass.ClassName == "Druid")
 	{
