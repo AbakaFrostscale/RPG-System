@@ -30,7 +30,7 @@ public:
 	
 	FSaveAndLoad();
 
-	void SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition);
+	bool SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition);
 	bool LoadGame(const std::string& FilePath);
 
 	FSaveData GetSaveData() { return DataToSave; }

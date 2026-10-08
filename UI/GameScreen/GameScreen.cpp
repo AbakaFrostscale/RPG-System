@@ -133,7 +133,7 @@ void FGameScreen::HandleInput(const sf::Event& event)
 
 			if (event.key.code == sf::Keyboard::Enter)
 			{
-				switch (SelectedSetting)
+				switch (MenuSettings[SelectedIndex])
 				{
 				case EMenuSetting::EMSResume:
 					MenuResult = EMenuResult::EMRResume;
@@ -195,13 +195,16 @@ void FGameScreen::HandleInput(const sf::Event& event)
 void FGameScreen::Update(float DeltaTime)
 {
 	sf::Vector2f Direction(0.f, 0.f);
+	CameraPos = PlayerPosition;
+
+	HandleMenu();
 
 	bool bMoving = false;
 
-	CharacterInforText.setString
-	(ToUpper("Name: " + CurrentCharacter.CharName) +
-		ToUpper("\nRace: " + CurrentCharacter.CharRace.RaceName) +
-		ToUpper("\nClass: " + CurrentCharacter.CharClass.ClassName));
+	if (ShowNotification && NotificationClock.getElapsedTime().asSeconds() >= 3.f)
+	{
+		ShowNotification = false;
+	}
 
 	if (CurrentGameMode == EGameMode::EGMPaused) 
 	{
@@ -342,55 +345,6 @@ void FGameScreen::Update(float DeltaTime)
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
-	switch (MenuResult)
-	{
-	case EMenuResult::EMRResume:
-		//Pause and Unpause Game
-		CurrentGameMode = EGameMode::EGMUnpaused;
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMRInventory:
-		// Open Inventory Screen
-		CurrentGameMode = EGameMode::EGMInventory;
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMRCrafting:
-		// Open Crafting Screen
-		CurrentGameMode = EGameMode::EGMCrafting;
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMRSave:
-		// Save the Game
-		SaveAndLoad.SaveGame(CurrentCharacter, *CharacterSheet.GetInventory(), PlayerPosition);
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMRLoad:
-		// Load Game
-		std::cout << CurrentCharacter.CharName << std::endl;
-
-		SaveAndLoad.LoadGame("SaveFile.json");
-		Creator->LoadCharacter(CurrentCharacter, SaveAndLoad.GetLoadData().SavedCharacter);
-		CharacterSheet.SetCharacter(CurrentCharacter);
-
-		std::cout << CharacterSheet.GetCharacter().CharName << std::endl;
-
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMROptions:
-		// Open the options menu
-		CurrentGameMode = EGameMode::EGMOptions;
-		MenuResult = EMenuResult::EMRDefault;
-		break;
-	case EMenuResult::EMRExit:
-		// Double check to make sure people want to exit...
-		window.close();
-		break;
-	case EMenuResult::EMRDefault:
-		break;
-	default:
-		break;
-	}
-
 	Camera.setSize(ScreenWidth, ScreenHeight);
 	CameraPos = PlayerPosition;
 
@@ -427,7 +381,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	debugBox.setFillColor(sf::Color(255, 0, 0, 100));
 
 	window.draw(PlayerSprite);
-	window.draw(debugBox);
+	//window.draw(debugBox);
 
 	for (FForestObject& Object : ForestObjects)
 	{
@@ -451,7 +405,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	PauseBackground.setPosition(window.getView().getCenter());
 	PauseBackground.setFillColor(ScreenBackgroundColour);
 
-	PauseMenu.setSize(sf::Vector2f(200.f, 400.f));
+	PauseMenu.setSize(sf::Vector2f(200.f, 450.f));
 	PauseMenu.setOrigin(PauseMenu.getSize() / 2.f);
 	PauseMenu.setPosition(window.getView().getCenter());
 	PauseMenu.setOutlineColor(Theme.PrimaryColor);
@@ -464,7 +418,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 		window.draw(PauseMenu);
 
 		sf::Text MenuOptionText;
-		float StartY = PauseMenu.getPosition().y - 150.f;
+		float StartY = PauseMenu.getPosition().y - 175.f;
 
 		for (int i = 0; i < MenuSettings.size(); i++)
 		{
@@ -506,8 +460,6 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 			
 			if (i == SelectedIndex)
 			{
-				SelectedSetting = MenuSettings[SelectedIndex];
-
 				CursorSprite.setPosition(MenuOptionText.getPosition().x - TextBounds.width / 2.f - 40.f, MenuOptionText.getPosition().y - TextBounds.height / 2.f + CursorOffset);
 
 				MenuOptionText.setFillColor(sf::Color(Theme.HighlightColor));
@@ -534,6 +486,11 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	{
 		DrawScreen(window, OptionsText, OptionsBackground, OptionsMenu);
 	}
+
+	if (ShowNotification)
+	{
+		Notification(window, SaveLoadText, SaveLoadSuccessMenu);
+	}
 }
 
 std::string FGameScreen::ToUpper(const std::string& input)
@@ -545,16 +502,27 @@ std::string FGameScreen::ToUpper(const std::string& input)
 	return result;
 }
 
-void FGameScreen::SetCharacter(const FCharacterData& Character)
+void FGameScreen::SetCharacter(FCharacter& Character)
 {
-	CurrentCharacter = Character;
+	CharacterSheet = &Character;
 
-	CharacterSheet.SetCharacter(Character);
+	CharacterInforText.setString
+	(ToUpper("Name: " + CharacterSheet->GetCharacterReference().CharName) +
+		ToUpper("\nRace: " + CharacterSheet->GetCharacterReference().CharRace.RaceName) +
+		ToUpper("\nClass: " + CharacterSheet->GetCharacterReference().CharClass.ClassName));
 }
 
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 {
 	SelectedCharacterRow = SelectedCharacter;
+}
+
+void FGameScreen::UpdateCharacter()
+{
+	CharacterInforText.setString
+	(ToUpper("Name: " + CharacterSheet->GetCharacterReference().CharName) +
+		ToUpper("\nRace: " + CharacterSheet->GetCharacterReference().CharRace.RaceName) +
+		ToUpper("\nClass: " + CharacterSheet->GetCharacterReference().CharClass.ClassName));
 }
 
 void FGameScreen::GenerateForest()
@@ -565,7 +533,7 @@ void FGameScreen::GenerateForest()
 	PlaceForestObjects(RockTexture, Rocks, 90, 70.f, 0.7f, 150.f, ECollisionType::ECTRock);
 	PlaceForestObjects(TreeTexture, Bushes, 300, 40.f, 0.5f, 50.f, ECollisionType::ECTBush);
 
-	std::sort(ForestObjects.begin(), ForestObjects.end(), [](FForestObject A, FForestObject B)
+	std::sort(ForestObjects.begin(), ForestObjects.end(), [](const FForestObject& A,const FForestObject& B)
 		{
 			return A.Sprite.getPosition().y < B.Sprite.getPosition().y;
 		});
@@ -665,6 +633,28 @@ void FGameScreen::DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::
 	window.draw(ScreenMenu);
 }
 
+void FGameScreen::Notification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond)
+{
+	NotifyBackgrond.setSize(sf::Vector2f(300, 100));
+	NotifyBackgrond.setOrigin(NotifyBackgrond.getSize() / 2.f);
+	NotifyBackgrond.setPosition(window.getView().getCenter());
+	NotifyBackgrond.setOutlineColor(Theme.PrimaryColor);
+	NotifyBackgrond.setOutlineThickness(2.f);
+	NotifyBackgrond.setFillColor(Theme.BackgroundColor);
+
+	NotifyText.setFont(Font);
+	NotifyText.setFillColor(Theme.PrimaryColor);
+	NotifyText.setCharacterSize(40);
+	
+	sf::FloatRect TextBounds = NotifyText.getLocalBounds();
+	NotifyText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+
+	NotifyText.setPosition(NotifyBackgrond.getPosition());
+
+	window.draw(NotifyBackgrond);
+	window.draw(NotifyText);
+}
+
 void FGameScreen::CollectItem(int ObjectToCollect)
 {
 	if (ObjectToCollect < 0 || ObjectToCollect >= ForestObjects.size())
@@ -681,13 +671,13 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
 
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
-			CharacterSheet.GatherMaterials(&Material);
+			CharacterSheet->GatherMaterials(&Material);
 
 			// Notify how much of item was added to inventory
 			std::cout << "You collected " << Material.MaterialName << std::endl;
 
 			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
 			{
 				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
 			}
@@ -703,13 +693,13 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
 
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
-			CharacterSheet.GatherMaterials(&Material);
+			CharacterSheet->GatherMaterials(&Material);
 
 			// Notify how much of item was added to inventory
 			std::cout << "You collected " << Material.MaterialName << std::endl;
 
 			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
 			{
 				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
 			}
@@ -725,13 +715,13 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
 
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
-			CharacterSheet.GatherMaterials(&Material);
+			CharacterSheet->GatherMaterials(&Material);
 
 			// Notify how much of item was added to inventory
 			std::cout << "You collected " << Material.MaterialName << std::endl;
 
 			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet.GetInventory()->GetMaterials())
+			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
 			{
 				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
 			}
@@ -742,6 +732,7 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 	}
 
 	ForestObjects.erase(ForestObjects.begin() + ObjectToCollect);
+	ClosestObject = nullptr;
 	CurrentInteractableObjectIndex = -1;
 }
 
@@ -857,6 +848,84 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 		{
 			ForestObjects.push_back(ForestObject);
 		}
+	}
+}
+
+void FGameScreen::HandleMenu()
+{
+	bool SaveLoadSuccess = false;
+
+	switch (MenuResult)
+	{
+	case EMenuResult::EMRResume:
+		//Pause and Unpause Game
+		CurrentGameMode = EGameMode::EGMUnpaused;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRInventory:
+		// Open Inventory Screen
+		CurrentGameMode = EGameMode::EGMInventory;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRCrafting:
+		// Open Crafting Screen
+		CurrentGameMode = EGameMode::EGMCrafting;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRSave:
+		// Save the Game
+		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition);
+		
+		if (SaveLoadSuccess)
+		{
+			SaveLoadText.setString(ToUpper("Save Successful"));
+		}
+		else 
+		{
+			SaveLoadText.setString(ToUpper("Save Failed"));
+		}
+
+		ShowNotification = true;
+		NotificationClock.restart();
+
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRLoad:
+		// Load Game
+		SaveLoadSuccess = SaveAndLoad.LoadGame("SaveFile.json");
+
+		if (SaveLoadSuccess)
+		{
+			SaveLoadText.setString(ToUpper("Load Successful"));
+			Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
+			UpdateCharacter();
+		}
+		else
+		{
+			SaveLoadText.setString(ToUpper("Load Failed"));
+		}
+
+		ShowNotification = true;
+		NotificationClock.restart();
+
+		std::cout << CharacterSheet->GetCharacterReference().CharName << std::endl;
+
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMROptions:
+		// Open the options menu
+		CurrentGameMode = EGameMode::EGMOptions;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRExit:
+		// Double check to make sure people want to exit...
+		bExitRequest = true;
+		MenuResult = EMenuResult::EMRDefault;
+		break;
+	case EMenuResult::EMRDefault:
+		break;
+	default:
+		break;
 	}
 }
 

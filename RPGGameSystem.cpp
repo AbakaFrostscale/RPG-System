@@ -608,7 +608,10 @@ int main()
 				CurrentCharacter.SetCharacter(CreationScreen.GetCharacter());
 
 				std::cout << "Character passed to Game!" << std::endl;
-				PrintCharacter(CurrentCharacter.GetCharacter());
+				PrintCharacter(CurrentCharacter.GetCharacterReference());
+
+				GameScreen.SetCharacter(CurrentCharacter);
+				GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
 
 				CurrentState = EGameState::EGSGame;
 			}
@@ -616,9 +619,12 @@ int main()
 
 		if (CurrentState == EGameState::EGSGame)
 		{
-			GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
-
 			GameScreen.Update(deltaTime);
+
+			if (GameScreen.bIsExitRequested())
+			{
+				window.close();
+			}
 		}
 
 		window.clear(sf::Color(Theme.BackgroundColor));
@@ -634,7 +640,6 @@ int main()
 		}
 		else if (CurrentState == EGameState::EGSGame)
 		{
-			GameScreen.SetCharacter(CurrentCharacter.GetCharacter());
 			GameScreen.Draw(window);
 		}
 

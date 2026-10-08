@@ -22,7 +22,7 @@ public:
 
 	std::string ToUpper(const std::string& input);
 
-	FCharacterData GetCharacter() { return CurrentCharacter; }
+	FCharacter& GetCharacter() { return CurrentCharacter; }
 	bool IsFinalised() { return bIsFinalised; }
 
 	void StartFadeIn();
@@ -91,7 +91,7 @@ private:
 	int MaxCharacters = 12;
 
 	//Temp Character being built
-	FCharacterData CurrentCharacter;
+	FCharacter CurrentCharacter;
 
 	//Options
 	std::vector<std::string> Fields;

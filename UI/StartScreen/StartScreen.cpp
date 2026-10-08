@@ -126,7 +126,7 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 	sf::Text title;
 
 	title.setFont(Font);
-	title.setString("PLACEHOLDER NAME");
+	title.setString("WAYFARER'S OATH");
 	title.setCharacterSize(100);
 	sf::FloatRect titleBounds = title.getLocalBounds();
 	title.setOrigin(titleBounds.left + titleBounds.width / 2.f, titleBounds.top + titleBounds.height / 2.f);

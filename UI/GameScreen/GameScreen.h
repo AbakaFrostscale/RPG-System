@@ -90,28 +90,35 @@ public:
 	std::string ToUpper(const std::string& input);
 
 	void SetSelectedCharacter(const int SelectedCharacter);
-	void SetCharacter(const FCharacterData& Character);
+	void SetCharacter(FCharacter& Character);
+	bool bIsExitRequested() const { return bExitRequest; }
 
-	const FCharacter& GetCharacter() { return CharacterSheet; }
+	const FCharacter* GetCharacter() { return CharacterSheet; }
 
 private:
 	sf::Color ScreenBackgroundColour = sf::Color(30, 5, 5, 255 / 2);
 
 	FTheme Theme;
 
-	FCharacterData CurrentCharacter;
-	FCharacter CharacterSheet;
+	FCharacter* CharacterSheet = nullptr;
 	FSaveAndLoad SaveAndLoad;
 	FRandom Random;
 
 	EGameMode CurrentGameMode;
 
 	void GenerateForest();
-	void OverlappingObject();
-	void DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu);
-	void CollectItem(int ObjectToCollect);
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
+	
+	void OverlappingObject();
+	void CollectItem(int ObjectToCollect);
+	
+	void DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu);
+	void HandleMenu();
+	void Notification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond);
+	
 	bool IsOnPath(sf::Vector2f position);
+
+	void UpdateCharacter();
 
 	sf::Font Font;
 	sf::Text CharacterInforText;
@@ -149,6 +156,8 @@ private:
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
 
+	bool bExitRequest = false;
+
 	//inventory
 	sf::Text InventoryText;
 
@@ -168,10 +177,10 @@ private:
 	sf::RectangleShape OptionsMenu;
 
 	//save
-	sf::Text SaveText;
-
-	sf::RectangleShape SaveBackground;
-	sf::RectangleShape SaveMenu;
+	sf::Text SaveLoadText;
+	sf::RectangleShape SaveLoadSuccessMenu;
+	sf::Clock NotificationClock;
+	bool ShowNotification = false;
 
 	//player
 	sf::Texture PlayerTexture;

@@ -18,15 +18,13 @@ FSaveAndLoad::FSaveAndLoad()
 	Loader = std::make_shared<FLoadExternalData>();
 }
 
-void FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition)
+bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition)
 {
 	DataToSave.SavedCharacter = Character;
 	DataToSave.CharacterInventory = Inventory;
 	DataToSave.CharacterPosition = PlayerPosition;
 
 	json SaveFile;
-
-	std::cout << "The Game has been saved:" << std::endl;
 
 	SaveFile["Character"]["Name"] = DataToSave.SavedCharacter.CharName;
 	SaveFile["Character"]["Class"] = DataToSave.SavedCharacter.CharClass.ClassName;
@@ -55,10 +53,15 @@ void FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf
 	if (!File.is_open())
 	{
 		std::cout << "SaveFile.json was not found!" << std::endl;
-		return;
+		return false;
 	}
 
 	File << SaveFile.dump(4);
+
+	File.close();
+
+	std::cout << "Save Successful" << std::endl;
+	return !File.fail();
 }
 
 bool FSaveAndLoad::LoadGame(const std::string& FilePath)
