@@ -103,6 +103,8 @@ FGameScreen::FGameScreen()
 
 	ConfirmSound.setBuffer(ConfirmBuffer);
 	ConfirmSound.setVolume(50.f);
+
+	Camera.setSize(ScreenWidth, ScreenHeight);
 }
 
 void FGameScreen::HandleInput(const sf::Event& event)
@@ -201,7 +203,7 @@ void FGameScreen::Update(float DeltaTime)
 
 	bool bMoving = false;
 
-	if (ShowNotification && NotificationClock.getElapsedTime().asSeconds() >= 3.f)
+	if (ShowNotification && NotificationClock.getElapsedTime().asSeconds() >= 2.f)
 	{
 		ShowNotification = false;
 	}
@@ -345,9 +347,6 @@ void FGameScreen::Update(float DeltaTime)
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
-	Camera.setSize(ScreenWidth, ScreenHeight);
-	CameraPos = PlayerPosition;
-
 	float HalfWidth = ScreenWidth / 2.f;
 	float HalfHeight = ScreenHeight / 2.f;
 
@@ -874,7 +873,8 @@ void FGameScreen::HandleMenu()
 		break;
 	case EMenuResult::EMRSave:
 		// Save the Game
-		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition);
+		std::cout << SelectedCharacterRow;
+		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition, SelectedCharacterRow);
 		
 		if (SaveLoadSuccess)
 		{
@@ -898,6 +898,13 @@ void FGameScreen::HandleMenu()
 		{
 			SaveLoadText.setString(ToUpper("Load Successful"));
 			Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
+
+			CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
+			
+			SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
+			PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
+			PlayerSprite.setPosition(PlayerPosition);
+
 			UpdateCharacter();
 		}
 		else

@@ -33,6 +33,9 @@ public:
 	void RemoveArmour(const FArmour& Armour);
 	void AddArmour(std::optional<FArmour> Armour);
 
+	void SetInventory(const FInventoryStorage& NewInventory) { Inventory = NewInventory; }
+	const FInventoryStorage& GetInventory() const { return Inventory; }
+
 	ECraftingResponse HasArmour(const FArmour& Armour);
 	ECraftingResponse HasWeapon(const FWeapon& Weapon); 
 

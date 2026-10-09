@@ -17,4 +17,5 @@ struct FSaveData
 	FCharacterData SavedCharacter;
 	FInventory CharacterInventory;
 	sf::Vector2f CharacterPosition;
+	int SelectedSpriteIndex;
 };

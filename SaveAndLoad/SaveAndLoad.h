@@ -30,7 +30,7 @@ public:
 	
 	FSaveAndLoad();
 
-	bool SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition);
+	bool SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex);
 	bool LoadGame(const std::string& FilePath);
 
 	FSaveData GetSaveData() { return DataToSave; }
@@ -40,27 +40,11 @@ private:
 
 	FSaveData DataToSave;
 	FSaveData DataToLoad;
+	FSaveData TempData;
 
 	std::string ClassName;
 	std::string RaceName;
 
-	int CurrentHP = 0;
-	int CurrentMP = 0;
-	int Initiative = 0;
-
-	int CharSTR = 0;
-	int CharDEX = 0;
-	int CharCON = 0;
-	int CharINT = 0;
-	int CharWIS = 0;
-	int CharCHA = 0;
-
-	int BaseSTR = 0;
-	int BaseDEX = 0;
-	int BaseCON = 0;
-	int BaseINT = 0;
-	int BaseWIS = 0;
-	int BaseCHA = 0;
-
 	std::shared_ptr<FLoadExternalData> Loader;
+	std::shared_ptr<FCharacterCreator> Creator;
 };
