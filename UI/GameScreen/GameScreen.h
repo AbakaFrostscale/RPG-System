@@ -47,13 +47,6 @@ enum class EMenuResult
 	EMRDefault
 };
 
-enum class EObjectType
-{
-	EOTTree,
-	EOTRock,
-	EOTBush
-};
-
 enum class EFacingDirection
 {
 	EFDUp,
@@ -70,14 +63,6 @@ enum class ECollisionType
 	ECTNone
 };
 
-struct FForestObject
-{
-	sf::Sprite Sprite;
-	sf::FloatRect Collision;
-	EObjectType ObjectType = EObjectType::EOTTree;
-};
-
-
 class FGameScreen
 {
 public:
@@ -92,6 +77,8 @@ public:
 	void SetSelectedCharacter(const int SelectedCharacter);
 	void SetCharacter(FCharacter& Character);
 	bool bIsExitRequested() const { return bExitRequest; }
+
+	void LoadFromStart();
 
 	const FCharacter* GetCharacter() { return CharacterSheet; }
 
@@ -108,7 +95,8 @@ private:
 
 	void GenerateForest();
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
-	
+	void LoadForest(const std::vector<int>& GatheredItems);
+
 	void OverlappingObject();
 	void CollectItem(int ObjectToCollect);
 	
@@ -119,6 +107,7 @@ private:
 	bool IsOnPath(sf::Vector2f position);
 
 	void UpdateCharacter();
+	void LoadGame();
 
 	sf::Font Font;
 	sf::Text CharacterInforText;
@@ -229,6 +218,8 @@ private:
 	const int WorldWidth = 4000;
 	const int WorldHeight = 4000;
 
+	int ForestObjectID = 0;
+
 	sf::Texture TreeTexture;
 	sf::Texture RockTexture;
 	sf::Texture GroundTexture;
@@ -236,6 +227,7 @@ private:
 
 	std::vector<FForestObject> ForestObjects;
 	std::vector<sf::Sprite*> DrawList;
+	std::vector<int> GatheredObjectID;
 
 	sf::RectangleShape Ground;
 	sf::RectangleShape Path;

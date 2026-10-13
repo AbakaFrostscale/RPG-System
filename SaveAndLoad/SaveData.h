@@ -18,4 +18,5 @@ struct FSaveData
 	FInventory CharacterInventory;
 	sf::Vector2f CharacterPosition;
 	int SelectedSpriteIndex;
+	std::vector<int> ForestObjectIDs;
 };

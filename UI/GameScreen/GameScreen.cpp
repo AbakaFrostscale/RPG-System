@@ -511,6 +511,41 @@ void FGameScreen::SetCharacter(FCharacter& Character)
 		ToUpper("\nClass: " + CharacterSheet->GetCharacterReference().CharClass.ClassName));
 }
 
+void FGameScreen::LoadFromStart()
+{
+	SaveLoadText.setString(ToUpper("Load Successful"));
+	
+	Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
+	SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
+
+	CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
+
+	PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
+	PlayerSprite.setPosition(PlayerPosition);
+
+	UpdateCharacter();
+
+	LoadForest(SaveAndLoad.GetLoadData().ForestObjectIDs);
+}
+
+void FGameScreen::LoadGame()
+{
+	SaveLoadText.setString(ToUpper("Load Successful"));
+	Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
+
+	CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
+
+	SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
+	PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
+	PlayerSprite.setPosition(PlayerPosition);
+
+	UpdateCharacter();
+
+	LoadForest(SaveAndLoad.GetLoadData().ForestObjectIDs);
+}
+
+
+
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 {
 	SelectedCharacterRow = SelectedCharacter;
@@ -527,6 +562,7 @@ void FGameScreen::UpdateCharacter()
 void FGameScreen::GenerateForest()
 {
 	ForestObjects.clear();
+	ForestObjectID = 0;
 
 	PlaceForestObjects(TreeTexture, TreeSize, 250, 120.f, 0.3f, 150.f, ECollisionType::ECTTree);
 	PlaceForestObjects(RockTexture, Rocks, 90, 70.f, 0.7f, 150.f, ECollisionType::ECTRock);
@@ -730,6 +766,7 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 		break;
 	}
 
+	GatheredObjectID.push_back(ForestObjects[ObjectToCollect].ObjectID);
 	ForestObjects.erase(ForestObjects.begin() + ObjectToCollect);
 	ClosestObject = nullptr;
 	CurrentInteractableObjectIndex = -1;
@@ -827,6 +864,8 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 
 		ForestObject.Collision = sf::FloatRect(CollisionX, CollisionY, Width, Height);
 
+		ForestObject.ObjectID = ForestObjectID;
+
 		bool bTooClose = false;
 																									
 		for (const FForestObject& ExistingObject : ForestObjects)
@@ -847,7 +886,20 @@ void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf:
 		{
 			ForestObjects.push_back(ForestObject);
 		}
+
+		ForestObjectID++;
 	}
+}
+
+void FGameScreen::LoadForest(const std::vector<int>& GatheredItems)
+{
+	GenerateForest();
+
+	GatheredObjectID = GatheredItems;
+
+	std::erase_if(ForestObjects, [&GatheredItems](const FForestObject& ForestObject) {
+		return std::find(GatheredItems.begin(), GatheredItems.end(), ForestObject.ObjectID)
+			!= GatheredItems.end(); });
 }
 
 void FGameScreen::HandleMenu()
@@ -874,7 +926,7 @@ void FGameScreen::HandleMenu()
 	case EMenuResult::EMRSave:
 		// Save the Game
 		std::cout << SelectedCharacterRow;
-		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition, SelectedCharacterRow);
+		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition, SelectedCharacterRow, GatheredObjectID);
 		
 		if (SaveLoadSuccess)
 		{
@@ -896,16 +948,7 @@ void FGameScreen::HandleMenu()
 
 		if (SaveLoadSuccess)
 		{
-			SaveLoadText.setString(ToUpper("Load Successful"));
-			Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
-
-			CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
-			
-			SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
-			PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
-			PlayerSprite.setPosition(PlayerPosition);
-
-			UpdateCharacter();
+			LoadGame();
 		}
 		else
 		{

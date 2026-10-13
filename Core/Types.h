@@ -71,6 +71,21 @@ enum class ECraftingResponse
 	ECRCanBeCrafted
 };
 
+enum class EObjectType
+{
+	EOTTree,
+	EOTRock,
+	EOTBush
+};
+
+struct FForestObject
+{
+	sf::Sprite Sprite;
+	sf::FloatRect Collision;
+	EObjectType ObjectType = EObjectType::EOTTree;
+	int ObjectID = 0;
+};
+
 //Information on materials to be referneced by the FMaterial struct, always initialized in GatherableMaterials
 struct FMaterialData
 {

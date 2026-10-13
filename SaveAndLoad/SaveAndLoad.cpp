@@ -19,12 +19,13 @@ FSaveAndLoad::FSaveAndLoad()
 	Creator = std::make_shared<FCharacterCreator>();
 }
 
-bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex)
+bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex, std::vector<int> GatheredForestObjectsID)
 {
 	DataToSave.SavedCharacter = Character;
 	DataToSave.CharacterInventory = Inventory;
 	DataToSave.CharacterPosition = PlayerPosition;
 	DataToSave.SelectedSpriteIndex = SelctedSpriteIndex;
+	DataToSave.ForestObjectIDs = GatheredForestObjectsID;
 
 	json SaveFile;
 
@@ -50,6 +51,11 @@ bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf
 	SaveFile["World"]["Player"]["Position"]["x"] = DataToSave.CharacterPosition.x;
 	SaveFile["World"]["Player"]["Position"]["y"] = DataToSave.CharacterPosition.y;
 	SaveFile["World"]["Player"]["Sprite"] = DataToSave.SelectedSpriteIndex;
+
+	for (const int& ForestObjectID : DataToSave.ForestObjectIDs)
+	{
+		SaveFile["World"]["Forest"]["GatheredObjectID"] = DataToSave.ForestObjectIDs;
+	}
 
 	std::ofstream File("SaveFile.json");
 
@@ -78,14 +84,31 @@ bool FSaveAndLoad::LoadGame(const std::string& FilePath)
 		std::cout << FilePath << " was not found!" << std::endl;
 		return false;
 	}
-
-	json SaveFile;
-	LoadFile >> SaveFile;
-
-	TempData.SavedCharacter.CharName = SaveFile["Character"]["Name"];
 	
-	ClassName = SaveFile["Character"]["Class"];
-	RaceName = SaveFile["Character"]["Race"];
+	json SaveFile;
+
+	try
+	{
+		LoadFile >> SaveFile;
+	}
+	catch (const json::parse_error& error)
+	{
+		std::cout << "JSON parsing failed: " << error.what() << std::endl;
+		return false;
+	}
+
+	if (SaveFile["Character"]["Name"].is_string() && 
+		SaveFile["Character"]["Class"].is_string() &&
+		SaveFile["Character"]["Race"].is_string())
+	{
+		TempData.SavedCharacter.CharName = SaveFile["Character"]["Name"];
+		ClassName = SaveFile["Character"]["Class"];
+		RaceName = SaveFile["Character"]["Race"];
+	}
+	else
+	{
+		return false;
+	}
 
 	for (const FClassData& ClassData : Loader->GetAvailableClasses())
 	{
@@ -211,6 +234,23 @@ bool FSaveAndLoad::LoadGame(const std::string& FilePath)
 		std::cout << " Selected sprite does not exist" << std::endl;
 		return false;
 	}
+
+	if (SaveFile["World"]["Forest"]["GatheredObjectID"].is_array())
+	{
+		for (const auto& ObjectID : SaveFile["World"]["Forest"]["GatheredObjectID"])
+		{
+			if (!ObjectID.is_number_integer())
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	TempData.ForestObjectIDs = SaveFile["World"]["Forest"]["GatheredObjectID"].get<std::vector<int>>();
 
 	DataToLoad = TempData;
 

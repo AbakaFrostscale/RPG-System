@@ -30,7 +30,7 @@ public:
 	
 	FSaveAndLoad();
 
-	bool SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex);
+	bool SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex, std::vector<int> GatheredForestObjectsID);
 	bool LoadGame(const std::string& FilePath);
 
 	FSaveData GetSaveData() { return DataToSave; }

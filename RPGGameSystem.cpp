@@ -37,6 +37,7 @@ FItem MainItem;
 EGameState CurrentState = EGameState::EGSStartMenu;
 
 bool bCharacterCreated;
+bool bLoadFromStart;
 sf::Font GameFont;
 sf::Clock Clock;
 
@@ -580,7 +581,8 @@ int main()
 				}
 				else if (choice == 1) //Load Game
 				{
-					std::cout << "Load not yet implemented" << std::endl;
+					// Load Not Working;
+					std::cout << "Load Not Working yet";
 					StartScreen.ResetTransition();
 				}
 				else if (choice == 2) //Exit
