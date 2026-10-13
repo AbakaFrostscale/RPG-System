@@ -895,7 +895,10 @@ void FGameScreen::LoadForest(const std::vector<int>& GatheredItems)
 {
 	GenerateForest();
 
-	GatheredObjectID = GatheredItems;
+	for (const int& ObjectID : GatheredItems)
+	{
+		GatheredObjectID.push_back(ObjectID);
+	}
 
 	std::erase_if(ForestObjects, [&GatheredItems](const FForestObject& ForestObject) {
 		return std::find(GatheredItems.begin(), GatheredItems.end(), ForestObject.ObjectID)
