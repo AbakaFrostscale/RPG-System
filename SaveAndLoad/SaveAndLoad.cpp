@@ -69,7 +69,6 @@ bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf
 
 	File.close();
 
-	std::cout << "Save Successful" << std::endl;
 	return !File.fail();
 }
 

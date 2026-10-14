@@ -76,9 +76,12 @@ public:
 
 	void SetSelectedCharacter(const int SelectedCharacter);
 	void SetCharacter(FCharacter& Character);
-	bool bIsExitRequested() const { return bExitRequest; }
+	const bool bIsExitRequested() const { return bExitRequest; }
 
-	void LoadFromStart();
+	const bool GetbChangeScreen() const { return bChangeScreen; }
+	void SetbChangeScreen(bool ChangeScreen) { bChangeScreen = ChangeScreen; }
+
+	void LoadGame();
 
 	const FCharacter* GetCharacter() { return CharacterSheet; }
 
@@ -92,6 +95,7 @@ private:
 	FRandom Random;
 
 	EGameMode CurrentGameMode;
+	bool bChangeScreen = false;
 
 	void GenerateForest();
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
@@ -107,7 +111,6 @@ private:
 	bool IsOnPath(sf::Vector2f position);
 
 	void UpdateCharacter();
-	void LoadGame();
 
 	sf::Font Font;
 	sf::Text CharacterInforText;
@@ -211,9 +214,8 @@ private:
 	sf::Vector2f CameraPos;
 
 	// Game World
-
-	const int ScreenWidth = 1280;
-	const int ScreenHeight = 720;
+	const int ScreenWidth = 800;
+	const int ScreenHeight = 600;
 
 	const int WorldWidth = 4000;
 	const int WorldHeight = 4000;

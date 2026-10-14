@@ -170,8 +170,6 @@ void FGameScreen::HandleInput(const sf::Event& event)
 
 		if (CurrentGameMode == EGameMode::EGMUnpaused &&  event.key.code == sf::Keyboard::E)
 		{
-			std::cout << "E Key Pressed" << std::endl;
-
 			if (ClosestObject != nullptr)
 			{
 				CollectItem(CurrentInteractableObjectIndex);
@@ -182,12 +180,10 @@ void FGameScreen::HandleInput(const sf::Event& event)
 		{
 			if (CurrentGameMode != EGameMode::EGMPaused)
 			{
-				std::cout << "Game Paused" << std::endl;
 				CurrentGameMode = EGameMode::EGMPaused;
 			}
 			else if (CurrentGameMode != EGameMode::EGMUnpaused)
 			{
-				std::cout << "Game Unpaused" << std::endl;
 				CurrentGameMode = EGameMode::EGMUnpaused;
 			}
 		}
@@ -374,13 +370,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 		}
 	}
 
-	sf::RectangleShape debugBox;
-	debugBox.setPosition(PlayerReach.getPosition());
-	debugBox.setSize(PlayerReach.getSize());
-	debugBox.setFillColor(sf::Color(255, 0, 0, 100));
-
 	window.draw(PlayerSprite);
-	//window.draw(debugBox);
 
 	for (FForestObject& Object : ForestObjects)
 	{
@@ -395,7 +385,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	CharacterInforText.setFont(Font);
 	CharacterInforText.setCharacterSize(32);
 	CharacterInforText.setFillColor(sf::Color::White);
-	CharacterInforText.setPosition(ScreenWidth / 2.f, ScreenHeight - 250.f);
+	CharacterInforText.setPosition(ScreenWidth / 1.2f, ScreenHeight - 100.f);
 	
 	window.draw(CharacterInforText);
 	
@@ -450,7 +440,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 
 			MenuOptionText.setFont(Font);
 			MenuOptionText.setFillColor(Theme.PrimaryColor);
-			MenuOptionText.setCharacterSize(40);
+			MenuOptionText.setCharacterSize(40.f);
 
 			sf::FloatRect TextBounds = MenuOptionText.getLocalBounds();
 			MenuOptionText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
@@ -468,12 +458,6 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 			
 			window.draw(MenuOptionText);
 		}
-	}
-
-
-	if (CurrentGameMode == EGameMode::EGMInventory)
-	{
-		DrawScreen(window, InventoryText, InventoryBackground, InventoryMenu);
 	}
 
 	if (CurrentGameMode == EGameMode::EGMCrafting)
@@ -511,37 +495,29 @@ void FGameScreen::SetCharacter(FCharacter& Character)
 		ToUpper("\nClass: " + CharacterSheet->GetCharacterReference().CharClass.ClassName));
 }
 
-void FGameScreen::LoadFromStart()
-{
-	SaveLoadText.setString(ToUpper("Load Successful"));
-	
-	Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
-	SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
-
-	CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
-
-	PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
-	PlayerSprite.setPosition(PlayerPosition);
-
-	UpdateCharacter();
-
-	LoadForest(SaveAndLoad.GetLoadData().ForestObjectIDs);
-}
-
 void FGameScreen::LoadGame()
 {
-	SaveLoadText.setString(ToUpper("Load Successful"));
-	Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
+	bool SaveLoadSuccess = SaveAndLoad.LoadGame("SaveFile.json");
 
-	CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
+	if (SaveLoadSuccess)
+	{
+		SaveLoadText.setString(ToUpper("Load Successful"));
+		Creator->LoadCharacter(CharacterSheet->GetCharacterReference(), SaveAndLoad.GetLoadData().SavedCharacter);
 
-	SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
-	PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
-	PlayerSprite.setPosition(PlayerPosition);
+		CharacterSheet->GetInventory()->SetInventory(SaveAndLoad.GetLoadData().CharacterInventory.GetInventory());
 
-	UpdateCharacter();
+		SetSelectedCharacter(SaveAndLoad.GetLoadData().SelectedSpriteIndex);
+		PlayerPosition = SaveAndLoad.GetLoadData().CharacterPosition;
+		PlayerSprite.setPosition(PlayerPosition);
 
-	LoadForest(SaveAndLoad.GetLoadData().ForestObjectIDs);
+		UpdateCharacter();
+
+		LoadForest(SaveAndLoad.GetLoadData().ForestObjectIDs);
+	}
+	else
+	{
+		SaveLoadText.setString(ToUpper("Load Failed"));
+	}
 }
 
 
@@ -699,8 +675,6 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 	{
 	case EObjectType::EOTTree:
 		{
-			std::cout << "You collected Wood from Tree " << ObjectToCollect << std::endl;
-
 			// Add random Wood to inventory
 			std::uniform_int_distribution<int> GatheredDist(0, 3);
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
@@ -708,21 +682,10 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
 			CharacterSheet->GatherMaterials(&Material);
 
-			// Notify how much of item was added to inventory
-			std::cout << "You collected " << Material.MaterialName << std::endl;
-
-			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
-			{
-				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
-			}
-
 			break;
 		}
 	case EObjectType::EOTRock:
 		{
-			std::cout << "You collected Ore from a Rock " << ObjectToCollect << std::endl;
-
 			// Add random Ore to inventory
 			std::uniform_int_distribution<int> GatheredDist(4, 7);
 			int GatheredMaterial = GatheredDist(Random.RandomGenerator);
@@ -730,20 +693,10 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
 			CharacterSheet->GatherMaterials(&Material);
 
-			// Notify how much of item was added to inventory
-			std::cout << "You collected " << Material.MaterialName << std::endl;
-
-			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
-			{
-				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
-			}
 			break;
 		}
 	case EObjectType::EOTBush:
 		{
-			std::cout << "You collected Leaves from a Bush " << ObjectToCollect << std::endl;
-
 			// Add random Cloth to inventory	   
 
 			std::uniform_int_distribution<int> GatheredDist(8, 11);
@@ -752,14 +705,6 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 			const FMaterialData& Material = Loader->GetAvailableMaterials()[GatheredMaterial];
 			CharacterSheet->GatherMaterials(&Material);
 
-			// Notify how much of item was added to inventory
-			std::cout << "You collected " << Material.MaterialName << std::endl;
-
-			std::cout << "Materials:" << std::endl;
-			for (const FMaterial& Mat : CharacterSheet->GetInventory()->GetMaterials())
-			{
-				std::cout << Mat.Material->MaterialName << " : " << Mat.MaterialAmount << std::endl;
-			}
 			break;
 		}
 	default:
@@ -918,7 +863,7 @@ void FGameScreen::HandleMenu()
 		break;
 	case EMenuResult::EMRInventory:
 		// Open Inventory Screen
-		CurrentGameMode = EGameMode::EGMInventory;
+		bChangeScreen = true;
 		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRCrafting:
@@ -947,16 +892,8 @@ void FGameScreen::HandleMenu()
 		break;
 	case EMenuResult::EMRLoad:
 		// Load Game
-		SaveLoadSuccess = SaveAndLoad.LoadGame("SaveFile.json");
-
-		if (SaveLoadSuccess)
-		{
-			LoadGame();
-		}
-		else
-		{
-			SaveLoadText.setString(ToUpper("Load Failed"));
-		}
+		
+		LoadGame();
 
 		ShowNotification = true;
 		NotificationClock.restart();

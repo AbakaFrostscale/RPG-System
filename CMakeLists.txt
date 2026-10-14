@@ -18,6 +18,7 @@ set(SOURCES
 	UI/CharacterCreationScreen/CharacterCreationScreen.cpp
 	UI/GameScreen/GameScreen.cpp
 	UI/StartScreen/StartScreen.cpp
+	UI/InventoryScreen/InventoryScreen.cpp
 )
 
 add_executable(RPGGameSystem ${SOURCES}
