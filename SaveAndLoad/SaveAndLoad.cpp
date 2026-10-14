@@ -52,10 +52,8 @@ bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf
 	SaveFile["World"]["Player"]["Position"]["y"] = DataToSave.CharacterPosition.y;
 	SaveFile["World"]["Player"]["Sprite"] = DataToSave.SelectedSpriteIndex;
 
-	for (const int& ForestObjectID : DataToSave.ForestObjectIDs)
-	{
-		SaveFile["World"]["Forest"]["GatheredObjectID"] = DataToSave.ForestObjectIDs;
-	}
+
+	SaveFile["World"]["Forest"]["GatheredObjectID"] = DataToSave.ForestObjectIDs;
 
 	std::ofstream File("SaveFile.json");
 
