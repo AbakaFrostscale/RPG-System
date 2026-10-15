@@ -150,12 +150,6 @@ private:
 
 	bool bExitRequest = false;
 
-	//inventory
-	sf::Text InventoryText;
-
-	sf::RectangleShape InventoryBackground;
-	sf::RectangleShape InventoryMenu;
-
 	//crafting
 	sf::Text CraftingText;
 

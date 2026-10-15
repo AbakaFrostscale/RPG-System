@@ -29,8 +29,25 @@ private:
 	std::string ToUpper(const std::string& input);
 
 	sf::RectangleShape InventoryBlock;
+	sf::RectangleShape InventoryItemInfoBlock;
+
 	sf::Text InventoryItemName;
 	sf::Text InventoryItemAmount;
+	sf::Text InventoryItemWeightInfo;
+	sf::Text InventoryItemTypeInfo;
+	sf::Text InventoryItemRecipies;
+
+	int SelectedIndex = 0;
+	int ScrollOffset = 0;
+	int MaxVisibleItems = 0;
+
+	sf::Texture InventoryItemTexture;
+	sf::Sprite InventoryItemSprite;
+
+	sf::FloatRect InventoryItemBounds;
+
+	int FrameHeight = 24;
+	int FrameWidth = 24;
 
 	//Cursor
 	sf::Texture CursorTexture;
@@ -39,16 +56,11 @@ private:
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
 
-	int SelectedIndex = 0;
-
 	//Music
 	sf::Music InventoryMusic;
 	
 	sf::SoundBuffer CursorMoveBuffer;
 	sf::Sound CursorMoveSound;
-
-	sf::SoundBuffer ConfirmSoundBuffer;
-	sf::Sound ConfirmSound;
 
 	bool bMusicFadingIn = false;
 	float MusicFadeSpeed = 40.f;

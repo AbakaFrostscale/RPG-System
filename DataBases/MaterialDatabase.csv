@@ -1,13 +1,13 @@
-Material,Type,Weight
-Pine,Wood,3
-Oak,Wood,4
-Yew,Wood,5
-Ironwood,Wood,6
-Copper,Metal,4
-Iron,Metal,5
-Steel,Metal,6
-Mithril,Metal,3
-Linen,Cloth,2
-Wool,Cloth,3
-Leather,Cloth,4
-Spider Silk,Cloth,5
+Material,Type,Weight,Column,Row
+Pine,Wood,3,0,0
+Oak,Wood,4,0,0
+Yew,Wood,5,0,0
+Ironwood,Wood,6,0,0
+Copper,Metal,4,0,0
+Iron,Metal,5,0,0
+Steel,Metal,6,0,0
+Mithril,Metal,3,0,0
+Linen,Cloth,2,0,0
+Wool,Cloth,3,0,0
+Leather,Cloth,4,0,0
+Spider Silk,Cloth,5,0,0

@@ -21,6 +21,8 @@ FGameScreen::FGameScreen()
 		std::cout << "Failed to load Character Sprite!" << std::endl;
 	}
 
+	PlayerTexture.setSmooth(false);
+
 	PlayerSprite.setTexture(PlayerTexture);
 	PlayerSprite.setScale(2.f, 2.f);
 	PlayerSprite.setPosition(PlayerPosition);
@@ -451,7 +453,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 			{
 				CursorSprite.setPosition(MenuOptionText.getPosition().x - TextBounds.width / 2.f - 40.f, MenuOptionText.getPosition().y - TextBounds.height / 2.f + CursorOffset);
 
-				MenuOptionText.setFillColor(sf::Color(Theme.HighlightColor));
+				MenuOptionText.setFillColor(Theme.HighlightColor);
 
 				window.draw(CursorSprite);
 			}

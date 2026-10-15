@@ -28,6 +28,8 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 		std::cout << "Character failed to Load!" << std::endl;
 	}
 
+	CharacterTexture.setSmooth(false);
+
 	CharacterSprite.setTexture(CharacterTexture);
 	CharacterSprite.setScale(8.f, 8.f);
 	CharacterSprite.setPosition(300.f, 200.f);

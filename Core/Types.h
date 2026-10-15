@@ -92,8 +92,8 @@ struct FMaterialData
 	std::string MaterialName;
 	std::string Type;
 	int Weight = 0;
-
-	//new variables can be added later
+	int Column = 0;
+	int Row = 0;
 	
 	//MaterialID is here if ever a loopable item is needed to connect to a header (see RaceData for reasoning)
 	void FromCSVRow(const std::vector<std::string>& Columns)
@@ -101,6 +101,8 @@ struct FMaterialData
 		MaterialName = Columns[0];
 		Type = Columns[1];
 		Weight = std::stoi(Columns[2]);
+		Column = std::stoi(Columns[3]);
+		Row = std::stoi(Columns[4]);
 	}
 };
 
