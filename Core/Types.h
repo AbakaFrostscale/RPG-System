@@ -119,6 +119,8 @@ struct FItemData
 	std::string ItemType;
 	std::vector<std::pair<std::string, int>> RawRequiredMaterials;
 	std::vector<FMaterial> RequiredMaterial;
+	int Column = 0;
+	int Row = 0;
 	
 	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
@@ -130,6 +132,9 @@ struct FItemData
 		{
 			RawRequiredMaterials.emplace_back(Columns[i], std::stoi(Columns[i + 1]));
 		}
+
+		Column = std::stoi(Columns[8]);
+		Row = std::stoi(Columns[9]);
 	}
 };
 

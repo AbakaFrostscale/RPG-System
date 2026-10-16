@@ -35,7 +35,6 @@ private:
 	sf::Text InventoryItemAmount;
 	sf::Text InventoryItemWeightInfo;
 	sf::Text InventoryItemTypeInfo;
-	sf::Text InventoryItemRecipies;
 
 	int SelectedIndex = 0;
 	int ScrollOffset = 0;
@@ -49,6 +48,9 @@ private:
 	int FrameHeight = 24;
 	int FrameWidth = 24;
 
+	int InventoryItemColumn = 0;
+	int InventoryItemRow = 0;
+
 	//Cursor
 	sf::Texture CursorTexture;
 	sf::Sprite CursorSprite;
@@ -61,9 +63,6 @@ private:
 	
 	sf::SoundBuffer CursorMoveBuffer;
 	sf::Sound CursorMoveSound;
-
-	bool bMusicFadingIn = false;
-	float MusicFadeSpeed = 40.f;
 
 	//Character
 	FCharacter* CharacterSheet = nullptr;

@@ -18,8 +18,6 @@ FInventoryScreen::FInventoryScreen()
 	InventoryMusic.play();
 	InventoryMusic.setVolume(0.f);
 
-	bMusicFadingIn = true;
-
 	if (!CursorTexture.loadFromFile("Assets/Sprites/Cursors/03.png"))
 	{
 		std::cout << "Cursor failed to load!" << std::endl;
@@ -104,7 +102,8 @@ void FInventoryScreen::HandleInput(const sf::Event& event)
 
 void FInventoryScreen::Update(float DeltaTime)
 {
-	
+	CursorTimer += DeltaTime;
+	CursorOffset = std::sin(CursorTimer) * 2.f;
 }
 
 void FInventoryScreen::Draw(sf::RenderWindow & window)
@@ -210,6 +209,10 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 				TextBounds = InventoryItemTypeInfo.getLocalBounds();
 				InventoryItemTypeInfo.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
 
+				InventoryItemColumn = Material.Material->Column;
+				InventoryItemRow = Material.Material->Row;
+
+				InventoryItemSprite.setTextureRect(sf::IntRect(InventoryItemRow * FrameWidth, InventoryItemColumn * FrameHeight, FrameWidth, FrameHeight));
 				
 				window.draw(CursorSprite);
 			}

@@ -12,6 +12,7 @@
 #include "UI/StartScreen/StartScreen.h"
 #include "UI/GameScreen/GameScreen.h"
 #include "UI/InventoryScreen/InventoryScreen.h"
+#include "UI/CraftingScreen/CraftingScreen.h"
 
 #include "Character/Character.h"
 #include "Inventory/Inventory.h"
@@ -23,13 +24,15 @@ enum class EGameState
 	EGSStartMenu,
 	EGSCharacterCreation,
 	EGSGame,
-	EGSInventory
+	EGSInventory,
+	EGSCrafting
 };
 
 FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
 FGameScreen GameScreen;
 FInventoryScreen InventoryScreen;
+FCraftingScreen CraftingScreen;
 
 FTheme Theme;
 
@@ -544,6 +547,11 @@ int main()
 			{
 				InventoryScreen.HandleInput(event);
 			}
+
+			if (CurrentState == EGameState::EGSCrafting)
+			{
+				CraftingScreen.HandleInput(event);
+			}
 				
 		}
 
@@ -561,9 +569,8 @@ int main()
 					CreationScreen.StartFadeIn();
 				}
 				else if (choice == 1) //Load Game
-				{
-					//std::cout << "Load Not Working yet";
-					
+				{					
+					CraftingScreen.SetCharacter(CurrentCharacter);
 					InventoryScreen.SetCharacter(CurrentCharacter);
 					GameScreen.SetCharacter(CurrentCharacter);
 					GameScreen.LoadGame();
@@ -596,6 +603,7 @@ int main()
 			{
 				CurrentCharacter.SetCharacter(CreationScreen.GetCharacter());
 
+				CraftingScreen.SetCharacter(CurrentCharacter);
 				InventoryScreen.SetCharacter(CurrentCharacter);
 				GameScreen.SetCharacter(CurrentCharacter);
 				GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
@@ -608,10 +616,16 @@ int main()
 		{
 			GameScreen.Update(deltaTime);
 
-			if (GameScreen.GetbChangeScreen())
+			if (GameScreen.GetbChangeScreenInventory())
 			{
-				GameScreen.SetbChangeScreen(false);
+				GameScreen.SetbChangeScreenInventory(false);
 				CurrentState = EGameState::EGSInventory;
+			}
+
+			if (GameScreen.GetbChangeScreenCrafting())
+			{
+				GameScreen.SetbChangeScreenCrafting(false);
+				CurrentState = EGameState::EGSCrafting;
 			}
 
 			if (GameScreen.bIsExitRequested())
@@ -627,6 +641,17 @@ int main()
 			if (InventoryScreen.GetbChangeScreen())
 			{
 				InventoryScreen.SetbChangeScreen(false);
+				CurrentState = EGameState::EGSGame;
+			}
+		}
+
+		if (CurrentState == EGameState::EGSCrafting)
+		{
+			CraftingScreen.Update(deltaTime);
+
+			if (CraftingScreen.GetbChangeScreen())
+			{
+				CraftingScreen.SetbChangeScreen(false);
 				CurrentState = EGameState::EGSGame;
 			}
 		}
@@ -649,6 +674,10 @@ int main()
 		else if (CurrentState == EGameState::EGSInventory)
 		{
 			InventoryScreen.Draw(window);
+		}
+		else if (CurrentState == EGameState::EGSCrafting)
+		{
+			CraftingScreen.Draw(window);
 		}
 
 		

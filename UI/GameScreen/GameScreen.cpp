@@ -865,12 +865,12 @@ void FGameScreen::HandleMenu()
 		break;
 	case EMenuResult::EMRInventory:
 		// Open Inventory Screen
-		bChangeScreen = true;
+		bChangeScreenInventory = true;
 		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRCrafting:
 		// Open Crafting Screen
-		CurrentGameMode = EGameMode::EGMCrafting;
+		bChangeScreenCrafting = true;
 		MenuResult = EMenuResult::EMRDefault;
 		break;
 	case EMenuResult::EMRSave:

@@ -78,8 +78,11 @@ public:
 	void SetCharacter(FCharacter& Character);
 	const bool bIsExitRequested() const { return bExitRequest; }
 
-	const bool GetbChangeScreen() const { return bChangeScreen; }
-	void SetbChangeScreen(bool ChangeScreen) { bChangeScreen = ChangeScreen; }
+	const bool GetbChangeScreenInventory() const { return bChangeScreenInventory; }
+	void SetbChangeScreenInventory(bool ChangeScreen) { bChangeScreenInventory = ChangeScreen; }
+
+	const bool GetbChangeScreenCrafting() const { return bChangeScreenCrafting; }
+	void SetbChangeScreenCrafting(bool ChangeScreen) { bChangeScreenCrafting = ChangeScreen; }
 
 	void LoadGame();
 
@@ -95,7 +98,8 @@ private:
 	FRandom Random;
 
 	EGameMode CurrentGameMode;
-	bool bChangeScreen = false;
+	bool bChangeScreenInventory = false;
+	bool bChangeScreenCrafting = false;
 
 	void GenerateForest();
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
