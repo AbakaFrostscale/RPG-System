@@ -34,11 +34,20 @@ private:
 	sf::RectangleShape CraftingItemInfoBlock;
 	sf::RectangleShape CraftingItemType;
 
+	sf::RectangleShape ConfirmBlock;
+	sf::RectangleShape YesBlock;
+	sf::RectangleShape NoBlock;
+
 	sf::Text CraftingItemName;
 	sf::Text CraftingItemInfo;
 
 	sf::Text CraftingItemMaterialsName;
 	sf::Text CraftingItemMaterialsAmount;
+
+	sf::Text ConfirmText;
+	sf::Text YesText;
+	sf::Text NoText;
+
 	
 	int SelectedIndex = 0;
 	int ScrollOffset = 0;
@@ -73,6 +82,7 @@ private:
 
 	//Variables
 	bool bChangeScreen = false;
+	bool bCraftItem = false;
 
 	std::shared_ptr<FLoadExternalData> Loader;
 };

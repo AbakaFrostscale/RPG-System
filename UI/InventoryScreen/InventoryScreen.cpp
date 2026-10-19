@@ -234,7 +234,11 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 
 	window.draw(InventoryItemTypeInfo);
 	window.draw(InventoryItemWeightInfo);
-	window.draw(InventoryItemSprite);
+
+	if (!CharacterSheet->GetInventory()->GetMaterials().empty())
+	{
+		window.draw(InventoryItemSprite);
+	}
 }
 
 std::string FInventoryScreen::ToUpper(const std::string& input)

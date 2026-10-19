@@ -179,3 +179,24 @@ ECraftingResponse FInventory::HasRequiredMaterialsArmour(const FArmour& Armour)
 	}
 	return ECraftingResponse::ECRCanBeCrafted;
 }
+
+bool FInventory::HasRequiredMaterials(const FInventory& Inventory, const FItemData& Item)
+{
+	for (const FMaterial& ItemMaterialIndex : Item.RequiredMaterial)
+	{
+		bool bRequirementMet = false;
+		for (const FMaterial& MaterialIndex : Inventory.GetInventory().Materials)
+		{
+			if (MaterialIndex.Material->MaterialName == ItemMaterialIndex.Material->MaterialName && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
+			{
+				bRequirementMet = true;
+				break;
+			}
+		}
+		if (!bRequirementMet)
+		{
+			return false;
+		}
+	}
+	return true;
+}

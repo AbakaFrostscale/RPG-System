@@ -13,7 +13,7 @@ FCraftingScreen::FCraftingScreen()
 		std::cout << "Failed to load font" << std::endl;
 	}
 
-	if (!CraftingMusic.openFromFile("Assets/Audio/Music/Loop/VillageMusic.wav"))
+	if (!CraftingMusic.openFromFile("Assets/Audio/Music/Loop/Village_Loop.wav"))
 	{
 		std::cout << "Failed to load Music!" << std::endl;
 	}
@@ -50,6 +50,9 @@ FCraftingScreen::FCraftingScreen()
 
 	CursorMoveSound.setBuffer(CursorMoveBuffer);
 	CursorMoveSound.setVolume(50.f);
+
+	YesText.setString(ToUpper("yes"));
+	NoText.setString(ToUpper("no"));
 }
 
 void FCraftingScreen::HandleInput(const sf::Event& event)
@@ -97,6 +100,19 @@ void FCraftingScreen::HandleInput(const sf::Event& event)
 				ScrollOffset--;
 			}
 		}
+
+		if (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::E)
+		{
+			bCraftItem = true;
+
+			ConfirmBlock.setSize(sf::Vector2f(CraftingBlock.getSize().x - 350.f, CraftingBlock.getSize().y - 200.f));
+			ConfirmBlock.setOrigin(ConfirmBlock.getSize() / 2.f);
+			ConfirmBlock.setPosition(CraftingBlock.getPosition());
+			ConfirmBlock.setOutlineColor(Theme.PrimaryColor);
+			ConfirmBlock.setOutlineThickness(2.f);
+			ConfirmBlock.setFillColor(Theme.BackgroundColor);
+		}
+
 	}
 }
 
@@ -192,6 +208,15 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 
 			CraftingItemSprite.setTextureRect(sf::IntRect(CraftingItemRow * FrameWidth, CraftingItemColumn * FrameHeight, FrameWidth, FrameHeight));
 
+			if (!CharacterSheet->GetInventory()->HasRequiredMaterials(*CharacterSheet->GetInventory(), Item))
+			{
+				CraftingItemSprite.setColor(sf::Color(50.f, 50.f, 50.f));
+			}
+			else
+			{
+				CraftingItemSprite.setColor(sf::Color::White);
+			}
+
 			float CraftedItemY = CraftingItemMaterialsName.getPosition().y;
 
 			for (const FMaterial& Material : Item.RequiredMaterial)
@@ -211,12 +236,30 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 				window.draw(CraftingItemMaterialsName);
 				window.draw(CraftingItemMaterialsAmount);
 			}
-
+				
 			window.draw(CuresorSprite);
 		}
 		else
 		{
-			CraftingItemName.setColor(Theme.PrimaryColor);
+			if (!CharacterSheet->GetInventory()->HasRequiredMaterials(*CharacterSheet->GetInventory(), Item))
+			{
+				CraftingItemName.setFillColor(sf::Color(50.f, 50.f, 50.f));
+			}
+			else
+			{
+				CraftingItemName.setFillColor(Theme.PrimaryColor);
+			}
+		}
+
+		if (bCraftItem)
+		{
+			ConfirmText.setString(ToUpper("Are you sure you want to craft ") + ToUpper(Item.ItemName));
+			TextBounds = ConfirmText.getLocalBounds();
+			ConfirmText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+			ConfirmText.setPosition(ConfirmBlock.getPosition().x, ConfirmBlock.getPosition().y - 50.f);
+
+			window.draw(ConfirmBlock);
+			window.draw(ConfirmText);
 		}
 
 		if (CurrentIndex >= ScrollOffset && CurrentIndex < ScrollOffset + MaxVisibleItems)
@@ -227,7 +270,7 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 		CurrentIndex++;
 	}
 
-	
+
 	window.draw(CraftingItemInfo);
 	window.draw(CraftingItemSprite);
 }

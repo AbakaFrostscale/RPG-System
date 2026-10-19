@@ -42,6 +42,7 @@ public:
 	bool HasMaterial(const FMaterial& Material);
 	ECraftingResponse HasRequiredMaterialsWeapon(const FWeapon& Weapon);
 	ECraftingResponse HasRequiredMaterialsArmour(const FArmour& Armour);
+	bool HasRequiredMaterials(const FInventory& Inventory, const FItemData& Items);
 
 	std::vector<FMaterial>& GetMaterials() { return Inventory.Materials; }
 	const std::vector<FWeapon>& GetWeapons() const { return Inventory.Weapons; }
