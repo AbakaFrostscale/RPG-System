@@ -28,6 +28,8 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 		std::cout << "Character failed to Load!" << std::endl;
 	}
 
+	CharacterTexture.setSmooth(false);
+
 	CharacterSprite.setTexture(CharacterTexture);
 	CharacterSprite.setScale(8.f, 8.f);
 	CharacterSprite.setPosition(300.f, 200.f);
@@ -127,7 +129,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			{
 				std::string attr = GetSelectedAttribute();
 
-				Creator.AllocateAttributePoints(CurrentCharacter, attr, 1, EMode::EMIncrease);
+				Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(), attr, 1, EMode::EMIncrease);
 			}
 		}
 
@@ -154,7 +156,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 			{
 				std::string attr = GetSelectedAttribute();
 
-				Creator.AllocateAttributePoints(CurrentCharacter, attr, 1, EMode::EMDecrease);
+				Creator.AllocateAttributePoints(CurrentCharacter.GetCharacterReference(), attr, 1, EMode::EMDecrease);
 			}
 		}
 
@@ -217,7 +219,7 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 
 				if (!bIsCharacterCreated)
 				{
-					Creator.CreateCharacter(CurrentCharacter, Name, SelectedRaceIndex, SelectedClassIndex);
+					Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), Name, SelectedRaceIndex, SelectedClassIndex);
 					bIsCharacterCreated = true;
 				}
 
@@ -226,14 +228,14 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 
 				if (bIsCharacterCreated && !bIsFinalised)
 				{
-					Creator.SetHPandMP(CurrentCharacter);
+					Creator.SetHPandMP(CurrentCharacter.GetCharacterReference());
 					bMusicFadingOut = true;
 					bFadingOut = true;
 				}
 			}
 			else if (Fields[SelectedIndex] == "Reset")
 			{
-				Creator.CreateCharacter(CurrentCharacter, Name, SelectedRaceIndex, SelectedClassIndex);
+				Creator.CreateCharacter(CurrentCharacter.GetCharacterReference(), Name, SelectedRaceIndex, SelectedClassIndex);
 				Creator.SetAttributePoints(Creator.GetMaxAttributePoints());
 
 				bIsCharacterCreated = false;
@@ -417,7 +419,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		}
 		else if (bIsCharacterCreated && std::find(Attributes.begin(), Attributes.end(), Fields[i]) != Attributes.end())
 		{
-			int value = CurrentCharacter.CharStats.at(Creator.StringToEAbility(Fields[i]));
+			int value = CurrentCharacter.GetCharacterReference().CharStats.at(Creator.StringToEAbility(Fields[i]));
 
 			displayText += ": " + std::to_string(value);
 		}

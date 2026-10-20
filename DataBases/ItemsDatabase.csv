@@ -1,7 +1,7 @@
-ItemName,ItemType,ReqMaterial1,ReqMaterial1Amount,ReqMaterial2,ReqMaterila2Amount,ReqMaterial3,ReqMaterial3Amount
-Copper Sword,Weapon,Copper,2,Pine,1,Leather,1
-Iron Sword,Weapon,Iron,2,Oak,1,Leather,1
-Steel Sword,Weapon,Steel,2,Yew,1,Leather,1
-Copper Chest Plate,Armour,Copper,4,Leather,2,Linen,2
-Iron Chest Plate,Armour,Iron,4,Leather,2,Wool,2
-Spider Silk Armour,Armour,Spider Silk,6,Copper,2,Leather,3
+ItemName,ItemType,ReqMaterial1,ReqMaterial1Amount,ReqMaterial2,ReqMaterila2Amount,ReqMaterial3,ReqMaterial3Amount,Column,Row
+Copper Sword,Weapon,Copper,2,Pine,1,Leather,1,94,0
+Iron Sword,Weapon,Iron,2,Oak,1,Leather,1,99,0
+Steel Sword,Weapon,Steel,2,Yew,1,Leather,1,104,0
+Copper Chest Plate,Armour,Copper,4,Leather,2,Linen,2,120,4
+Iron Chest Plate,Armour,Iron,4,Leather,2,Wool,2,120,0
+Spider Silk Armour,Armour,Spider Silk,6,Copper,2,Leather,3,118,0

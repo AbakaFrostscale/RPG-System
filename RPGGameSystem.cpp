@@ -11,6 +11,8 @@
 #include "UI/CharacterCreationScreen/CharacterCreationScreen.h"
 #include "UI/StartScreen/StartScreen.h"
 #include "UI/GameScreen/GameScreen.h"
+#include "UI/InventoryScreen/InventoryScreen.h"
+#include "UI/CraftingScreen/CraftingScreen.h"
 
 #include "Character/Character.h"
 #include "Inventory/Inventory.h"
@@ -21,12 +23,16 @@ enum class EGameState
 {
 	EGSStartMenu,
 	EGSCharacterCreation,
-	EGSGame
+	EGSGame,
+	EGSInventory,
+	EGSCrafting
 };
 
 FCharacterCreationScreen CreationScreen;
 FStartScreen StartScreen;
 FGameScreen GameScreen;
+FInventoryScreen InventoryScreen;
+FCraftingScreen CraftingScreen;
 
 FTheme Theme;
 
@@ -37,6 +43,7 @@ FItem MainItem;
 EGameState CurrentState = EGameState::EGSStartMenu;
 
 bool bCharacterCreated;
+bool bLoadFromStart;
 sf::Font GameFont;
 sf::Clock Clock;
 
@@ -319,35 +326,7 @@ static EMode SelectMode(int Mode)
 		std::cout << "What would you like to do?" << std::endl;
 		std::cout << "Gather Materials(1), Craft Items(2), Equip Items(3), Fight(4)?" << std::endl;
 		std::cin >> ActionIndex;
-
-
-		switch (ActionIndex)
-		{
-		case 1:
-		{
-			int MaterialIndex = 0;
-			int MaterialTypeIndex = 0;
-
-			std::cout << "What material type are you looking for Wood(1), Metal(2), Cloth(3), All(4)" << std::endl;
-			std::cin >> MaterialTypeIndex;
-			PrintAvailableMaterials(MaterialTypeIndex);
-
-			std::cout << "What material would you like to gather?" << std::endl;
-			std::cin >> MaterialIndex;
-
-			const FMaterialData& Material = MainItem.GetLoader()->GetAvailableMaterials()[MaterialIndex - 1];
-			CurrentCharacter.GatherMaterials(&Material);
-
-			for (const FMaterial& Materials : CurrentCharacter.GetInventory()->GetMaterials())
-			{
-				if (Materials.Material->MaterialName == Material.MaterialName)
-				{
-					std::cout << "You now have " << Materials.MaterialAmount << " " << Materials.Material->MaterialName << std::endl;
-					break;
-				}
-			}
-			break;
-		}
+		
 		case 2:
 		{
 			int ItemTypeIndex = 0;
@@ -535,7 +514,7 @@ int main()
 {
 	LoadFont();
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Placeholder Name");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "Wayfarer's Oath");
 
 	while (window.isOpen())
 	{
@@ -563,6 +542,17 @@ int main()
 			{
 				GameScreen.HandleInput(event);
 			}
+
+			if (CurrentState == EGameState::EGSInventory)
+			{
+				InventoryScreen.HandleInput(event);
+			}
+
+			if (CurrentState == EGameState::EGSCrafting)
+			{
+				CraftingScreen.HandleInput(event);
+			}
+				
 		}
 
 		if (CurrentState == EGameState::EGSStartMenu)
@@ -579,9 +569,15 @@ int main()
 					CreationScreen.StartFadeIn();
 				}
 				else if (choice == 1) //Load Game
-				{
-					std::cout << "Load not yet implemented" << std::endl;
+				{					
+					CraftingScreen.SetCharacter(CurrentCharacter);
+					InventoryScreen.SetCharacter(CurrentCharacter);
+					GameScreen.SetCharacter(CurrentCharacter);
+					GameScreen.LoadGame();
+					
 					StartScreen.ResetTransition();
+				
+					CurrentState = EGameState::EGSGame;
 				}
 				else if (choice == 2) //Exit
 				{
@@ -607,8 +603,10 @@ int main()
 			{
 				CurrentCharacter.SetCharacter(CreationScreen.GetCharacter());
 
-				std::cout << "Character passed to Game!" << std::endl;
-				PrintCharacter(CurrentCharacter.GetCharacter());
+				CraftingScreen.SetCharacter(CurrentCharacter);
+				InventoryScreen.SetCharacter(CurrentCharacter);
+				GameScreen.SetCharacter(CurrentCharacter);
+				GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
 
 				CurrentState = EGameState::EGSGame;
 			}
@@ -616,9 +614,46 @@ int main()
 
 		if (CurrentState == EGameState::EGSGame)
 		{
-			GameScreen.SetSelectedCharacter(CreationScreen.GetSelectedCharacter());
-
 			GameScreen.Update(deltaTime);
+
+			if (GameScreen.GetbChangeScreenInventory())
+			{
+				GameScreen.SetbChangeScreenInventory(false);
+				CurrentState = EGameState::EGSInventory;
+			}
+
+			if (GameScreen.GetbChangeScreenCrafting())
+			{
+				GameScreen.SetbChangeScreenCrafting(false);
+				CurrentState = EGameState::EGSCrafting;
+			}
+
+			if (GameScreen.bIsExitRequested())
+			{
+				window.close();
+			}
+		}
+
+		if (CurrentState == EGameState::EGSInventory)
+		{
+			InventoryScreen.Update(deltaTime);
+
+			if (InventoryScreen.GetbChangeScreen())
+			{
+				InventoryScreen.SetbChangeScreen(false);
+				CurrentState = EGameState::EGSGame;
+			}
+		}
+
+		if (CurrentState == EGameState::EGSCrafting)
+		{
+			CraftingScreen.Update(deltaTime);
+
+			if (CraftingScreen.GetbChangeScreen())
+			{
+				CraftingScreen.SetbChangeScreen(false);
+				CurrentState = EGameState::EGSGame;
+			}
 		}
 
 		window.clear(sf::Color(Theme.BackgroundColor));
@@ -634,8 +669,15 @@ int main()
 		}
 		else if (CurrentState == EGameState::EGSGame)
 		{
-			GameScreen.SetCharacter(CurrentCharacter.GetCharacter());
 			GameScreen.Draw(window);
+		}
+		else if (CurrentState == EGameState::EGSInventory)
+		{
+			InventoryScreen.Draw(window);
+		}
+		else if (CurrentState == EGameState::EGSCrafting)
+		{
+			CraftingScreen.Draw(window);
 		}
 
 		

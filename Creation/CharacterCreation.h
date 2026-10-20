@@ -13,6 +13,7 @@
 
 
 class FLoadExternalData;
+
 struct FCharacterData;
 
 class FCharacterCreator
@@ -21,6 +22,7 @@ public:
 	FCharacterCreator();
 
 	void CreateCharacter(FCharacterData& Character, std::string UIName, int UIRace, int UIClass);
+	void LoadCharacter(FCharacterData& Character, const FCharacterData& LoadedCharacter);
 	void AllocateAttributePoints(FCharacterData& Character, std::string UISkill, int UIAmount, EMode UIMode);
 	void SetHPandMP(FCharacterData& Character);
 

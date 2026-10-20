@@ -6,9 +6,13 @@
 
 #include "Character/CharacterStats.h"
 #include "Character/Character.h"
+#include "Inventory/Inventory.h"
 #include "Core/Random.h"
+#include "SaveAndLoad/SaveAndLoad.h"
 
 class FLoadExternalData;
+
+class FCharacterCreator;
 
 enum class EGameMode
 {
@@ -25,6 +29,7 @@ enum class EMenuSetting
 	EMSInventory,
 	EMSCrafting,
 	EMSSave,
+	EMSLoad,
 	EMSOptions,
 	EMSExit,
 	EMSDefault
@@ -36,16 +41,10 @@ enum class EMenuResult
 	EMRInventory,
 	EMRCrafting,
 	EMRSave,
+	EMRLoad,
 	EMROptions,
 	EMRExit, 
 	EMRDefault
-};
-
-enum class EObjectType
-{
-	EOTTree,
-	EOTRock,
-	EOTBush
 };
 
 enum class EFacingDirection
@@ -64,13 +63,6 @@ enum class ECollisionType
 	ECTNone
 };
 
-struct FForestObject
-{
-	sf::Sprite Sprite;
-	sf::FloatRect Collision;
-	EObjectType ObjectType = EObjectType::EOTTree;
-};
-
 class FGameScreen
 {
 public:
@@ -83,27 +75,46 @@ public:
 	std::string ToUpper(const std::string& input);
 
 	void SetSelectedCharacter(const int SelectedCharacter);
-	void SetCharacter(const FCharacterData& Character);
+	void SetCharacter(FCharacter& Character);
+	const bool bIsExitRequested() const { return bExitRequest; }
 
-	const FCharacter& GetCharacter() { return CharacterSheet; }
+	const bool GetbChangeScreenInventory() const { return bChangeScreenInventory; }
+	void SetbChangeScreenInventory(bool ChangeScreen) { bChangeScreenInventory = ChangeScreen; }
+
+	const bool GetbChangeScreenCrafting() const { return bChangeScreenCrafting; }
+	void SetbChangeScreenCrafting(bool ChangeScreen) { bChangeScreenCrafting = ChangeScreen; }
+
+	void LoadGame();
+
+	const FCharacter* GetCharacter() { return CharacterSheet; }
 
 private:
 	sf::Color ScreenBackgroundColour = sf::Color(30, 5, 5, 255 / 2);
 
 	FTheme Theme;
 
-	FCharacterData CurrentCharacter;
-	FCharacter CharacterSheet;
+	FCharacter* CharacterSheet = nullptr;
+	FSaveAndLoad SaveAndLoad;
 	FRandom Random;
 
 	EGameMode CurrentGameMode;
+	bool bChangeScreenInventory = false;
+	bool bChangeScreenCrafting = false;
 
 	void GenerateForest();
-	void OverlappingObject();
-	void DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu);
-	void CollectItem(int ObjectToCollect);
 	void PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType);
+	void LoadForest(const std::vector<int>& GatheredItems);
+
+	void OverlappingObject();
+	void CollectItem(int ObjectToCollect);
+	
+	void DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu);
+	void HandleMenu();
+	void Notification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond);
+	
 	bool IsOnPath(sf::Vector2f position);
+
+	void UpdateCharacter();
 
 	sf::Font Font;
 	sf::Text CharacterInforText;
@@ -127,6 +138,7 @@ private:
 		EMenuSetting::EMSInventory,
 		EMenuSetting::EMSCrafting,
 		EMenuSetting::EMSSave,
+		EMenuSetting::EMSLoad,
 		EMenuSetting::EMSOptions,
 		EMenuSetting::EMSExit
 	};
@@ -140,11 +152,7 @@ private:
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
 
-	//inventory
-	sf::Text InventoryText;
-
-	sf::RectangleShape InventoryBackground;
-	sf::RectangleShape InventoryMenu;
+	bool bExitRequest = false;
 
 	//crafting
 	sf::Text CraftingText;
@@ -159,10 +167,10 @@ private:
 	sf::RectangleShape OptionsMenu;
 
 	//save
-	sf::Text SaveText;
-
-	sf::RectangleShape SaveBackground;
-	sf::RectangleShape SaveMenu;
+	sf::Text SaveLoadText;
+	sf::RectangleShape SaveLoadSuccessMenu;
+	sf::Clock NotificationClock;
+	bool ShowNotification = false;
 
 	//player
 	sf::Texture PlayerTexture;
@@ -204,12 +212,13 @@ private:
 	sf::Vector2f CameraPos;
 
 	// Game World
-
-	const int ScreenWidth = 1280;
-	const int ScreenHeight = 720;
+	const int ScreenWidth = 800;
+	const int ScreenHeight = 600;
 
 	const int WorldWidth = 4000;
 	const int WorldHeight = 4000;
+
+	int ForestObjectID = 0;
 
 	sf::Texture TreeTexture;
 	sf::Texture RockTexture;
@@ -218,6 +227,7 @@ private:
 
 	std::vector<FForestObject> ForestObjects;
 	std::vector<sf::Sprite*> DrawList;
+	std::vector<int> GatheredObjectID;
 
 	sf::RectangleShape Ground;
 	sf::RectangleShape Path;
@@ -314,5 +324,6 @@ private:
 		sf::IntRect{96, 64, 64, 32} //Rock 11
 	};
 
-	std::unique_ptr<FLoadExternalData> Loader;
+	std::shared_ptr<FCharacterCreator> Creator;
+	std::shared_ptr<FLoadExternalData> Loader;
 };

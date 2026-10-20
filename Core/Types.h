@@ -71,14 +71,29 @@ enum class ECraftingResponse
 	ECRCanBeCrafted
 };
 
+enum class EObjectType
+{
+	EOTTree,
+	EOTRock,
+	EOTBush
+};
+
+struct FForestObject
+{
+	sf::Sprite Sprite;
+	sf::FloatRect Collision;
+	EObjectType ObjectType = EObjectType::EOTTree;
+	int ObjectID = 0;
+};
+
 //Information on materials to be referneced by the FMaterial struct, always initialized in GatherableMaterials
 struct FMaterialData
 {
 	std::string MaterialName;
 	std::string Type;
 	int Weight = 0;
-
-	//new variables can be added later
+	int Column = 0;
+	int Row = 0;
 	
 	//MaterialID is here if ever a loopable item is needed to connect to a header (see RaceData for reasoning)
 	void FromCSVRow(const std::vector<std::string>& Columns)
@@ -86,9 +101,9 @@ struct FMaterialData
 		MaterialName = Columns[0];
 		Type = Columns[1];
 		Weight = std::stoi(Columns[2]);
+		Column = std::stoi(Columns[3]);
+		Row = std::stoi(Columns[4]);
 	}
-
-
 };
 
 // Used to hold a specific metrial in an inventory or crafting requirement
@@ -104,6 +119,8 @@ struct FItemData
 	std::string ItemType;
 	std::vector<std::pair<std::string, int>> RawRequiredMaterials;
 	std::vector<FMaterial> RequiredMaterial;
+	int Column = 0;
+	int Row = 0;
 	
 	void FromCSVRow(const std::vector<std::string>& Columns)
 	{
@@ -115,6 +132,9 @@ struct FItemData
 		{
 			RawRequiredMaterials.emplace_back(Columns[i], std::stoi(Columns[i + 1]));
 		}
+
+		Column = std::stoi(Columns[8]);
+		Row = std::stoi(Columns[9]);
 	}
 };
 
@@ -196,3 +216,4 @@ struct FTheme
 	sf::Color AccentColor = sf::Color(255, 120, 220);
 	sf::Color BackgroundColor = sf::Color(30, 5, 5);
 };
+

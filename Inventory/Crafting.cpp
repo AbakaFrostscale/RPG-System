@@ -60,7 +60,7 @@ ECraftingResponse FCrafting::CanWeaponBeCrafted(const FWeapon& WeaponToCraft, FI
 
 	if (Inventory.HasWeapon(WeaponToCraft) == ECraftingResponse::ECRItemAlreadyInInventory)
 	{
-			return ECraftingResponse::ECRItemAlreadyInInventory;
+		return ECraftingResponse::ECRItemAlreadyInInventory;
 	}
 
 	if (Inventory.HasRequiredMaterialsWeapon(WeaponToCraft) == ECraftingResponse::ECRMaterialsMissing)

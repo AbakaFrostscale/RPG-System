@@ -14,9 +14,12 @@ set(SOURCES
 	Inventory/Crafting.cpp
 	Inventory/Inventory.cpp
 	Inventory/Items.cpp
+	SaveAndLoad/SaveAndLoad.cpp
 	UI/CharacterCreationScreen/CharacterCreationScreen.cpp
 	UI/GameScreen/GameScreen.cpp
 	UI/StartScreen/StartScreen.cpp
+	UI/InventoryScreen/InventoryScreen.cpp
+	UI/CraftingScreen/CraftingScreen.cpp
 )
 
 add_executable(RPGGameSystem ${SOURCES}
