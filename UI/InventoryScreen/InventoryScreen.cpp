@@ -169,6 +169,10 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 	{	
 		InventoryItemName.setPosition(InventoryBlock.getOrigin().x / 2.f - 20.f, TextHeight);
 		InventoryItemName.setString(ToUpper("EMPTY"));
+
+		InventoryItemTypeInfo.setString("");
+		InventoryItemWeightInfo.setString("");
+
 		TextBounds = InventoryItemName.getLocalBounds();
 		InventoryItemName.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
 
