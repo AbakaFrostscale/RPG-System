@@ -29,6 +29,7 @@ private:
 	sf::Font Font;
 
 	std::string ToUpper(const std::string& input);
+	void CraftNotification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond);
 
 	sf::RectangleShape CraftingBlock;
 	sf::RectangleShape CraftingItemInfoBlock;
@@ -48,6 +49,7 @@ private:
 	sf::Text YesText;
 	sf::Text NoText;
 
+	bool YesSelected = true;
 	
 	int SelectedIndex = 0;
 	int ScrollOffset = 0;
@@ -83,6 +85,10 @@ private:
 	//Variables
 	bool bChangeScreen = false;
 	bool bCraftItem = false;
+	bool bIsCraftable = false;
+
+	sf::Clock NotificationClock;
+	bool ShowNotification = false;
 
 	std::shared_ptr<FLoadExternalData> Loader;
 };
