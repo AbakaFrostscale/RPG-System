@@ -19,7 +19,7 @@ void FInventory::RemoveMaterials(FMaterial Material, int AmountToRemove)
 {
 	for (auto It = Inventory.Materials.begin(); It != Inventory.Materials.end();)
 	{
-		if (It->Material == Material.Material)
+		if (It->Material->MaterialName == Material.Material->MaterialName)
 		{
 			It->MaterialAmount -= AmountToRemove;
 			if (It->MaterialAmount <= 0)
@@ -130,7 +130,7 @@ bool FInventory::HasMaterial(const FMaterial& Material)
 {
 	for (const FMaterial& MaterialIndex : Inventory.Materials)
 	{
-		if (MaterialIndex.Material == Material.Material)
+		if (MaterialIndex.Material->MaterialName == Material.Material->MaterialName)
 		{
 			return true;
 		}
@@ -145,7 +145,7 @@ ECraftingResponse FInventory::HasRequiredMaterialsWeapon(const FWeapon& Weapon)
 		bool bRequirementsMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
 		{
-			if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
+			if (MaterialIndex.Material->MaterialName == ItemMaterialIndex.Material->MaterialName && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
 			{
 				bRequirementsMet = true;
 				break;
@@ -166,7 +166,7 @@ ECraftingResponse FInventory::HasRequiredMaterialsArmour(const FArmour& Armour)
 		bool bRequirementMet = false;
 		for (const FMaterial& MaterialIndex : Inventory.Materials)
 		{
-			if (MaterialIndex.Material == ItemMaterialIndex.Material && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
+			if (MaterialIndex.Material->MaterialName == ItemMaterialIndex.Material->MaterialName && MaterialIndex.MaterialAmount >= ItemMaterialIndex.MaterialAmount)
 			{
 				bRequirementMet = true;
 				break;

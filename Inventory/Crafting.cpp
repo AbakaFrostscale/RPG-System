@@ -11,6 +11,9 @@
 FCrafting::FCrafting()
 {
 	Item = std::make_unique<FItem>();
+
+	CraftableArmour = Item->GetCraftableArmour();
+	CraftableWeapons = Item->GetCraftableWeapons();
 }
 
 std::optional<FWeapon> FCrafting::CraftWeapon(std::optional<FWeapon> WeaponToCraft, FInventory& Inventory)
@@ -98,7 +101,7 @@ ECraftingResponse FCrafting::CanArmourBeCrafted(const FArmour& ArmourToCraft, FI
 
 	if (Inventory.HasRequiredMaterialsArmour(ArmourToCraft) == ECraftingResponse::ECRMaterialsMissing)
 	{
-		//TODO notify UI which materials are missing
+		std::cout << "One or  more material missing!" << std::endl;
 
 		return ECraftingResponse::ECRMaterialsMissing;
 	}

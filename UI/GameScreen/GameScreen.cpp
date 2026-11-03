@@ -368,7 +368,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	{
 		if (Object.Sprite.getPosition().y < PlayerSprite.getPosition().y)
 		{
-				window.draw(Object.Sprite);
+			window.draw(Object.Sprite);
 		}
 	}
 
@@ -875,7 +875,6 @@ void FGameScreen::HandleMenu()
 		break;
 	case EMenuResult::EMRSave:
 		// Save the Game
-		std::cout << SelectedCharacterRow;
 		SaveLoadSuccess = SaveAndLoad.SaveGame(CharacterSheet->GetCharacterReference(), *CharacterSheet->GetInventory(), PlayerPosition, SelectedCharacterRow, GatheredObjectID);
 		
 		if (SaveLoadSuccess)
