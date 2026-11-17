@@ -7,6 +7,13 @@
 #include "Character/Character.h"
 #include "Inventory/Inventory.h"
 
+enum class InventoryType
+{
+	EITMaterials,
+	EITWeapons,
+	EITArmour
+};
+
 class FInventoryScreen
 {
 public:
@@ -69,4 +76,7 @@ private:
 
 	//Variables
 	bool bChangeScreen = false;
+
+	InventoryType InventoryHeading = InventoryType::EITMaterials;
+	int InventoryHeadingIndex = 0;
 };
