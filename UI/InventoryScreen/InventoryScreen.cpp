@@ -39,6 +39,19 @@ FInventoryScreen::FInventoryScreen()
 	InventoryItemSprite.setTextureRect(sf::IntRect(0, 0 * FrameHeight, FrameWidth, FrameHeight));
 	InventoryItemBounds = InventoryItemSprite.getLocalBounds();
 
+	if (!EquipmentItemTexture.loadFromFile("Assets/Equipment/32x32.png"))
+	{
+		std::cout << "Equipment Texture failed to laod!" << std::endl;
+	}
+
+	EquipmentItemTexture.setSmooth(false);
+
+	EquipmentItemSprite.setTexture(EquipmentItemTexture);
+	EquipmentItemSprite.setScale(2.75f, 2.75f);
+
+	EquipmentItemSprite.setTextureRect(sf::IntRect(0, EquipmentFrameHeight, EquipmentFrameWidth, EquipmentFrameHeight));
+	EquipmentItemBounds = EquipmentItemSprite.getLocalBounds();
+
 	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
 	{
 		std::cout << "Select sound failed to load!" << std::endl;
@@ -79,42 +92,74 @@ void FInventoryScreen::HandleInput(const sf::Event& event)
 
 		if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
 		{
-			if (CharacterSheet->GetInventory()->GetMaterials().empty()) { return; }
-
-			SelectedIndex++;
-			CursorMoveSound.play();
-
-			if (SelectedIndex >= CharacterSheet->GetInventory()->GetMaterials().size())
+			if (InventoryHeading == InventoryType::EITMaterials)
 			{
-				SelectedIndex = 0;
-				ScrollOffset = 0;
+				if (CharacterSheet->GetInventory()->GetMaterials().empty()) { return; }
+
+				MaterialSelectedIndex++;
+				CursorMoveSound.play();
+
+				if (MaterialSelectedIndex >= CharacterSheet->GetInventory()->GetMaterials().size())
+				{
+					MaterialSelectedIndex = 0;
+					ScrollOffset = 0;
+				}
+
+				if (MaterialSelectedIndex >= ScrollOffset + MaxVisibleItems)
+				{
+					ScrollOffset++;
+				}
 			}
 
-			if (SelectedIndex >= ScrollOffset + MaxVisibleItems)
+			if (InventoryHeading == InventoryType::EITWeapons)
 			{
-				ScrollOffset++;
+				if (CharacterSheet->GetInventory()->GetWeapons().empty()) { return; }
+
+				WeaponSelectedIndex++;
+				CursorMoveSound.play();
+
+				if (WeaponSelectedIndex >= CharacterSheet->GetInventory()->GetWeapons().size())
+				{
+					WeaponSelectedIndex = 0;
+				}
 			}
 		}
 
 		if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
 		{
-			if (CharacterSheet->GetInventory()->GetMaterials().empty()) { return; }
-
-			SelectedIndex--;
-			CursorMoveSound.play();
-
-			if (SelectedIndex < 0)
+			if (InventoryHeading == InventoryType::EITMaterials)
 			{
-				SelectedIndex = CharacterSheet->GetInventory()->GetMaterials().size() - 1;
-				if (CharacterSheet->GetInventory()->GetMaterials().size() > MaxVisibleItems)
+				if (CharacterSheet->GetInventory()->GetMaterials().empty()) { return; }
+
+				MaterialSelectedIndex--;
+				CursorMoveSound.play();
+
+				if (MaterialSelectedIndex < 0)
 				{
-					ScrollOffset = CharacterSheet->GetInventory()->GetMaterials().size() - MaxVisibleItems;
+					MaterialSelectedIndex = CharacterSheet->GetInventory()->GetMaterials().size() - 1;
+					if (CharacterSheet->GetInventory()->GetMaterials().size() > MaxVisibleItems)
+					{
+						ScrollOffset = CharacterSheet->GetInventory()->GetMaterials().size() - MaxVisibleItems;
+					}
+				}
+
+				if (MaterialSelectedIndex < ScrollOffset)
+				{
+					ScrollOffset--;
 				}
 			}
 
-			if (SelectedIndex < ScrollOffset)
+			if (InventoryHeading == InventoryType::EITWeapons)
 			{
-				ScrollOffset--;
+				if (CharacterSheet->GetInventory()->GetWeapons().empty()) { return; }
+
+				WeaponSelectedIndex--;
+				CursorMoveSound.play();
+
+				if (WeaponSelectedIndex < 0)
+				{
+					WeaponSelectedIndex = CharacterSheet->GetInventory()->GetWeapons().size() - 1;
+				}
 			}
 		}
 	}
@@ -197,12 +242,16 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 	InventoryItemSprite.setPosition(InventoryItemInfoBlock.getPosition().x, InventoryItemInfoBlock.getPosition().y - 100.f);
 	InventoryItemSprite.setOrigin(InventoryItemBounds.left + InventoryItemBounds.width / 2.f, InventoryItemBounds.top + InventoryItemBounds.height / 2.f);
 
+	EquipmentItemSprite.setPosition(InventoryItemInfoBlock.getPosition().x, InventoryItemInfoBlock.getPosition().y - 100.f);
+	EquipmentItemSprite.setOrigin(InventoryItemBounds.left + InventoryItemBounds.width / 2.f, InventoryItemBounds.top + InventoryItemBounds.height / 2.f);
+
 	float TextHeight = InventoryBlock.getOrigin().y;
-	int CurrentIndex = 0;
-	int VisibleIndex = 0;
 
 	if (InventoryHeading == InventoryType::EITMaterials)
 	{
+		int CurrentIndex = 0;
+		int VisibleIndex = 0;
+		
 		if (CharacterSheet->GetInventory()->GetMaterials().empty())
 		{
 			InventoryItemName.setPosition(InventoryBlock.getOrigin().x / 2.f - 20.f, TextHeight);
@@ -235,7 +284,7 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 				TextBounds = InventoryItemAmount.getLocalBounds();
 				InventoryItemAmount.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
 
-				if (CurrentIndex == SelectedIndex)
+				if (CurrentIndex == MaterialSelectedIndex)
 				{
 					InventoryItemAmount.setColor(Theme.HighlightColor);
 
@@ -269,13 +318,24 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 				}
 
 				CurrentIndex++;
+
+				window.draw(InventoryItemTypeInfo);
+				window.draw(InventoryItemWeightInfo);
+
+				if (!CharacterSheet->GetInventory()->GetMaterials().empty())
+				{
+					window.draw(InventoryItemSprite);
+				}
 			}
 		}
 	}
 
 	if (InventoryHeading == InventoryType::EITWeapons)
 	{
-		if (CharacterSheet->GetInventory()->GetMaterials().empty())
+		int CurrentIndex = 0;
+		int VisibleIndex = 0;
+
+		if (CharacterSheet->GetInventory()->GetWeapons().empty())
 		{
 			InventoryItemName.setPosition(InventoryBlock.getOrigin().x / 2.f - 20.f, TextHeight);
 			InventoryItemName.setString(ToUpper("EMPTY"));
@@ -286,12 +346,62 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 			InventoryItemName.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
 
 			window.draw(InventoryItemName);
+		}
+		else
+		{
+			for (const FWeapon& Weapon : CharacterSheet->GetInventory()->GetWeapons())
+			{
+				VisibleIndex = CurrentIndex - ScrollOffset;
+				float ItemY = TextHeight + (60.f * VisibleIndex);
+
+				InventoryItemName.setPosition(InventoryBlock.getOrigin().x / 2.f - 20.f, ItemY);
+				InventoryItemAmount.setPosition(InventoryBlock.getOrigin().x / 2.f + 250.f, ItemY);
+
+				InventoryItemName.setString(ToUpper(Weapon.WeaponData->ItemName));
+				TextBounds = InventoryItemName.getLocalBounds();
+				InventoryItemName.setOrigin(TextBounds.left + 30.f, TextBounds.top + TextBounds.height / 2.f);
+
+				CursorSprite.setPosition(InventoryItemName.getPosition().x - 70.f, InventoryItemName.getPosition().y - TextBounds.height / 2.f - CursorOffset);
+
+				if (CurrentIndex == WeaponSelectedIndex)
+				{
+					InventoryItemName.setColor(Theme.HighlightColor);
+
+					InventoryItemWeightInfo.setString(ToUpper("Damage: ") + std::to_string(Weapon.Damage));
+					TextBounds = InventoryItemWeightInfo.getLocalBounds();
+					InventoryItemWeightInfo.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+
+					InventoryItemColumn = Weapon.WeaponData->Column;
+					InventoryItemRow = Weapon.WeaponData->Row;
+
+					EquipmentItemSprite.setTextureRect(sf::IntRect(InventoryItemRow * EquipmentFrameWidth, InventoryItemColumn * EquipmentFrameHeight, EquipmentFrameWidth, EquipmentFrameHeight));
+
+					window.draw(CursorSprite);
+				}
+				else
+				{
+					InventoryItemAmount.setColor(Theme.PrimaryColor);
+					InventoryItemName.setColor(Theme.PrimaryColor);
+				}
+					
+				window.draw(InventoryItemName);
+	
+
+				CurrentIndex++;
+
+				window.draw(InventoryItemWeightInfo);
+
+				if (!CharacterSheet->GetInventory()->GetWeapons().empty())
+				{
+					window.draw(EquipmentItemSprite);
+				}
+			}
 		}
 	}
 
 	if (InventoryHeading == InventoryType::EITArmour)
 	{
-		if (CharacterSheet->GetInventory()->GetMaterials().empty())
+		if (CharacterSheet->GetInventory()->GetArmour().empty())
 		{
 			InventoryItemName.setPosition(InventoryBlock.getOrigin().x / 2.f - 20.f, TextHeight);
 			InventoryItemName.setString(ToUpper("EMPTY"));
@@ -305,13 +415,7 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 		}
 	}
 
-	window.draw(InventoryItemTypeInfo);
-	window.draw(InventoryItemWeightInfo);
 
-	if (!CharacterSheet->GetInventory()->GetMaterials().empty())
-	{
-		window.draw(InventoryItemSprite);
-	}
 }
 
 std::string FInventoryScreen::ToUpper(const std::string& input)

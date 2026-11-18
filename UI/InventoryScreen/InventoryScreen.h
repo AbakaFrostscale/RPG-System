@@ -43,17 +43,27 @@ private:
 	sf::Text InventoryItemWeightInfo;
 	sf::Text InventoryItemTypeInfo;
 
-	int SelectedIndex = 0;
+	int MaterialSelectedIndex = 0;
+	int WeaponSelectedIndex = 0;
+	int ArmourSelectedIndex = 0;
+	
 	int ScrollOffset = 0;
 	int MaxVisibleItems = 0;
 
 	sf::Texture InventoryItemTexture;
 	sf::Sprite InventoryItemSprite;
 
+	sf::Texture EquipmentItemTexture;
+	sf::Sprite EquipmentItemSprite;
+
 	sf::FloatRect InventoryItemBounds;
+	sf::FloatRect EquipmentItemBounds;
 
 	int FrameHeight = 24;
 	int FrameWidth = 24;
+
+	int EquipmentFrameHeight = 32;
+	int EquipmentFrameWidth = 32;
 
 	int InventoryItemColumn = 0;
 	int InventoryItemRow = 0;
