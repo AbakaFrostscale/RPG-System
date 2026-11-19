@@ -371,6 +371,10 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 					TextBounds = InventoryItemWeightInfo.getLocalBounds();
 					InventoryItemWeightInfo.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
 
+					InventoryItemTypeInfo.setString(ToUpper("Required Stat: ") + ToUpper(EAbilityToString(Weapon.RequiredStat)) + " " + std::to_string(Weapon.RequiredStatAmount));
+					TextBounds = InventoryItemTypeInfo.getLocalBounds();
+					InventoryItemTypeInfo.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+
 					InventoryItemColumn = Weapon.WeaponData->Column;
 					InventoryItemRow = Weapon.WeaponData->Row;
 
@@ -390,6 +394,7 @@ void FInventoryScreen::Draw(sf::RenderWindow & window)
 				CurrentIndex++;
 
 				window.draw(InventoryItemWeightInfo);
+				window.draw(InventoryItemTypeInfo);
 
 				if (!CharacterSheet->GetInventory()->GetWeapons().empty())
 				{
@@ -426,5 +431,20 @@ std::string FInventoryScreen::ToUpper(const std::string& input)
 
 	return result;
 }
+
+std::string FInventoryScreen::EAbilityToString(EAbility Ability)
+{
+	switch (Ability)
+	{
+	case EAbility::EAStr: return "Strength";
+	case EAbility::EADex: return "Dexterity";
+	case EAbility::EACon: return "Constitution";
+	case EAbility::EAInt: return "Intelligence";
+	case EAbility::EAWis: return "Wisdom";
+	case EAbility::EACha: return "Charisma";
+	default: return "None";
+	}
+}
+
 
 

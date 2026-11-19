@@ -34,6 +34,7 @@ private:
 	sf::Font Font;
 
 	std::string ToUpper(const std::string& input);
+	static std::string EAbilityToString(EAbility Ability);
 
 	sf::RectangleShape InventoryBlock;
 	sf::RectangleShape InventoryItemInfoBlock;

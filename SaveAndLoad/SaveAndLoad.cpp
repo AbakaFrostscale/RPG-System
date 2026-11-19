@@ -234,7 +234,7 @@ bool FSaveAndLoad::LoadGame(const std::string& FilePath)
 		}
 	}
 
-	for (auto& Armours : SaveFile["Inventory"]["Weapons"])
+	for (auto& Armours : SaveFile["Inventory"]["Armour"])
 	{
 		bool bIsArmourValid = false;
 
