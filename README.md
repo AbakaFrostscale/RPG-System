@@ -136,8 +136,6 @@
 
 # | \*\*nlohmann/json\*\* | JSON save files |
 
-# | \*\*Catch2\*\* | Unit testing |
-
 # | \*\*CSV\*\* | External gameplay data |
 
 # | \*\*Git / GitHub\*\* | Version control |

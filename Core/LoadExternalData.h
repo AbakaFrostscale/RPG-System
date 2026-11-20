@@ -37,6 +37,9 @@ public:
 
 	//Enemies
 	const std::vector<FEnemyData>& GetEnemies() const { return Enemy; }
+
+	//CharacterSprites
+	const std::vector<std::string>& GetSpriteFile() const { return SpriteFile; }
 	
 
 private: 
@@ -52,6 +55,9 @@ private:
 	std::vector<FItemData> AvailableItems;
 
 	std::vector<FSpellData> AvailableSpells;
+
+	//CharacterSprites
+	std::vector<std::string> SpriteFile;
 
 	template<typename T>
 	bool LoadJSON(const std::string& FilePath, std::vector<T>& OutVector)

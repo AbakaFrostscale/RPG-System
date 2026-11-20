@@ -49,7 +49,7 @@ sf::Clock Clock;
 
 static void LoadFont()
 {
-	if (!GameFont.loadFromFile("Assets/Fonts/FFScript.ttf"))
+	if (!GameFont.loadFromFile("Assets/Fonts/Silkscreen-Bold.ttf"))
 	{
 		std::cout << "Font failed to load!" << std::endl;
 	}

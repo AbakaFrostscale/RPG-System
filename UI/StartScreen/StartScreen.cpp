@@ -4,7 +4,7 @@
 
 FStartScreen::FStartScreen()
 {
-	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
+	if (!Font.loadFromFile("Assets/Fonts/Silkscreen-Regular.ttf"))
 	{
 		std::cout << "Font Failed to Load!" << std::endl;
 	}
@@ -14,9 +14,9 @@ FStartScreen::FStartScreen()
 		std::cout << "Cursor failed to load!" << std::endl;
 	}
 	CursorSprite.setTexture(CursorTexture);
-	CursorSprite.setScale(.8f, .8f);
+	CursorSprite.setScale(.6f, .6f);
 
-	if (!MenuMusic.openFromFile("Assets/Audio/Music/Loop/Menu_Loop.wav"))
+	if (!MenuMusic.openFromFile("Assets/Audio/Music/1. Main theme (Peace of a Journey).wav"))
 	{
 		std::cout << "Menu music not found" << std::endl;
 	}
@@ -26,7 +26,7 @@ FStartScreen::FStartScreen()
 	MenuMusic.play();
 	bMusicFadingIn = true;
 
-	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
+	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Audio/toggle_001.ogg"))
 	{
 		std::cout << "Select sound failed to load!" << std::endl;
 	}
@@ -34,7 +34,7 @@ FStartScreen::FStartScreen()
 	CursorMoveSound.setBuffer(CursorMoveBuffer);
 	CursorMoveSound.setVolume(50.f);
 
-	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Accept.mp3"))
+	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Audio/confirmation_001.ogg"))
 	{
 		std::cout << "Confirm sound failed to load!" << std::endl;
 	}
@@ -127,15 +127,15 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 
 	title.setFont(Font);
 	title.setString("WAYFARER'S OATH");
-	title.setCharacterSize(100);
+	title.setCharacterSize(50);
 	sf::FloatRect titleBounds = title.getLocalBounds();
 	title.setOrigin(titleBounds.left + titleBounds.width / 2.f, titleBounds.top + titleBounds.height / 2.f);
-	title.setPosition(window.getView().getCenter().x, 100.f);
+	title.setPosition(window.getView().getCenter().x, 200.f);
 
 	window.draw(title);
 
 
-	float startY = 250.f;
+	float startY = 350.f;
 
 	for (int i = 0; i < Options.size(); i++)
 	{
@@ -143,12 +143,12 @@ void FStartScreen::Draw(sf::RenderWindow & window)
 
 		text.setFont(Font);
 		text.setString(Options[i]);
-		text.setCharacterSize(40);
+		text.setCharacterSize(20);
 
 		sf::FloatRect textBounds = text.getLocalBounds();
 		text.setOrigin(textBounds.left + textBounds.width / 2.f, textBounds.top + textBounds.height / 2.f);
 
-		text.setPosition(window.getView().getCenter().x, startY + i * 60.f);
+		text.setPosition(window.getView().getCenter().x, startY + i * 30.f);
 
 		if (i == SelectedIndex)
 		{

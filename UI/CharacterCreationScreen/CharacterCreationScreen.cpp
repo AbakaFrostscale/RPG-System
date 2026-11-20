@@ -9,7 +9,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 {
 	Loader = std::make_shared<FLoadExternalData>();
 
-	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
+	if (!Font.loadFromFile("Assets/Fonts/Silkscreen-Regular.ttf"))
 	{
 		std::cout << "Font failed to load!" << std::endl;
 	}
@@ -21,17 +21,17 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 
 
 	CursorSprite.setTexture(CursorTexture);
-	CursorSprite.setScale(.8f, .8f);
+	CursorSprite.setScale(.6f, .6f);
 
-	if (!CharacterTexture.loadFromFile("Assets/Sprites/Characters/Character Choice.png"))
+	if (!CharacterTexture.loadFromFile(Loader->GetSpriteFile()[0]))
 	{
 		std::cout << "Character failed to Load!" << std::endl;
 	}
 
-	CharacterTexture.setSmooth(false);
+	CharacterTexture.setSmooth(true);
 
 	CharacterSprite.setTexture(CharacterTexture);
-	CharacterSprite.setScale(8.f, 8.f);
+	CharacterSprite.setScale(4.f, 4.f);
 	CharacterSprite.setPosition(300.f, 200.f);
 
 	Fields = { "Name", "Race", "Class", "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma", "Reset", "Confirm"};
@@ -39,7 +39,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	RaceOptions = Loader->GetAvailableRaces();
 	ClassOptions = Loader->GetAvailableClasses();
 
-	if (!CharacterCreationMusic.openFromFile("Assets/Audio/Music/Loop/Shop_Loop.wav"))
+	if (!CharacterCreationMusic.openFromFile("Assets/Audio/Music/7. Emotional Theme (Sentimental Wishes).wav"))
 	{
 		std::cout << "Menu music not found" << std::endl;
 	}
@@ -48,7 +48,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	CharacterCreationMusic.play();
 	CharacterCreationMusic.setVolume(0.f);
 
-	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
+	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Audio/toggle_001.ogg"))
 	{
 		std::cout << "Select sound failed to load!" << std::endl;
 	}
@@ -56,7 +56,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	CursorMoveSound.setBuffer(CursorMoveBuffer);
 	CursorMoveSound.setVolume(50.f);
 
-	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Accept.mp3"))
+	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Audio/confirmation_001.ogg"))
 	{
 		std::cout << "Confirm sound failed to load!" << std::endl;
 	}
@@ -293,7 +293,7 @@ void FCharacterCreationScreen::Update(float deltaTime)
 		}
 	}
 
-	CharacterSprite.setTextureRect(sf::IntRect(CurrentFrame * FrameWidth, SelectedCharacterIndex * FrameHeight, FrameWidth, FrameHeight));
+	CharacterSprite.setTextureRect(sf::IntRect(0, 0, FrameWidth, FrameHeight));
 
 	if (bFadingIn)
 	{
@@ -378,7 +378,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 	title.setFont(Font);
 	title.setFillColor(Theme.AccentColor);
 	title.setString(ToUpper("Character Creation"));
-	title.setCharacterSize(80);
+	title.setCharacterSize(40);
 	title.setPosition(30.f, 0.f);
 
 	window.draw(title);
@@ -399,7 +399,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		sf::Text text;
 		text.setFont(Font);
 		text.setFillColor(Theme.PrimaryColor);
-		text.setCharacterSize(32);
+		text.setCharacterSize(16);
 		text.setPosition(80.f, startY + i * 30.f);
 
 		std::string displayText = Fields[i];
@@ -450,7 +450,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 
 		pointsText.setFont(Font);
 		pointsText.setFillColor(Theme.PrimaryColor);
-		pointsText.setCharacterSize(32);
+		pointsText.setCharacterSize(16);
 		pointsText.setPosition(300.f, 120.f);
 
 		pointsText.setString(ToUpper("Available Attribute Points: " + std::to_string(Creator.GetAttributePoints())));
@@ -460,7 +460,7 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		sf::Text charText;
 		charText.setFont(Font);
 		charText.setFillColor(Theme.PrimaryColor);
-		charText.setCharacterSize(32);
+		charText.setCharacterSize(16);
 		charText.setPosition(380.f, 350.f);
 
 		charText.setString(std::to_string(SelectedCharacterIndex + 1) + " / " + std::to_string(MaxCharacters));
