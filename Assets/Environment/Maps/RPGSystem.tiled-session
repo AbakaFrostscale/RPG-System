@@ -1,0 +1,301 @@
+{
+    "activeFile": "Maps/Frontier_Town.tmx",
+    "expandedProjectPaths": [
+        "Props/Buildings/Chimney",
+        "Props/Buildings/Windows",
+        "Props/Buildings/Doors",
+        "Props/Plants",
+        "Props/Buildings",
+        "Tiles - Ground/Road",
+        "Props/Fences",
+        "Tiles - Ground/Roof",
+        "Props",
+        "Tiles - Ground/Walls",
+        "Tiles - Ground/Stone",
+        "Tiles - Ground",
+        ".",
+        "Tiles - Ground/Grass",
+        "Props/Misc",
+        "Maps",
+        "Props/Barrels and Crates"
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "Maps/Frontier_Town.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 723.3333333333333,
+                "y": 1292.6666666666665
+            }
+        },
+        "Maps/Frontier_Town.tmx#Grass - Shade Top": {
+            "dynamicWrapping": false
+        },
+        "Maps/Frontier_Town.tmx#Ground General": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "Maps/Tree.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Barrels and Crates/Barrel.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Barrels and Crates/Crate and Barrel.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Barrels and Crates/Crate.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Barrels and Crates/Crates.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Chimney/Chimney Type 1 Angle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Chimney/Chimney Type 1 Square.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Chimney/Chimney Type 2 Angle.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Chimney/Chimney Type 2 Square.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Doors/Door Type 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Doors/Door Type 2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Dormer Window Type 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Dormer Window Type 2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Window Type 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Window Type 2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Window Type 3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Window Type 4.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Buildings/Windows/Window Type 5.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Misc/Banner.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Misc/Name Board.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Misc/Wall Sconce.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Misc/Wheel Barrow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Plants/Flower Box.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Props/Plants/Tree.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Grass/Grass - No Shade.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Grass/Grass - Shade Bottom.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Grass/Grass - Shade Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Grass/Grass - Shade Right.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Grass/Grass - Shade Top.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Ground General.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Path - No Shade.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Corner Stone Bottom Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Corner Stone Bottom Right.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Corner Stone Top Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Corner Stone Top Right.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Corner Stone.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Kerb Bottom.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Kerb Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Kerb Right.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Kerb Top.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - No Kerb.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - No Shade.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Road/Road - Top Kerb.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Roof/Roof Fron 2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Roof/Roof Front 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Roof/Roof.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Stone/Stone - No Shade.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Stone/Stone - Shade Bottom.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Stone/Stone - Shade Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Stone/Stone - Shade Right.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "Tiles - Ground/Stone/Stone - Shade Top.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Walls.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.externalTilesetPath": "D:/RPG-System/Assets/Environment/Maps/Tiles - Ground/Road",
+    "last.imagePath": "D:/RPG-System/Assets/Environment/MedievalVillageExteriorv1.0/MedievalVillageExteriorv1.0/RawAssets",
+    "map.height": 30,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 48,
+    "map.tileWidth": 48,
+    "map.width": 40,
+    "openFiles": [
+        "Maps/Frontier_Town.tmx"
+    ],
+    "project": "RPGSystem.tiled-project",
+    "recentFiles": [
+        "Maps/Frontier_Town.tmx",
+        "Tiles - Ground/Roof/Roof Front 1.tsx",
+        "Tiles - Ground/Roof/Roof Fron 2.tsx",
+        "Props/Buildings/Chimney/Chimney Type 2 Angle.tsx",
+        "Props/Buildings/Chimney/Chimney Type 2 Square.tsx",
+        "Props/Buildings/Chimney/Chimney Type 1 Square.tsx",
+        "Props/Buildings/Chimney/Chimney Type 1 Angle.tsx",
+        "Props/Buildings/Doors/Door Type 1.tsx",
+        "Props/Buildings/Doors/Door Type 2.tsx",
+        "Props/Buildings/Windows/Window Type 1.tsx",
+        "Props/Buildings/Windows/Window Type 2.tsx",
+        "Props/Buildings/Windows/Window Type 3.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 48,
+        "width": 48
+    },
+    "tileset.type": 1
+}
