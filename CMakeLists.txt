@@ -63,3 +63,26 @@ add_custom_command(TARGET RPGGameSystem POST_BUILD
 	"${CMAKE_SOURCE_DIR}/Assets"
 	"$<TARGET_FILE_DIR:RPGGameSystem>/Assets"
 )
+
+target_precompile_headers(RPGGameSystem PRIVATE
+	<iostream>
+	<string>
+	<vector>
+	<array>
+	<map>
+	<unordered_map>
+	<memory>
+	<optional>
+	<algorithm>
+	<utility>
+	<fstream>
+	<sstream>
+	<filesystem>
+	<cstdint>
+	<random>
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	"Core/LoadExternalData.h"
+	"Core/Random.h"
+	"External/json.hpp"
+)

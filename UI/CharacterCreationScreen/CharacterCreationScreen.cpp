@@ -23,7 +23,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 	CursorSprite.setTexture(CursorTexture);
 	CursorSprite.setScale(.6f, .6f);
 
-	if (!CharacterTexture.loadFromFile(Loader->GetSpriteFile()[0]))
+	if (!CharacterTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterIndex]))
 	{
 		std::cout << "Character failed to Load!" << std::endl;
 	}
@@ -32,7 +32,7 @@ FCharacterCreationScreen::FCharacterCreationScreen()
 
 	CharacterSprite.setTexture(CharacterTexture);
 	CharacterSprite.setScale(4.f, 4.f);
-	CharacterSprite.setPosition(300.f, 200.f);
+	CharacterSprite.setPosition(400.f, 200.f);
 
 	Fields = { "Name", "Race", "Class", "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma", "Reset", "Confirm"};
 	Attributes = { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
@@ -169,10 +169,18 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 
 				if (SelectedCharacterIndex < 0)
 				{
-					SelectedCharacterIndex = MaxCharacters - 1;
+					SelectedCharacterIndex = Loader->GetSpriteFile().size() - 1;
+				}
+				
+				if (!CharacterTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterIndex]))
+				{
+					std::cout << "Character failed to Load!" << std::endl;
 				}
 
-				CurrentFrame = 0;
+				CharacterTexture.setSmooth(true);
+
+
+				CurrentFrame = 2;
 				AnimationTimer = 0.f;
 			}
 		}
@@ -184,13 +192,21 @@ void FCharacterCreationScreen::HandleInput(const sf::Event & event)
 				SelectedCharacterIndex++;
 				CursorMoveSound.play();
 
-				if (SelectedCharacterIndex >= MaxCharacters)
+				if (SelectedCharacterIndex >= Loader->GetSpriteFile().size())
 				{
 					SelectedCharacterIndex = 0;
 				}
+		
+				if (!CharacterTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterIndex]))
+				{
+					std::cout << "Character failed to Load!" << std::endl;
+				}
+
+				CharacterTexture.setSmooth(true);
 
 
-				CurrentFrame = 0;
+
+				CurrentFrame = 2;
 				AnimationTimer = 0.f;
 			}
 		}
@@ -281,19 +297,15 @@ void FCharacterCreationScreen::Update(float deltaTime)
 
 		CurrentFrame += AnimDirection;
 
-		if (CurrentFrame >= 8)
+		if (CurrentFrame > 3)
 		{
-			CurrentFrame = 8;
-			AnimDirection = -1;
-		}
-		else if (CurrentFrame <= 7)
-		{
-			CurrentFrame = 7;
+			CurrentFrame = 0;
 			AnimDirection = 1;
 		}
+
 	}
 
-	CharacterSprite.setTextureRect(sf::IntRect(0, 0, FrameWidth, FrameHeight));
+	CharacterSprite.setTextureRect(sf::IntRect(FrameWidth, FrameHeight * CurrentFrame, FrameWidth, FrameHeight));
 
 	if (bFadingIn)
 	{
@@ -461,9 +473,10 @@ void FCharacterCreationScreen::Draw(sf::RenderWindow & window)
 		charText.setFont(Font);
 		charText.setFillColor(Theme.PrimaryColor);
 		charText.setCharacterSize(16);
-		charText.setPosition(380.f, 350.f);
-
-		charText.setString(std::to_string(SelectedCharacterIndex + 1) + " / " + std::to_string(MaxCharacters));
+		charText.setString(std::to_string(SelectedCharacterIndex + 1) + " / " + std::to_string(Loader->GetSpriteFile().size()));
+		sf::FloatRect TextBounds = charText.getLocalBounds();
+		charText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+		charText.setPosition(465.f, 400.f);
 
 		window.draw(charText);
 		window.draw(CharacterSprite);

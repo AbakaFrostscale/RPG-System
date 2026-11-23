@@ -80,15 +80,13 @@ private:
 	int FrameWidth = 32;
 	int FrameHeight = 36;
 
-	int CurrentFrame = 1;
+	int CurrentFrame = 0;
 	int AnimDirection = 1;
 	float AnimationTimer = 0.f;
-	float AnimationSpeed = 0.75f;
+	float AnimationSpeed = 0.5f;
 
-	int FramesPerAnimation = 3;
 	int CurrentAnimationIndex = 0;
 	int SelectedCharacterIndex = 0;
-	int MaxCharacters = 12;
 
 	//Temp Character being built
 	FCharacter CurrentCharacter;
