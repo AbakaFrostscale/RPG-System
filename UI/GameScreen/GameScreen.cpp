@@ -16,20 +16,6 @@ FGameScreen::FGameScreen()
 		std::cout << "Failed to load font!" << std::endl;;
 	}
 
-	if (!PlayerTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterRow]))
-	{
-		std::cout << "Failed to load Character Sprite!" << std::endl;
-	}
-
-	PlayerTexture.setSmooth(true);
-
-	PlayerSprite.setTexture(PlayerTexture);
-	PlayerSprite.setScale(1.f, 1.f);
-	PlayerSprite.setPosition(PlayerPosition);
-
-	PlayerSprite.setTextureRect(sf::IntRect(DownRow * FrameWidth, DownRow * FrameHeight, FrameWidth, FrameHeight));
-	PlayerBounds = PlayerSprite.getLocalBounds();
-
 	if (!GameMusic.openFromFile("Assets/Audio/Music/2. Town theme (Streets of the Common).wav"))
 	{
 		std::cout << "Failed to load Field_Loop.wav!" << std::endl;
@@ -314,7 +300,7 @@ void FGameScreen::Update(float DeltaTime)
 
 			CurrentFrame++;
 
-			if (CurrentFrame >= 2)
+			if (CurrentFrame > 2)
 			{
 				CurrentFrame = 0;
 			}
@@ -325,11 +311,12 @@ void FGameScreen::Update(float DeltaTime)
 		CurrentFrame = 0;
 	}
 
-	PlayerSprite.setTextureRect(sf::IntRect((CurrentFrame + CurrentAnimationRow) * FrameWidth, (CurrentFrame + CurrentAnimationRow) * FrameHeight, FrameWidth, FrameHeight));
+	PlayerSprite.setTextureRect(sf::IntRect(FrameWidth * CurrentFrame, FrameHeight* CurrentAnimationRow, FrameWidth, FrameHeight));
 	PlayerSprite.setOrigin(PlayerBounds.width / 2.f, PlayerBounds.height / 2.f);
 	
 	float HalfWidth = ScreenWidth / 2.f;
 	float HalfHeight = ScreenHeight / 2.f;
+
 
 	if (CameraPos.x < HalfWidth)
 		CameraPos.x = HalfWidth;
@@ -527,6 +514,20 @@ void FGameScreen::LoadGame()
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 {
 	SelectedCharacterRow = SelectedCharacter;
+
+	if (!PlayerTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterRow]))
+	{
+		std::cout << "Failed to load Character Sprite!" << std::endl;
+	}
+
+	PlayerTexture.setSmooth(true);
+
+	PlayerSprite.setTexture(PlayerTexture);
+	PlayerSprite.setScale(1.f, 1.f);
+	PlayerSprite.setPosition(PlayerPosition);
+
+	PlayerSprite.setTextureRect(sf::IntRect(FrameWidth, DownRow * FrameHeight, FrameWidth, FrameHeight));
+	PlayerBounds = PlayerSprite.getLocalBounds();
 }
 
 void FGameScreen::UpdateCharacter()
