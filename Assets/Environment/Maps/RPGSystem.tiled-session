@@ -1,23 +1,23 @@
 {
     "activeFile": "Maps/Frontier_Town.tmx",
     "expandedProjectPaths": [
-        "Props/Buildings/Chimney",
-        "Props/Buildings/Windows",
-        "Props/Buildings/Doors",
-        "Props/Plants",
-        "Props/Buildings",
-        "Tiles - Ground/Road",
-        "Props/Fences",
-        "Tiles - Ground/Roof",
         "Props",
         "Tiles - Ground/Walls",
-        "Tiles - Ground/Stone",
-        "Tiles - Ground",
-        ".",
+        "Props/Buildings/Chimney",
+        "Tiles - Ground/Road",
         "Tiles - Ground/Grass",
-        "Props/Misc",
         "Maps",
-        "Props/Barrels and Crates"
+        "Props/Buildings",
+        "Tiles - Ground/Stone",
+        "Props/Barrels and Crates",
+        "Props/Buildings/Doors",
+        "Tiles - Ground/Roof",
+        "Props/Buildings/Windows",
+        "Props/Misc",
+        "Props/Fences",
+        "Props/Plants",
+        ".",
+        "Tiles - Ground"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -25,11 +25,11 @@
             "scaleInDock": 1
         },
         "Maps/Frontier_Town.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 3,
+            "scale": 0.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 723.3333333333333,
-                "y": 1292.6666666666665
+                "x": 904,
+                "y": 1038
             }
         },
         "Maps/Frontier_Town.tmx#Grass - Shade Top": {
@@ -290,26 +290,33 @@
         },
         "Tiles - Ground/Walls/Wall Type 1 - Left.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 1 - Middle.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 1 - Right.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 1 - Top.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 2 - Bottom.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 2 - Left.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 2 - Middle.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 2 - Right.tsx": {
@@ -322,38 +329,48 @@
         },
         "Tiles - Ground/Walls/Wall Type 3 - Bottom.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 3 - Left.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 3 - Middle.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 3 - Right.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 3 - Top.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 4 - Bottom.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 4 - Left.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 4 - Right.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 4 - Top.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 4 -Middle.tsx": {
             "dynamicWrapping": true,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Walls.tsx": {
@@ -374,6 +391,7 @@
     ],
     "project": "RPGSystem.tiled-project",
     "recentFiles": [
+        "Maps/Frontier_Town.tmx",
         "Props/Buildings/Chimney/Chimney Type 2 Square.tsx",
         "Props/Buildings/Chimney/Chimney Type 1 Square.tsx",
         "Props/Buildings/Windows/Dormer Window Type 2.tsx",
@@ -384,8 +402,7 @@
         "Props/Barrels and Crates/Barrel.tsx",
         "Tiles - Ground/Walls/Wall Type 1 - Bottom.tsx",
         "Tiles - Ground/Roof/Roof.tsx",
-        "Props/Fences/Fence.tsx",
-        "Tiles - Ground/Stone/Stone - Shade Right.tsx"
+        "Props/Fences/Fence.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
