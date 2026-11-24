@@ -189,9 +189,9 @@ private:
 
 	int CurrentFrame = 0;
 	float AnimationTimer = 0.f;
-	float AnimationSpeed = 0.25f;
+	float AnimationSpeed = 0.2f;
 
-	int FrameHeight = 34;
+	int FrameHeight = 36;
 	int FrameWidth = 32;
 
 	//sound
