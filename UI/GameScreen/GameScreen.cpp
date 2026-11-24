@@ -11,26 +11,26 @@ FGameScreen::FGameScreen()
 	Loader = std::make_shared<FLoadExternalData>();
 	Creator = std::make_shared<FCharacterCreator>();
 
-	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
+	if (!Font.loadFromFile("Assets/Fonts/Silkscreen-Regular.ttf"))
 	{
 		std::cout << "Failed to load font!" << std::endl;;
 	}
 
-	if (!PlayerTexture.loadFromFile("Assets/Sprites/Characters/Character Choice.png"))
+	if (!PlayerTexture.loadFromFile(Loader->GetSpriteFile()[SelectedCharacterRow]))
 	{
 		std::cout << "Failed to load Character Sprite!" << std::endl;
 	}
 
-	PlayerTexture.setSmooth(false);
+	PlayerTexture.setSmooth(true);
 
 	PlayerSprite.setTexture(PlayerTexture);
-	PlayerSprite.setScale(2.f, 2.f);
+	PlayerSprite.setScale(1.f, 1.f);
 	PlayerSprite.setPosition(PlayerPosition);
 
-	PlayerSprite.setTextureRect(sf::IntRect(0, SelectedCharacterRow * FrameHeight, FrameWidth, FrameHeight));
+	PlayerSprite.setTextureRect(sf::IntRect(DownRow * FrameWidth, DownRow * FrameHeight, FrameWidth, FrameHeight));
 	PlayerBounds = PlayerSprite.getLocalBounds();
 
-	if (!GameMusic.openFromFile("Assets/Audio/Music/Loop/Field_Loop.wav"))
+	if (!GameMusic.openFromFile("Assets/Audio/Music/2. Town theme (Streets of the Common).wav"))
 	{
 		std::cout << "Failed to load Field_Loop.wav!" << std::endl;
 	}
@@ -90,7 +90,7 @@ FGameScreen::FGameScreen()
 	CursorSprite.setTexture(CursorTexture);
 	CursorSprite.setScale(.8f, .8f);
 	
-	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
+	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Audio/toggle_001.ogg"))
 	{
 		std::cout << "Select sound failed to load!" << std::endl;
 	}
@@ -98,7 +98,7 @@ FGameScreen::FGameScreen()
 	CursorMoveSound.setBuffer(CursorMoveBuffer);
 	CursorMoveSound.setVolume(50.f);
 
-	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Accept.mp3"))
+	if (!ConfirmBuffer.loadFromFile("Assets/Audio/SFX/Audio.confirmation_001.ogg"))
 	{
 		std::cout << "Confirm sound failed to load!" << std::endl;
 	}
@@ -217,7 +217,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.y -= 1.f;
 		CurrentAnimationRow = UpRow;
 		FacingDirection = EFacingDirection::EFDUp;
-		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
+		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
 		bMoving = true;
 	}
 
@@ -226,7 +226,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.y += 1.f;
 		CurrentAnimationRow = DownRow;
 		FacingDirection = EFacingDirection::EFDDown;
-		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
+		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
 		bMoving = true;
 	}
 
@@ -235,16 +235,16 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
 		FacingDirection = EFacingDirection::EFDLeft;
-		PlayerSprite.setScale(sf::Vector2f(2.f, 2.f));
+		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
 		bMoving = true;
 	}
 
 	if (CurrentGameMode == EGameMode::EGMUnpaused && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		Direction.x += 1.f;
-		CurrentAnimationRow = LeftRow;
+		CurrentAnimationRow = RightRow;
 		FacingDirection = EFacingDirection::EFDRight;
-		PlayerSprite.setScale(sf::Vector2f(-2.f, 2.f));
+		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
 		bMoving = true;
 	}
 
@@ -325,7 +325,7 @@ void FGameScreen::Update(float DeltaTime)
 		CurrentFrame = 0;
 	}
 
-	PlayerSprite.setTextureRect(sf::IntRect((CurrentFrame + CurrentAnimationRow) * FrameWidth, SelectedCharacterRow * FrameHeight, FrameWidth, FrameHeight));
+	PlayerSprite.setTextureRect(sf::IntRect((CurrentFrame + CurrentAnimationRow) * FrameWidth, (CurrentFrame + CurrentAnimationRow) * FrameHeight, FrameWidth, FrameHeight));
 	PlayerSprite.setOrigin(PlayerBounds.width / 2.f, PlayerBounds.height / 2.f);
 	
 	float HalfWidth = ScreenWidth / 2.f;
@@ -385,7 +385,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	window.setView(window.getDefaultView());
 
 	CharacterInforText.setFont(Font);
-	CharacterInforText.setCharacterSize(32);
+	CharacterInforText.setCharacterSize(16);
 	CharacterInforText.setFillColor(sf::Color::White);
 	CharacterInforText.setPosition(ScreenWidth / 1.2f, ScreenHeight - 100.f);
 	
@@ -442,7 +442,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 
 			MenuOptionText.setFont(Font);
 			MenuOptionText.setFillColor(Theme.PrimaryColor);
-			MenuOptionText.setCharacterSize(40.f);
+			MenuOptionText.setCharacterSize(20.f);
 
 			sf::FloatRect TextBounds = MenuOptionText.getLocalBounds();
 			MenuOptionText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
@@ -657,7 +657,7 @@ void FGameScreen::Notification(sf::RenderWindow& window, sf::Text NotifyText, sf
 
 	NotifyText.setFont(Font);
 	NotifyText.setFillColor(Theme.PrimaryColor);
-	NotifyText.setCharacterSize(40);
+	NotifyText.setCharacterSize(20.f);
 	
 	sf::FloatRect TextBounds = NotifyText.getLocalBounds();
 	NotifyText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);

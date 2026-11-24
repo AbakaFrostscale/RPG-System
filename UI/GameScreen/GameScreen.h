@@ -191,8 +191,8 @@ private:
 	float AnimationTimer = 0.f;
 	float AnimationSpeed = 0.25f;
 
-	int FrameHeight = 20;
-	int FrameWidth = 20;
+	int FrameHeight = 34;
+	int FrameWidth = 32;
 
 	//sound
 	sf::Music GameMusic;
@@ -201,9 +201,10 @@ private:
 	float MusicFadeSpeed = 40.f;
 
 	//Animation movement indexes
-	int DownRow = 0;
-	int LeftRow = 2;
-	int UpRow = 4;
+	int DownRow = 2;
+	int LeftRow = 3;
+	int UpRow = 0;
+	int RightRow = 1;
 
 	int CurrentAnimationRow = 0;
 

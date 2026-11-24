@@ -61,30 +61,37 @@
             "scaleInEditor": 1
         },
         "Props/Buildings/Chimney/Chimney Type 1 Angle.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Chimney/Chimney Type 1 Square.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Chimney/Chimney Type 2 Angle.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Chimney/Chimney Type 2 Square.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Doors/Door Type 1.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Doors/Door Type 2.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Buildings/Windows/Dormer Window Type 1.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -93,6 +100,7 @@
             "scaleInEditor": 1
         },
         "Props/Buildings/Windows/Window Type 1.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -112,6 +120,11 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "Props/Fences/Fence.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "Props/Misc/Banner.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -125,14 +138,17 @@
             "scaleInEditor": 1
         },
         "Props/Misc/Wheel Barrow.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Plants/Flower Box.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Props/Plants/Tree.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -228,14 +244,17 @@
             "scaleInEditor": 1
         },
         "Tiles - Ground/Roof/Roof Fron 2.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Roof/Roof Front 1.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Roof/Roof.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -245,6 +264,7 @@
             "scaleInEditor": 1
         },
         "Tiles - Ground/Stone/Stone - Shade Bottom.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -254,11 +274,86 @@
             "scaleInEditor": 1
         },
         "Tiles - Ground/Stone/Stone - Shade Right.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
             "scaleInEditor": 1.5
         },
         "Tiles - Ground/Stone/Stone - Shade Top.tsx": {
+            "dynamicWrapping": true,
             "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 1 - Bottom.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "Tiles - Ground/Walls/Wall Type 1 - Left.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 1 - Middle.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 1 - Right.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 1 - Top.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 2 - Bottom.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 2 - Left.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 2 - Middle.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 2 - Right.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 2 - Top.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 3 - Bottom.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 3 - Left.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 3 - Middle.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 3 - Right.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 3 - Top.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 4 - Bottom.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 4 - Left.tsx": {
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 4 - Right.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 4 - Top.tsx": {
+            "dynamicWrapping": true,
+            "scaleInEditor": 1
+        },
+        "Tiles - Ground/Walls/Wall Type 4 -Middle.tsx": {
+            "dynamicWrapping": true,
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Walls.tsx": {
@@ -268,7 +363,7 @@
         }
     },
     "last.externalTilesetPath": "D:/RPG-System/Assets/Environment/Maps/Tiles - Ground/Road",
-    "last.imagePath": "D:/RPG-System/Assets/Environment/MedievalVillageExteriorv1.0/MedievalVillageExteriorv1.0/RawAssets",
+    "last.imagePath": "D:/Coding/RPG-System/Assets/Environment/MedievalVillageExteriorv1.0/MedievalVillageExteriorv1.0/RawAssets",
     "map.height": 30,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 48,
@@ -279,18 +374,18 @@
     ],
     "project": "RPGSystem.tiled-project",
     "recentFiles": [
-        "Maps/Frontier_Town.tmx",
-        "Tiles - Ground/Roof/Roof Front 1.tsx",
-        "Tiles - Ground/Roof/Roof Fron 2.tsx",
-        "Props/Buildings/Chimney/Chimney Type 2 Angle.tsx",
         "Props/Buildings/Chimney/Chimney Type 2 Square.tsx",
         "Props/Buildings/Chimney/Chimney Type 1 Square.tsx",
-        "Props/Buildings/Chimney/Chimney Type 1 Angle.tsx",
-        "Props/Buildings/Doors/Door Type 1.tsx",
-        "Props/Buildings/Doors/Door Type 2.tsx",
-        "Props/Buildings/Windows/Window Type 1.tsx",
-        "Props/Buildings/Windows/Window Type 2.tsx",
-        "Props/Buildings/Windows/Window Type 3.tsx"
+        "Props/Buildings/Windows/Dormer Window Type 2.tsx",
+        "Props/Buildings/Windows/Dormer Window Type 1.tsx",
+        "Props/Barrels and Crates/Crates.tsx",
+        "Props/Barrels and Crates/Crate.tsx",
+        "Props/Barrels and Crates/Crate and Barrel.tsx",
+        "Props/Barrels and Crates/Barrel.tsx",
+        "Tiles - Ground/Walls/Wall Type 1 - Bottom.tsx",
+        "Tiles - Ground/Roof/Roof.tsx",
+        "Props/Fences/Fence.tsx",
+        "Tiles - Ground/Stone/Stone - Shade Right.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
