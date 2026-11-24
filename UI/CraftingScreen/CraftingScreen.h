@@ -8,6 +8,7 @@
 
 class FCrafting;
 class FLoadExtrenalData;
+class FCrafting;
 
 class FCraftingScreen
 {
@@ -29,6 +30,10 @@ private:
 	sf::Font Font;
 
 	std::string ToUpper(const std::string& input);
+	void CraftNotification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond);
+
+	void CompleteCraft(const FItemData& Item);
+	FItemData ItemToCraft;
 
 	sf::RectangleShape CraftingBlock;
 	sf::RectangleShape CraftingItemInfoBlock;
@@ -45,9 +50,11 @@ private:
 	sf::Text CraftingItemMaterialsAmount;
 
 	sf::Text ConfirmText;
+	sf::Text ConfirmItemName;
 	sf::Text YesText;
 	sf::Text NoText;
 
+	bool YesSelected = true;
 	
 	int SelectedIndex = 0;
 	int ScrollOffset = 0;
@@ -56,7 +63,7 @@ private:
 	sf::Texture CraftingItemTexture;
 	sf::Sprite CraftingItemSprite;
 
-	sf::FloatRect CraftignItemBounds;
+	sf::FloatRect CraftingItemBounds;
 
 	int FrameHeight = 32;
 	int FrameWidth = 32;
@@ -66,7 +73,7 @@ private:
 
 	//Cursor
 	sf::Texture CursorTexture;
-	sf::Sprite CuresorSprite;
+	sf::Sprite CursorSprite;
 
 	float CursorOffset = 0.f;
 	float CursorTimer = 0.f;
@@ -83,6 +90,11 @@ private:
 	//Variables
 	bool bChangeScreen = false;
 	bool bCraftItem = false;
+	bool bIsCraftable = false;
+
+	sf::Clock NotificationClock;
+	bool ShowNotification = false;
 
 	std::shared_ptr<FLoadExternalData> Loader;
+	std::shared_ptr<FCrafting> Crafter;
 };

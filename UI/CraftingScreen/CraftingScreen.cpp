@@ -7,6 +7,7 @@
 FCraftingScreen::FCraftingScreen()
 {
 	Loader = std::make_shared<FLoadExternalData>();
+	Crafter = std::make_shared<FCrafting>();
 
 	if (!Font.loadFromFile("Assets/Fonts/FFScript.ttf"))
 	{
@@ -27,8 +28,8 @@ FCraftingScreen::FCraftingScreen()
 		std::cout << "Cursor failed to load!" << std::endl;
 	}
 	
-	CuresorSprite.setTexture(CursorTexture);
-	CuresorSprite.setScale(.6f, .6f);
+	CursorSprite.setTexture(CursorTexture);
+	CursorSprite.setScale(.6f, .6f);
 
 	if (!CraftingItemTexture.loadFromFile("Assets/Equipment/32x32.png"))
 	{
@@ -40,12 +41,12 @@ FCraftingScreen::FCraftingScreen()
 	CraftingItemSprite.setTexture(CraftingItemTexture);
 	CraftingItemSprite.setScale(2.75f, 2.75f);
 
-	CraftingItemSprite.setTextureRect(sf::IntRect(0, 0 * FrameHeight, FrameWidth, FrameHeight));
-	CraftignItemBounds = CraftingItemSprite.getLocalBounds();
+	CraftingItemSprite.setTextureRect(sf::IntRect(0, FrameHeight, FrameWidth, FrameHeight));
+	CraftingItemBounds = CraftingItemSprite.getLocalBounds();
 
 	if (!CursorMoveBuffer.loadFromFile("Assets/Audio/SFX/Select.mp3"))
 	{
-		std::cout << "Selecte sound failed to load!" << std::endl;
+		std::cout << "Selected sound failed to load!" << std::endl;
 	}
 
 	CursorMoveSound.setBuffer(CursorMoveBuffer);
@@ -64,7 +65,8 @@ void FCraftingScreen::HandleInput(const sf::Event& event)
 			bChangeScreen = true;
 		}
 
-		if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
+		if (!ShowNotification && event.key.code == sf::Keyboard::Down ||
+			!ShowNotification && event.key.code == sf::Keyboard::S)
 		{
 			SelectedIndex++;
 			CursorMoveSound.play();
@@ -81,7 +83,8 @@ void FCraftingScreen::HandleInput(const sf::Event& event)
 			}
 		}
 
-		if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
+		if (!ShowNotification && event.key.code == sf::Keyboard::Up ||
+			!ShowNotification && event.key.code == sf::Keyboard::W)
 		{
 			SelectedIndex--;
 			CursorMoveSound.play();
@@ -101,18 +104,73 @@ void FCraftingScreen::HandleInput(const sf::Event& event)
 			}
 		}
 
-		if (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::E)
+		if (ShowNotification && event.key.code == sf::Keyboard::Right || 
+			ShowNotification && event.key.code == sf::Keyboard::D)
 		{
-			bCraftItem = true;
-
-			ConfirmBlock.setSize(sf::Vector2f(CraftingBlock.getSize().x - 350.f, CraftingBlock.getSize().y - 200.f));
-			ConfirmBlock.setOrigin(ConfirmBlock.getSize() / 2.f);
-			ConfirmBlock.setPosition(CraftingBlock.getPosition());
-			ConfirmBlock.setOutlineColor(Theme.PrimaryColor);
-			ConfirmBlock.setOutlineThickness(2.f);
-			ConfirmBlock.setFillColor(Theme.BackgroundColor);
+			if (YesSelected)
+			{
+				YesSelected = false;
+			}
+			else
+			{
+				YesSelected = true;
+			}
 		}
 
+		if (ShowNotification && event.key.code == sf::Keyboard::Left || 
+			ShowNotification && event.key.code == sf::Keyboard::A)
+		{
+			if (!YesSelected)
+			{
+				YesSelected = true;
+			}
+			else
+			{
+				YesSelected = false;
+			}
+		}
+
+		if (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::E)
+		{
+			if (ShowNotification)
+			{
+				ShowNotification = false;
+
+				CompleteCraft(ItemToCraft);
+
+				return;
+			}
+
+			if (!ShowNotification)
+			{
+				bCraftItem = true;
+				ShowNotification = true;
+				NotificationClock.restart();
+
+				ConfirmBlock.setSize(sf::Vector2f(CraftingBlock.getSize().x - 150.f, CraftingBlock.getSize().y - 200.f));
+				ConfirmBlock.setOrigin(ConfirmBlock.getSize() / 2.f);
+				ConfirmBlock.setPosition(CraftingBlock.getPosition());
+				ConfirmBlock.setOutlineColor(Theme.PrimaryColor);
+				ConfirmBlock.setOutlineThickness(2.f);
+				ConfirmBlock.setFillColor(Theme.BackgroundColor);
+
+				YesBlock.setSize(sf::Vector2f(ConfirmBlock.getSize().x / 4.f, ConfirmBlock.getSize().y / 4.f));
+				YesBlock.setOrigin(YesBlock.getSize() / 2.f);
+				YesBlock.setPosition(ConfirmBlock.getPosition().x - (ConfirmBlock.getSize().x / 4.5f), ConfirmBlock.getPosition().y + 30.f);
+				YesBlock.setOutlineColor(Theme.PrimaryColor);
+				YesBlock.setOutlineThickness(2.f);
+				YesBlock.setFillColor(Theme.BackgroundColor);
+
+				NoBlock.setSize(sf::Vector2f(ConfirmBlock.getSize().x / 4.f, ConfirmBlock.getSize().y / 4.f));
+				NoBlock.setOrigin(NoBlock.getSize() / 2.f);
+				NoBlock.setPosition(ConfirmBlock.getPosition().x + (ConfirmBlock.getSize().x / 4.5f), ConfirmBlock.getPosition().y + 30.f);
+				NoBlock.setOutlineColor(Theme.PrimaryColor);
+				NoBlock.setOutlineThickness(2.f);
+				NoBlock.setFillColor(Theme.BackgroundColor);
+
+				return;
+			}
+		}
 	}
 }
 
@@ -158,7 +216,7 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 
 	CraftingItemName.setFont(Font);
 	CraftingItemName.setCharacterSize(40.f);
-	CraftingItemName.setColor(Theme.PrimaryColor);
+	CraftingItemName.setFillColor(Theme.PrimaryColor);
 
 	CraftingItemInfo.setFont(Font);
 	CraftingItemInfo.setCharacterSize(30.f);
@@ -173,7 +231,7 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 	CraftingItemMaterialsAmount.setFont(Font);
 	CraftingItemMaterialsAmount.setCharacterSize(30.f);
 	CraftingItemMaterialsAmount.setFillColor(Theme.PrimaryColor);
-	CraftingItemMaterialsAmount.setPosition(CraftingItemInfoBlock.getPosition().x + 100.f, CraftingItemInfoBlock.getPosition().y + 30.f);
+	CraftingItemMaterialsAmount.setPosition(CraftingItemInfoBlock.getPosition().x + 95.f, CraftingItemInfoBlock.getPosition().y + 30.f);
 
 	CraftingItemSprite.setPosition(CraftingItemInfoBlock.getPosition().x, CraftingItemInfoBlock.getPosition().y - 100.f);
 
@@ -192,8 +250,8 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 		TextBounds = CraftingItemName.getLocalBounds();
 		CraftingItemName.setOrigin(TextBounds.left + 30.f, TextBounds.top + TextBounds.height / 2.f);
 		
-		CuresorSprite.setPosition(CraftingItemName.getPosition().x - 70.f, CraftingItemName.getPosition().y - TextBounds.height / 2.f - CursorOffset);
-		CraftingItemSprite.setOrigin(CraftignItemBounds.left + CraftignItemBounds.width / 2.f, CraftignItemBounds.top + CraftignItemBounds.height / 2.f);
+		CursorSprite.setPosition(CraftingItemName.getPosition().x - 70.f, CraftingItemName.getPosition().y - TextBounds.height / 2.f - CursorOffset);
+		CraftingItemSprite.setOrigin(CraftingItemBounds.left + CraftingItemBounds.width / 2.f, CraftingItemBounds.top + CraftingItemBounds.height / 2.f);
 
 		if (CurrentIndex == SelectedIndex)
 		{
@@ -219,6 +277,7 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 
 			float CraftedItemY = CraftingItemMaterialsName.getPosition().y;
 
+
 			for (const FMaterial& Material : Item.RequiredMaterial)
 			{
 				CraftingItemMaterialsName.setString(ToUpper(Material.Material->MaterialName));
@@ -237,7 +296,42 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 				window.draw(CraftingItemMaterialsAmount);
 			}
 				
-			window.draw(CuresorSprite);
+			if (bCraftItem)
+			{
+				ConfirmText.setFont(Font);
+				ConfirmText.setFillColor(Theme.PrimaryColor);
+				ConfirmText.setCharacterSize(40.f);
+				ConfirmText.setString(ToUpper("Are you sure you want to craft:"));
+				TextBounds = ConfirmText.getLocalBounds();
+				ConfirmText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+				ConfirmText.setPosition(ConfirmBlock.getPosition().x, ConfirmBlock.getPosition().y - 50.f);	
+
+				ConfirmItemName.setFont(Font);
+				ConfirmItemName.setFillColor(Theme.PrimaryColor);
+				ConfirmItemName.setCharacterSize(40.f);
+				ConfirmItemName.setString(ToUpper(Item.ItemName));
+				TextBounds = ConfirmItemName.getLocalBounds();
+				ConfirmItemName.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+				ConfirmItemName.setPosition(ConfirmBlock.getPosition().x, ConfirmBlock.getPosition().y - 20);
+
+				YesText.setFont(Font);
+				YesText.setFillColor(Theme.PrimaryColor);
+				YesText.setCharacterSize(40.f);
+				TextBounds = YesText.getLocalBounds();
+				YesText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+				YesText.setPosition(YesBlock.getPosition().x, YesBlock.getPosition().y);
+
+				NoText.setFont(Font);
+				NoText.setFillColor(Theme.PrimaryColor);
+				NoText.setCharacterSize(40.f);
+				TextBounds = NoText.getLocalBounds();
+				NoText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
+				NoText.setPosition(NoBlock.getPosition().x, NoBlock.getPosition().y);
+
+				ItemToCraft = Item;
+			}
+
+			window.draw(CursorSprite);
 		}
 		else
 		{
@@ -251,16 +345,6 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 			}
 		}
 
-		if (bCraftItem)
-		{
-			ConfirmText.setString(ToUpper("Are you sure you want to craft ") + ToUpper(Item.ItemName));
-			TextBounds = ConfirmText.getLocalBounds();
-			ConfirmText.setOrigin(TextBounds.left + TextBounds.width / 2.f, TextBounds.top + TextBounds.height / 2.f);
-			ConfirmText.setPosition(ConfirmBlock.getPosition().x, ConfirmBlock.getPosition().y - 50.f);
-
-			window.draw(ConfirmBlock);
-			window.draw(ConfirmText);
-		}
 
 		if (CurrentIndex >= ScrollOffset && CurrentIndex < ScrollOffset + MaxVisibleItems)
 		{
@@ -270,9 +354,32 @@ void FCraftingScreen::Draw(sf::RenderWindow & window)
 		CurrentIndex++;
 	}
 
-
 	window.draw(CraftingItemInfo);
 	window.draw(CraftingItemSprite);
+
+	if (ShowNotification)
+	{
+		if (YesSelected)
+		{
+			CursorSprite.setPosition(YesText.getPosition().x - 50.f, YesText.getPosition().y - TextBounds.height / 2.f - CursorOffset);
+		}
+		else
+		{
+			CursorSprite.setPosition(NoText.getPosition().x - 50.f, NoText.getPosition().y - TextBounds.height / 2.f - CursorOffset);
+		}
+		
+		window.draw(ConfirmBlock);
+		window.draw(ConfirmText);
+		window.draw(ConfirmItemName);
+
+		window.draw(YesBlock);
+		window.draw(YesText);
+
+		window.draw(NoBlock);
+		window.draw(NoText);
+
+		window.draw(CursorSprite);
+	}
 }
 
 std::string FCraftingScreen::ToUpper(const std::string & input)
@@ -282,4 +389,29 @@ std::string FCraftingScreen::ToUpper(const std::string & input)
 	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::toupper(c); });
 
 	return result;
+}
+
+void FCraftingScreen::CompleteCraft(const FItemData& Item)
+{
+	if (Item.ItemType == "Armour")
+	{
+		for (const FArmour& Armour : Crafter->GetCraftableArmour())
+		{
+			if (Item.ItemName == Armour.ArmourData->ItemName)
+			{
+				CharacterSheet->CraftArmour(Armour);
+			}
+		}
+	}
+
+	if (Item.ItemType == "Weapon")
+	{
+		for (const FWeapon& Weapon : Crafter->GetCraftableWeapons())
+		{
+			if (Item.ItemName == Weapon.WeaponData->ItemName)
+			{
+				CharacterSheet->CraftWeapon(Weapon);
+			}
+		}
+	}
 }

@@ -47,4 +47,5 @@ private:
 
 	std::shared_ptr<FLoadExternalData> Loader;
 	std::shared_ptr<FCharacterCreator> Creator;
+	std::unique_ptr<FItem> Item;
 };

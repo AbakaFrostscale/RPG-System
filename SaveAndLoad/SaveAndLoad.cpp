@@ -17,6 +17,7 @@ FSaveAndLoad::FSaveAndLoad()
 {
 	Loader = std::make_shared<FLoadExternalData>();
 	Creator = std::make_shared<FCharacterCreator>();
+	Item = std::make_unique<FItem>();
 }
 
 bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf::Vector2f PlayerPosition, int SelctedSpriteIndex, std::vector<int> GatheredForestObjectsID)
@@ -46,6 +47,16 @@ bool FSaveAndLoad::SaveGame(FCharacterData& Character, FInventory& Inventory, sf
 	for (const FMaterial& Mat : Inventory.GetMaterials())
 	{
 		SaveFile["Inventory"]["Materials"][Mat.Material->MaterialName] = Mat.MaterialAmount;
+	}
+
+	for (const FWeapon& Wep : Inventory.GetWeapons())
+	{
+		SaveFile["Inventory"]["Weapons"].push_back(Wep.WeaponData->ItemName);
+	}
+
+	for (const FArmour& Arm : Inventory.GetArmour())
+	{
+		SaveFile["Inventory"]["Armour"].push_back(Arm.ArmourData->ItemName);
 	}
 
 	SaveFile["World"]["Player"]["Position"]["x"] = DataToSave.CharacterPosition.x;
@@ -199,6 +210,46 @@ bool FSaveAndLoad::LoadGame(const std::string& FilePath)
 		if (!bIsMaterialValid)
 		{
 			std::cout << "A material value is invalid" << std::endl;
+			return false;
+		}
+	}
+
+	for (auto& Weapons : SaveFile["Inventory"]["Weapons"])
+	{
+		bool bIsWeaponValid = false;
+
+		for (const FWeapon& Weapon : Item->GetCraftableWeapons())
+		{
+			if (Weapon.WeaponData->ItemName == Weapons.get<std::string>())
+			{
+				bIsWeaponValid = true;
+				TempData.CharacterInventory.AddWeapons(Weapon);
+			}
+		}
+
+		if (!bIsWeaponValid)
+		{
+			std::cout << "A weapon is invalid" << std::endl;
+			return false;
+		}
+	}
+
+	for (auto& Armours : SaveFile["Inventory"]["Armour"])
+	{
+		bool bIsArmourValid = false;
+
+		for (const FArmour& Armour : Item->GetCraftableArmour())
+		{
+			if (Armour.ArmourData->ItemName == Armours.get<std::string>())
+			{
+				bIsArmourValid = true;
+				TempData.CharacterInventory.AddArmour(Armour);
+			}
+		}
+
+		if (!bIsArmourValid)
+		{
+			std::cout << "A set of Armour is invalid" << std::endl;
 			return false;
 		}
 	}

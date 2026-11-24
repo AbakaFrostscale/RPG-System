@@ -30,6 +30,9 @@ set(SFML_DIR "${SFML_ROOT}/lib/cmake")
 
 find_package(SFML 2.6 COMPONENTS graphics window audio system REQUIRED)
 
+set(TMXLITE_STATIC_LIB ON CACHE BOOL "Build tmxlite as a static library" FORCE)
+add_subdirectory("${CMAKE_SOURCE_DIR}/Libraries/tmxlite/tmxlite")
+
 target_include_directories(RPGGameSystem PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}"
 	"${SFML_ROOT}/include"
@@ -40,6 +43,7 @@ target_link_libraries(RPGGameSystem PRIVATE
 	sfml-window
 	sfml-system
 	sfml-audio
+	tmxlite
 )
 
 set_target_properties(RPGGameSystem PROPERTIES
@@ -62,4 +66,27 @@ add_custom_command(TARGET RPGGameSystem POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	"${CMAKE_SOURCE_DIR}/Assets"
 	"$<TARGET_FILE_DIR:RPGGameSystem>/Assets"
+)
+
+target_precompile_headers(RPGGameSystem PRIVATE
+	<iostream>
+	<string>
+	<vector>
+	<array>
+	<map>
+	<unordered_map>
+	<memory>
+	<optional>
+	<algorithm>
+	<utility>
+	<fstream>
+	<sstream>
+	<filesystem>
+	<cstdint>
+	<random>
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	"Core/LoadExternalData.h"
+	"Core/Random.h"
+	"External/json.hpp"
 )

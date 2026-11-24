@@ -22,6 +22,23 @@ FLoadExternalData::FLoadExternalData()
 	//Combat
 	LoadCSV("DataBases/EnemiesDatabase.csv", Enemy);
 	LoadJSON("DataBases/Spells.json", AvailableSpells);
+
+	//SpriteFile
+	SpriteFile =
+	{
+		"Assets/Sprites/warrior_m.png",
+		"Assets/Sprites/warrior_f.png",
+		"Assets/Sprites/mage_m.png",
+		"Assets/Sprites/mage_f.png",
+		"Assets/Sprites/ninja_m.png",
+		"Assets/Sprites/ninja_f.png",
+		"Assets/Sprites/ranger_m.png",
+		"Assets/Sprites/ranger_f.png",
+		"Assets/Sprites/healer_m.png",
+		"Assets/Sprites/healer_f.png",
+		"Assets/Sprites/townfolk1_m.png",
+		"Assets/Sprites/townfolk1_f.png"
+	};
 }
 
 const FItemData* FLoadExternalData::FindItemData(const std::string& ItemName)
