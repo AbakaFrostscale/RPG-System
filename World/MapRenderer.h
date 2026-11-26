@@ -8,8 +8,9 @@
 
 #include <cstdint>
 #include <vector>
+#include <unordered_map>
+#include <tmxlite/Tileset.hpp>
 #include <SFML/Graphics.hpp>
-#include <Libraries/tmxlite/tmxlite/include/tmxlite/Map.hpp>
 
 namespace tmx
 {
@@ -23,6 +24,14 @@ struct FTileSetData
 	const std::vector<tmx::Tileset::Tile>& Tiles;
 };
 
+struct FTileInfo
+{
+	std::string TilePath;
+	sf::Vector2u TilePosition;
+	sf::Vector2u TileSize;
+	sf::Vector2u WorldPosition;
+};
+
 
 class FMapRenderer
 {
@@ -34,8 +43,10 @@ public:
 	void LoadTilesets(const std::vector<tmx::Tileset>& CurrentTileset);
 
 private:
-
-
 	std::vector<FTileSetData> Tilesets;
+	std::vector<FTileInfo> TileInfo;
+
+	std::unordered_map<std::string, sf::Texture> TextureInfo;
+
 	const tmx::Map* Map = nullptr;
 };

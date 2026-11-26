@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cctype>
 #include <Core/LoadExternalData.h>
-#include <Libraries/tmxlite/tmxlite/include/tmxlite/Map.hpp>
+#include <tmxlite/Map.hpp>
 #include "World/MapLoader.h"
 #include "World/MapRenderer.h"
 
@@ -305,6 +305,7 @@ void FGameScreen::Update(float DeltaTime)
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
+
 	float HalfWidth = ScreenWidth / 2.f;
 	float HalfHeight = ScreenHeight / 2.f;
 
@@ -321,6 +322,7 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 
 	window.setView(Camera);
 
+	MapRenderer->Draw(window);
 
 	window.draw(PlayerSprite);
 

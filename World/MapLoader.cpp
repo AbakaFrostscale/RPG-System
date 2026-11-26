@@ -5,7 +5,7 @@
 //version 1.00
 
 #include "MapLoader.h"
-#include "Libraries/tmxlite/tmxlite/include/tmxlite/Map.hpp"
+#include "tmxlite/Map.hpp"
 
 
 FMapLoader::FMapLoader()
