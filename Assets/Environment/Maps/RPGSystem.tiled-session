@@ -1,23 +1,23 @@
 {
     "activeFile": "Maps/Frontier_Town.tmx",
     "expandedProjectPaths": [
-        "Props",
-        "Tiles - Ground/Walls",
-        "Props/Buildings/Chimney",
-        "Tiles - Ground/Road",
-        "Tiles - Ground/Grass",
-        "Maps",
-        "Props/Buildings",
-        "Tiles - Ground/Stone",
-        "Props/Barrels and Crates",
-        "Props/Buildings/Doors",
-        "Tiles - Ground/Roof",
-        "Props/Buildings/Windows",
-        "Props/Misc",
+        ".",
         "Props/Fences",
         "Props/Plants",
-        ".",
-        "Tiles - Ground"
+        "Tiles - Ground/Stone",
+        "Maps",
+        "Tiles - Ground/Roof",
+        "Props/Buildings/Chimney",
+        "Props/Buildings/Windows",
+        "Props/Buildings",
+        "Tiles - Ground/Grass",
+        "Tiles - Ground/Walls",
+        "Tiles - Ground",
+        "Props/Barrels and Crates",
+        "Props/Misc",
+        "Tiles - Ground/Road",
+        "Props/Buildings/Doors",
+        "Props"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -26,10 +26,10 @@
         },
         "Maps/Frontier_Town.tmx": {
             "scale": 0.5,
-            "selectedLayer": 2,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 904,
-                "y": 1038
+                "x": 948,
+                "y": 74
             }
         },
         "Maps/Frontier_Town.tmx#Grass - Shade Top": {
@@ -294,6 +294,7 @@
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 1 - Middle.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -333,6 +334,7 @@
             "scaleInEditor": 1
         },
         "Tiles - Ground/Walls/Wall Type 3 - Left.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },

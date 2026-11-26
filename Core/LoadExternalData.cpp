@@ -1,4 +1,4 @@
-//CharacterStats.h
+//LoadExternal.cpp
 //Files used to Load the external data from any other data source
 //Author: Kaden Mann
 //Description: Portfolio project demonstrating a full RPG system

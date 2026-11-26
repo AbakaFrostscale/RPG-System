@@ -2,14 +2,19 @@
 #include <iostream>
 #include <cmath>
 #include <random>
+#include <algorithm>
+#include <cctype>
 #include <Core/LoadExternalData.h>
-#include <Inventory/Inventory.h>
-#include <SaveAndLoad/SaveAndLoad.h>
+#include <tmxlite/Map.hpp>
+#include "World/MapLoader.h"
+#include "World/MapRenderer.h"
 
 FGameScreen::FGameScreen()
 {
-	Loader = std::make_shared<FLoadExternalData>();
-	Creator = std::make_shared<FCharacterCreator>();
+	Loader = std::make_unique<FLoadExternalData>();
+	Creator = std::make_unique<FCharacterCreator>();
+	MapLoader = std::make_unique<FMapLoader>();
+	MapRenderer = std::make_unique<FMapRenderer>();
 
 	if (!Font.loadFromFile("Assets/Fonts/Silkscreen-Regular.ttf"))
 	{
@@ -27,49 +32,13 @@ FGameScreen::FGameScreen()
 
 	bMusicFadingIn = true;
 
-	if (!GroundTexture.loadFromFile("Assets/Environment/SeamlessGroundTextures/grass-bright-1.png"))
-	{
-		std::cout << "Failed to load grass-bright-1.png" << std::endl;
-	}
-
-	GroundTexture.setRepeated(true);
-	GroundTexture.setSmooth(false);
-
-	Ground.setSize(sf::Vector2f(WorldWidth, WorldHeight));
-	Ground.setTexture(&GroundTexture);
-	Ground.setTextureRect(sf::IntRect(0, 0, WorldWidth, WorldHeight));
-
-	if (!PathTexture.loadFromFile("Assets/Environment/SeamlessGroundTextures/grass-red-1.png"))
-	{
-		std::cout << "Failed to load grass-red-1.png" << std::endl;
-	}
-
-	PathTexture.setRepeated(true);
-	PathTexture.setSmooth(false);
-
-	Path.setSize(sf::Vector2f(WorldWidth, 140));
-	Path.setPosition(0, WorldHeight / 2.0f - 70);
-	Path.setTexture(&PathTexture);
-	Path.setTextureRect(sf::IntRect(0, 0, WorldWidth, 40));
-
-	if (!TreeTexture.loadFromFile("Assets/Environment/Trees.png"))
-	{
-		std::cout << "Failed to load tree sheet!" << std::endl;
-	}
-
-	if (!RockTexture.loadFromFile("Assets/Environment/Rocks by Klyssilla_Tileset_32x32.png"))
-	{
-		std::cout << "Failed to load rocks sheet!" << std::endl;
-	}
-
+	LoadTown();
 
 	Random.RandomGenerator = std::mt19937(Random.rd());
 
 	GenerateForest();
 
-	CurrentGameMode = EGameMode::EGMUnpaused;
-
-	if (!CursorTexture.loadFromFile("Assets/Sprites/Cursors/03.png"))
+	if (!CursorTexture.loadFromFile("/Assets/Sprites/Cursors/03.png"))
 	{
 		std::cout << "Cursor failed to load!" << std::endl;
 	}
@@ -94,6 +63,10 @@ FGameScreen::FGameScreen()
 
 	Camera.setSize(ScreenWidth, ScreenHeight);
 }
+
+FGameScreen::~FGameScreen() = default;
+
+
 
 void FGameScreen::HandleInput(const sf::Event& event)
 {
@@ -170,7 +143,7 @@ void FGameScreen::HandleInput(const sf::Event& event)
 			{
 				CurrentGameMode = EGameMode::EGMPaused;
 			}
-			else if (CurrentGameMode != EGameMode::EGMUnpaused)
+			else
 			{
 				CurrentGameMode = EGameMode::EGMUnpaused;
 			}
@@ -332,6 +305,7 @@ void FGameScreen::Update(float DeltaTime)
 
 void FGameScreen::Draw(sf::RenderWindow& window)
 {
+
 	float HalfWidth = ScreenWidth / 2.f;
 	float HalfHeight = ScreenHeight / 2.f;
 
@@ -348,26 +322,9 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 
 	window.setView(Camera);
 
-	window.draw(Ground);
-	window.draw(Path);
-
-	for (FForestObject& Object : ForestObjects)
-	{
-		if (Object.Sprite.getPosition().y < PlayerSprite.getPosition().y)
-		{
-			window.draw(Object.Sprite);
-		}
-	}
+	MapRenderer->Draw(window);
 
 	window.draw(PlayerSprite);
-
-	for (FForestObject& Object : ForestObjects)
-	{
-		if (Object.Sprite.getPosition().y >= PlayerSprite.getPosition().y)
-		{
-			window.draw(Object.Sprite);
-		}
-	}
 
 	window.setView(window.getDefaultView());
 
@@ -509,8 +466,6 @@ void FGameScreen::LoadGame()
 	}
 }
 
-
-
 void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 {
 	SelectedCharacterRow = SelectedCharacter;
@@ -543,10 +498,6 @@ void FGameScreen::GenerateForest()
 	ForestObjects.clear();
 	ForestObjectID = 0;
 
-	PlaceForestObjects(TreeTexture, TreeSize, 250, 120.f, 0.3f, 150.f, ECollisionType::ECTTree);
-	PlaceForestObjects(RockTexture, Rocks, 90, 70.f, 0.7f, 150.f, ECollisionType::ECTRock);
-	PlaceForestObjects(TreeTexture, Bushes, 300, 40.f, 0.5f, 50.f, ECollisionType::ECTBush);
-
 	std::sort(ForestObjects.begin(), ForestObjects.end(), [](const FForestObject& A,const FForestObject& B)
 		{
 			return A.Sprite.getPosition().y < B.Sprite.getPosition().y;
@@ -555,6 +506,8 @@ void FGameScreen::GenerateForest()
 
 void FGameScreen::OverlappingObject()
 {
+	ClosestObject = nullptr;
+
 	switch (FacingDirection)
 	{
 	case EFacingDirection::EFDUp:
@@ -582,8 +535,6 @@ void FGameScreen::OverlappingObject()
 	}
 
 	int ClosestObjectIndex = 0;
-
-	ClosestObject = nullptr;
 
 	for (size_t i = 0; i < ForestObjects.size(); i++)
 	{
@@ -628,7 +579,7 @@ void FGameScreen::OverlappingObject()
 	}
 }
 
-void FGameScreen::DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::RectangleShape ScreenBackground, sf::RectangleShape ScreenMenu)
+void FGameScreen::DrawScreen(sf::RenderWindow& window, sf::Text& ScreenText, sf::RectangleShape& ScreenBackground, sf::RectangleShape& ScreenMenu)
 {
 	ScreenBackground.setSize(window.getView().getSize());
 	ScreenBackground.setOrigin(ScreenBackground.getSize() / 2.f);
@@ -647,7 +598,7 @@ void FGameScreen::DrawScreen(sf::RenderWindow& window, sf::Text ScreenText, sf::
 	window.draw(ScreenMenu);
 }
 
-void FGameScreen::Notification(sf::RenderWindow& window, sf::Text NotifyText, sf::RectangleShape NotifyBackgrond)
+void FGameScreen::Notification(sf::RenderWindow& window, sf::Text& NotifyText, sf::RectangleShape& NotifyBackgrond)
 {
 	NotifyBackgrond.setSize(sf::Vector2f(300, 100));
 	NotifyBackgrond.setOrigin(NotifyBackgrond.getSize() / 2.f);
@@ -720,125 +671,6 @@ void FGameScreen::CollectItem(int ObjectToCollect)
 	CurrentInteractableObjectIndex = -1;
 }
 
-void FGameScreen::PlaceForestObjects(sf::Texture& Texture, const std::vector<sf::IntRect>& Variants, int Count, float MinDistance, float ClusterChance, float ClusterRadius, ECollisionType CollisionType)
-{
-	std::mt19937 Random(12345);
-
-	std::uniform_int_distribution <int> VariantDist(0, Variants.size() - 1);
-	std::uniform_real_distribution<float> XDist(100.f, WorldWidth - 100.f);
-	std::uniform_real_distribution<float> YDist(100.f, WorldHeight - 100.f);
-	std::uniform_real_distribution<float> ChanceDist(0.f, 1.f);
-
-	sf::Vector2f ClusterCentre;
-	bool bHasClusterCentre = false;
-
-	for (int i = 0; i < Count; i++)
-	{
-		int VariantType = VariantDist(Random);
-
-		float X;
-		float Y;
-
-
-		if (bHasClusterCentre && ChanceDist(Random) < ClusterChance)
-		{
-			//Spawn near existing cluster
-			std::uniform_real_distribution<float> OffsetDist(-ClusterRadius, ClusterRadius);
-
-			X = ClusterCentre.x + OffsetDist(Random);
-			Y = ClusterCentre.y + OffsetDist(Random);
-		}
-		else
-		{
-			//Start a new cluster
-			X = XDist(Random);
-			Y = YDist(Random);
-
-			ClusterCentre = { X, Y };
-			bHasClusterCentre = true;
-		}
-
-		FForestObject ForestObject;
-
-		ForestObject.Sprite.setTexture(Texture);
-		ForestObject.Sprite.setTextureRect(Variants[VariantType]);
-
-		sf::FloatRect Bounds = ForestObject.Sprite.getLocalBounds();
-
-		ForestObject.Sprite.setOrigin(Bounds.width / 2.f, Bounds.height);
-
-		ForestObject.Sprite.setPosition(X, Y);
-
-		sf::FloatRect CollisionBounds = ForestObject.Sprite.getGlobalBounds();
-
-		float Width = 0.f;
-		float Height = 0.f;
-
-		float CollisionX = 0.f;
-		float CollisionY = 0.f;
-
-		switch (CollisionType)
-		{
-		case ECollisionType::ECTTree:
-			Width = CollisionBounds.width * 0.5f;
-			Height = CollisionBounds.height * 0.3f;
-
-			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
-			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
-
-			ForestObject.ObjectType = EObjectType::EOTTree;
-			break;
-		case ECollisionType::ECTRock:
-			Width = CollisionBounds.width * 0.8f;
-			Height = CollisionBounds.height * 0.8f;
-
-			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
-			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
-
-			ForestObject.ObjectType = EObjectType::EOTRock;
-			break;
-		case ECollisionType::ECTBush:
-			Width = CollisionBounds.width * 0.9f;
-			Height = CollisionBounds.height * 0.8f;
-
-			CollisionX = CollisionBounds.left + (CollisionBounds.width - Width) / 2.f;
-			CollisionY = CollisionBounds.top + CollisionBounds.height - Height;
-
-			ForestObject.ObjectType = EObjectType::EOTBush;
-			break;
-		default:
-			break;
-		}
-
-		ForestObject.Collision = sf::FloatRect(CollisionX, CollisionY, Width, Height);
-
-		ForestObject.ObjectID = ForestObjectID;
-
-		bool bTooClose = false;
-																									
-		for (const FForestObject& ExistingObject : ForestObjects)
-		{
-			float DX = ExistingObject.Sprite.getPosition().x - X;
-			float DY = ExistingObject.Sprite.getPosition().y - Y;
-
-			float Distance = std::sqrt(DX * DX + DY * DY);
-
-			if (Distance < MinDistance)
-			{
-				bTooClose = true;
-				break;
-			}
-		}
-
-		if (!bTooClose && !IsOnPath(ForestObject.Sprite.getPosition()))
-		{
-			ForestObjects.push_back(ForestObject);
-		}
-
-		ForestObjectID++;
-	}
-}
-
 void FGameScreen::LoadForest(const std::vector<int>& GatheredItems)
 {
 	GenerateForest();
@@ -851,6 +683,42 @@ void FGameScreen::LoadForest(const std::vector<int>& GatheredItems)
 	std::erase_if(ForestObjects, [&GatheredItems](const FForestObject& ForestObject) {
 		return std::find(GatheredItems.begin(), GatheredItems.end(), ForestObject.ObjectID)
 			!= GatheredItems.end(); });
+}
+
+void FGameScreen::LoadTown()
+{
+	if (!MapLoader->LoadMap("Assets/Environment/Maps/Maps/Frontier_Town.tmx"))
+	{
+		std::cout << "Town Map failed to load!";
+		return;
+	}
+
+	const tmx::Map* CurrentMap = MapLoader->GetMap();
+
+	WorldWidth = CurrentMap->getBounds().width;
+	WorldHeight = CurrentMap->getBounds().height;
+
+	for (const auto& Layer : CurrentMap->getLayers())
+	{
+		if (Layer->getName() != "PlayerSpawn")
+			continue;
+
+		if (Layer->getType() != tmx::Layer::Type::Object)
+			continue;
+		
+		for (const auto& Object : Layer->getLayerAs<tmx::ObjectGroup>().getObjects())
+		{
+			if (Object.getName() != "MainSpawn")
+				continue;
+
+			PlayerPosition = sf::Vector2f(Object.getPosition().x, Object.getPosition().y);
+			break;
+		}
+		break;
+	}
+
+	MapRenderer->SetMap(*CurrentMap);
+	MapRenderer->LoadTilesets(CurrentMap->getTilesets());
 }
 
 void FGameScreen::HandleMenu()
@@ -919,22 +787,4 @@ void FGameScreen::HandleMenu()
 	default:
 		break;
 	}
-}
-
-bool FGameScreen::IsOnPath(sf::Vector2f position)
-{
-	float PathTop = WorldHeight / 2.f - 70;
-	float PathBottom = WorldHeight / 2.f + 70;
-
-	return position.y >= PathTop && position.y <= PathBottom;
-}
-
-bool FGameScreen::IsOptionSelected()
-{
-	if (bOptionChosen)
-	{
-		bOptionChosen = false;
-		return true;
-	}
-	return false;
 }

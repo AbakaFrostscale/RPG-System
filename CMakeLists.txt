@@ -20,6 +20,8 @@ set(SOURCES
 	UI/StartScreen/StartScreen.cpp
 	UI/InventoryScreen/InventoryScreen.cpp
 	UI/CraftingScreen/CraftingScreen.cpp
+	World/MapLoader.cpp
+	World/MapRenderer.cpp
 )
 
 add_executable(RPGGameSystem ${SOURCES}
