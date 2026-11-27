@@ -121,6 +121,11 @@ private:
 	sf::Font Font;
 	sf::Text CharacterInforText;
 
+	//Collision
+	std::vector<std::vector<sf::Vector2f>> CollisionPolygons;
+	std::vector<sf::FloatRect> CollisionRectangles;
+	bool IsInsidePolygon(const sf::Vector2f& Point, std::vector<sf::Vector2f>& CollisionPolygon);
+
 	//pausemenu
 	sf::RectangleShape PauseBackground;
 	sf::RectangleShape PauseMenu;

@@ -22,6 +22,7 @@ struct FTileSetData
 	std::uint32_t FirstGID;
 	std::uint32_t LastGID;
 	const std::vector<tmx::Tileset::Tile>& Tiles;
+	sf::Vector2f TileOffset;
 };
 
 struct FTileInfo
@@ -29,7 +30,7 @@ struct FTileInfo
 	std::string TilePath;
 	sf::Vector2u TilePosition;
 	sf::Vector2u TileSize;
-	sf::Vector2u WorldPosition;
+	sf::Vector2f WorldPosition;
 };
 
 
