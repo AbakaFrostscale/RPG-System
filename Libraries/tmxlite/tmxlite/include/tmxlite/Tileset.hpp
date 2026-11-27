@@ -231,7 +231,7 @@ namespace tmx
         \brief Returns the tile offset in pixels.
         Tile will draw tiles offset from the top left using this value.
         */
-        const Vector2u& getTileOffset() const { return m_tileOffset; }
+        const Vector2i& getTileOffset() const { return m_tileOffset; }
 
         /*!
         \brief Returns a reference to the list of Property objects for this
@@ -303,7 +303,7 @@ namespace tmx
         std::uint32_t m_tileCount;
         std::uint32_t m_columnCount;
         ObjectAlignment m_objectAlignment;
-        Vector2u m_tileOffset;
+        Vector2i m_tileOffset;
 
         std::vector<Property> m_properties;
         std::string m_imagePath;

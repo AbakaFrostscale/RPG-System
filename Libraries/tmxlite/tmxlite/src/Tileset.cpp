@@ -344,6 +344,7 @@ Tileset::Tile& Tileset::newTile(std::uint32_t ID)
 void Tileset::parseTileNode(const pugi::xml_node& node, Map* map)
 {
     Tile& tile = newTile(node.attribute("id").as_int());
+
     if (node.attribute("terrain"))
     {
         std::string data = node.attribute("terrain").as_string();
@@ -449,6 +450,19 @@ void Tileset::parseTileNode(const pugi::xml_node& node, Map* map)
             }
         }
     }
+
+    // Override the image rectangle with tile specific attributes
+    if (node.attribute("x"))
+        tile.imagePosition.x = node.attribute("x").as_uint();
+
+    if (node.attribute("y"))
+        tile.imagePosition.y = node.attribute("y").as_uint();
+
+    if (node.attribute("width"))
+        tile.imageSize.x = node.attribute("width").as_uint();
+    
+    if (node.attribute("height"))
+        tile.imageSize.y = node.attribute("height").as_uint();
 }
 
 void Tileset::createMissingTile(std::uint32_t ID)

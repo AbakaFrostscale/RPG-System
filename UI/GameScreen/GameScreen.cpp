@@ -6,6 +6,7 @@
 #include <cctype>
 #include <Core/LoadExternalData.h>
 #include <tmxlite/Map.hpp>
+#include <tmxlite/Object.hpp>
 #include "World/MapLoader.h"
 #include "World/MapRenderer.h"
 
@@ -176,7 +177,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.y -= 1.f;
 		CurrentAnimationRow = UpRow;
 		FacingDirection = EFacingDirection::EFDUp;
-		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
+		PlayerSprite.setScale(sf::Vector2f(1.5f, 1.5f));
 		bMoving = true;
 	}
 
@@ -185,7 +186,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.y += 1.f;
 		CurrentAnimationRow = DownRow;
 		FacingDirection = EFacingDirection::EFDDown;
-		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
+		PlayerSprite.setScale(sf::Vector2f(1.5f, 1.5f));
 		bMoving = true;
 	}
 
@@ -194,7 +195,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.x -= 1.f;
 		CurrentAnimationRow = LeftRow;
 		FacingDirection = EFacingDirection::EFDLeft;
-		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
+		PlayerSprite.setScale(sf::Vector2f(1.5f, 1.5f));
 		bMoving = true;
 	}
 
@@ -203,7 +204,7 @@ void FGameScreen::Update(float DeltaTime)
 		Direction.x += 1.f;
 		CurrentAnimationRow = RightRow;
 		FacingDirection = EFacingDirection::EFDRight;
-		PlayerSprite.setScale(sf::Vector2f(1.f, 1.f));
+		PlayerSprite.setScale(sf::Vector2f(1.5f, 1.5f));
 		bMoving = true;
 	}
 
@@ -235,13 +236,18 @@ void FGameScreen::Update(float DeltaTime)
 
 	OverlappingObject();
 
-	for (const FForestObject& ForestObject : ForestObjects)
+	for (const auto& CollisionObject : CollisionRectangles)
 	{
-		if (NewPlayerBounds.intersects(ForestObject.Collision))
+		if (NewPlayerBounds.intersects(CollisionObject))
 		{
 			bBlocked = true;
 			break;
 		}
+	}
+
+	for (const auto& CollisionObject : CollisionPolygons)
+	{
+		
 	}
 
 	if (!bBlocked)
@@ -323,6 +329,39 @@ void FGameScreen::Draw(sf::RenderWindow& window)
 	window.setView(Camera);
 
 	MapRenderer->Draw(window);
+	
+	for (const auto& Rect : CollisionRectangles)
+	{
+		sf::RectangleShape CollisionRect;
+
+		CollisionRect.setSize(Rect.getSize());
+		CollisionRect.setPosition(Rect.getPosition());
+		CollisionRect.setOutlineThickness(3.f);
+		CollisionRect.setOutlineColor(sf::Color::Red);
+		CollisionRect.setFillColor(sf::Color::Transparent);
+
+		window.draw(CollisionRect);
+	}
+
+	for (const auto& Polygon : CollisionPolygons)
+	{
+		sf::ConvexShape CollisionPolygon;
+		CollisionPolygon.setPointCount(Polygon.size());
+
+		int PointIndex = 0;
+		for (const auto& Point : Polygon)
+		{
+			CollisionPolygon.setPoint(PointIndex, Point);
+
+			PointIndex++;
+		}
+		
+		CollisionPolygon.setOutlineThickness(3.f);
+		CollisionPolygon.setOutlineColor(sf::Color::Yellow);
+		CollisionPolygon.setFillColor(sf::Color::Transparent);
+
+		window.draw(CollisionPolygon);
+	}
 
 	window.draw(PlayerSprite);
 
@@ -478,7 +517,7 @@ void FGameScreen::SetSelectedCharacter(const int SelectedCharacter)
 	PlayerTexture.setSmooth(true);
 
 	PlayerSprite.setTexture(PlayerTexture);
-	PlayerSprite.setScale(1.f, 1.f);
+	PlayerSprite.setScale(1.5f, 1.5f);
 	PlayerSprite.setPosition(PlayerPosition);
 
 	PlayerSprite.setTextureRect(sf::IntRect(FrameWidth, DownRow * FrameHeight, FrameWidth, FrameHeight));
@@ -491,6 +530,11 @@ void FGameScreen::UpdateCharacter()
 	(ToUpper("Name: " + CharacterSheet->GetCharacterReference().CharName) +
 		ToUpper("\nRace: " + CharacterSheet->GetCharacterReference().CharRace.RaceName) +
 		ToUpper("\nClass: " + CharacterSheet->GetCharacterReference().CharClass.ClassName));
+}
+
+bool FGameScreen::IsInsidePolygon(const sf::Vector2f& Point, std::vector<sf::Vector2f>& CollisionPolygon)
+{
+	return false;
 }
 
 void FGameScreen::GenerateForest()
@@ -693,6 +737,9 @@ void FGameScreen::LoadTown()
 		return;
 	}
 
+	CollisionPolygons.clear();
+	CollisionRectangles.clear();
+
 	const tmx::Map* CurrentMap = MapLoader->GetMap();
 
 	WorldWidth = CurrentMap->getBounds().width;
@@ -715,6 +762,37 @@ void FGameScreen::LoadTown()
 			break;
 		}
 		break;
+	}
+
+	for (const auto& Layer : CurrentMap->getLayers())
+	{
+		if (Layer->getName() != "Collision")
+			continue;
+
+		if (Layer->getType() != tmx::Layer::Type::Object)
+			continue;
+
+		for (const auto& Object : Layer->getLayerAs<tmx::ObjectGroup>().getObjects())
+		{
+			if (Object.getShape() == tmx::Object::Shape::Rectangle)
+			{
+				tmx::FloatRect ObjectAABB = Object.getAABB();
+
+				CollisionRectangles.push_back(sf::FloatRect(ObjectAABB.left, ObjectAABB.top, ObjectAABB.width, ObjectAABB.height));
+			}
+			else if (Object.getShape() == tmx::Object::Shape::Polygon)
+			{
+				std::vector<sf::Vector2f> ObjectPoints;
+				tmx::Vector2f ObjectPosition = Object.getPosition();
+
+				for (const auto& Point : Object.getPoints())
+				{
+					ObjectPoints.push_back(sf::Vector2f(ObjectPosition.x + Point.x, ObjectPosition.y + Point.y));
+				}
+
+				CollisionPolygons.push_back(ObjectPoints);
+			}
+		}
 	}
 
 	MapRenderer->SetMap(*CurrentMap);

@@ -19,26 +19,13 @@ void FMapRenderer::Draw(sf::RenderTarget& RenderTarget) const
 {
 	sf::Sprite TileToDraw;
 
-	std::string PreviousPath;
-
 	for (const auto& Tile : TileInfo)
 	{
-		if (Tile.TilePath != PreviousPath)
-		{
 		TileToDraw.setTexture(TextureInfo.at(Tile.TilePath));
 		TileToDraw.setTextureRect(sf::IntRect(Tile.TilePosition.x, Tile.TilePosition.y, Tile.TileSize.x, Tile.TileSize.y));
 		TileToDraw.setPosition(Tile.WorldPosition.x, Tile.WorldPosition.y);
-		
-		
-		std::cout << "Path: " << Tile.TilePath
-			<< "\nPosition: " << Tile.TilePosition.x << ":" << Tile.TilePosition.y
-			<< "\nSize: " << Tile.TileSize.x << ":" << Tile.TileSize.y
-			<< "\nWorld: " << Tile.WorldPosition.x << ":" << Tile.WorldPosition.y
-			<< "\n\n";
 
 		RenderTarget.draw(TileToDraw);
-		PreviousPath = Tile.TilePath;
-		}
 	}
 }
 
@@ -53,7 +40,8 @@ void FMapRenderer::LoadTilesets(const std::vector<tmx::Tileset>& CurrentTileset)
 		Tilesets.push_back({
 		TSet.getFirstGID(),
 		TSet.getLastGID(),
-		TSet.getTiles()
+		TSet.getTiles(),
+		sf::Vector2f{ static_cast<float>(TSet.getTileOffset().x), static_cast<float>(TSet.getTileOffset().y)}
 		});
 	}
 
@@ -99,11 +87,18 @@ void FMapRenderer::LoadTilesets(const std::vector<tmx::Tileset>& CurrentTileset)
 								}
 							}
 							
+							sf::Vector2f WorldPosition = sf::Vector2f{ static_cast<float>(TilePosition.x), static_cast<float>(TilePosition.y) };
+
+							WorldPosition += Tileset.TileOffset;
+							//std::cout << "Tile Offset: " << Tileset.TileOffset.x << ", " << Tileset.TileOffset.y << std::endl;
+
+							WorldPosition.y += static_cast<float>(TileSize.y) - static_cast<float>(TileDef.imageSize.y);
+
 							TileInfo.push_back({
 							TileDef.imagePath,
 							sf::Vector2u{ TileDef.imagePosition.x, TileDef.imagePosition.y },
 							sf::Vector2u{ TileDef.imageSize.x, TileDef.imageSize.y },
-							TilePosition});
+							WorldPosition});
 
 							break;
 						}
